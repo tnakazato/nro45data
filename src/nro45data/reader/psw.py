@@ -13,10 +13,6 @@ FITS_BLOCK_SIZE = 2880
 FITS_RECORD_SIZE = 80
 FITS_NUM_RECORDS_PER_BLOCK = FITS_BLOCK_SIZE // FITS_RECORD_SIZE
 
-__all__ = [
-    '_read_psw'
-]
-
 
 def _is_nro_psw(filename: str) -> bool:
     """Test if given file is in NRO 45m PSW format.
