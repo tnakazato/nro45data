@@ -19,6 +19,14 @@ __all__ = [
 
 
 def _is_nro_psw(filename: str) -> bool:
+    """Test if given file is in NRO 45m PSW format.
+
+    Args:
+        filename: Name of the file
+
+    Returns:
+        True if the file is in NRO 45m PSW format, otherwise False.
+    """
     expected = "XTENSION='BINTABLE'"
     with open(filename, 'rb') as f:
         first_record = f.read(FITS_RECORD_SIZE).decode()
@@ -27,6 +35,14 @@ def _is_nro_psw(filename: str) -> bool:
 
 
 def _read_header_and_data(filename: str) -> Tuple[List[str], bytes]:
+    """Read given file and return its header and data separately.
+
+    Args:
+        filename: Name of the file
+
+    Returns:
+        List of header records and binary data
+    """
     with open(filename, 'rb+') as f:
         # header
         header = []
@@ -53,6 +69,18 @@ def _read_header_and_data(filename: str) -> Tuple[List[str], bytes]:
 
 
 def _follow_fits_standard(records: List[str]) -> List[str]:
+    """Tweak header records to follow FITS standard.
+
+    List of tweaks to be applied is as follows:
+
+        - insert whitespace betweeen "=" and value
+
+    Args:
+        records: List of header records of FITS file
+
+    Returns:
+        List of tweaked header records
+    """
     def __insert_space_before_value(record: str) -> str:
         if record.startswith('END'):
             return record
@@ -70,6 +98,14 @@ def _follow_fits_standard(records: List[str]) -> List[str]:
 
 
 def _rename_duplicate_types(records: List[str]) -> List[str]:
+    """Make binary data keys unique by renaming duplicate keys.
+
+    Args:
+        records: List of header records
+
+    Returns:
+        List of tweaked header records
+    """
     duplicate_rows = collections.defaultdict(list)
     for i, r in enumerate(records):
         if r.startswith('TTYPE'):
