@@ -1,25 +1,25 @@
 [build-system]
-requires = ["flit_core >=2,<4"]
+requires = ["flit_core >=2,<4", "astropy"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name =  "py-project-toml"
+name =  "nro45data"
 authors = [
-    {name = "Daniel Ciborowski", email = "dciborow@microsoft.com"},
+    {name = "Takeshi Nakazato", email = "takeshi.nakazato@nao.ac.jp"},
 ]
-description = "Sample Python Project for creating a new Python Module"
+description = "IO utility for NRO 45m data"
 readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11"
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.8.1"
+requires-python = ">=3.9"
 dynamic = ["version"]
 
 [project.optional-dependencies]
@@ -47,12 +47,12 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/microsoft/python-package-template/tree/main#readme"
-Source = "https://github.com/microsoft/python-package-template"
-Tracker = "https://github.com/microsoft/python-package-template/issues"
+Documentation = "https://github.com/tnakazato/nro45data/tree/main#readme"
+Source = "https://github.com/tnakazato/nro45data"
+Tracker = "https://github.com/tnakazato/nro45data/issues"
 
 [tool.flit.module]
-name = "python_package"
+name = "nro45data"
 
 [tool.bandit]
 exclude_dirs = ["build","dist","tests","scripts"]
