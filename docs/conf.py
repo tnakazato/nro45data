@@ -23,7 +23,7 @@ copyright = "2024, Takeshi Nakazato"
 author = "Takeshi Nakazato"
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.2alpha"
+release = "1.0.0alpha"
 
 
 # -- General configuration ---------------------------------------------------

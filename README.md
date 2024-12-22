@@ -10,8 +10,9 @@ pip install .
 
 ## Usage
 
-- Load NRO 45m PSW data as `astropy.io.fits.hdu.hdulist.HDUList` object.
-    ```
-    import nro45data.reader as reader
-    hdulist = reader.read('nro-psw.nqm')
-    ```
+`nqm2fits` converts NRO 45m PSW data (.nqm) to FITS.
+
+```python
+import nro45data.psw as psw
+psw.nqm2fits('mydata.nqm', 'mydata.fits')
+```

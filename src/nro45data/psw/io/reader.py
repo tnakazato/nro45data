@@ -4,10 +4,7 @@ import re
 import tempfile
 from typing import List, Tuple, TYPE_CHECKING
 
-import astropy.io.fits as fits
-
-if TYPE_CHECKING:
-    from astropy.io.fits.hdu.hdulist import HDUList
+from astropy.io.fits.hdu.hdulist import HDUList
 
 FITS_BLOCK_SIZE = 2880
 FITS_RECORD_SIZE = 80
@@ -107,18 +104,19 @@ def _rename_duplicate_types(records: List[str]) -> List[str]:
         if r.startswith('TTYPE'):
             k = re.match(r".*= '([^']+)'.*", r)[1]
             duplicate_rows[k].append(i)
-    print(f'duplicate rows: {duplicate_rows}')
     fixed_records = records[::]
     for k, rows in duplicate_rows.items():
         for row in rows[1:]:
+            # print(f'key {k}, row {row}')
             new_key = k[:-1] + chr(ord(k[-1]) + 1)
-            print(f'new key: {new_key}')
-            fixed_records[i] = fixed_records[i].replace(k, new_key)
+            # print(f'new key: {new_key}')
+            fixed_records[row] = fixed_records[row].replace(k, new_key)
+            # print(fixed_records[row])
 
     return fixed_records
 
 
-def _read_psw(filename: str) -> 'HDUList':
+def _read_psw(filename: str) -> HDUList:
     """Read NRO 45m PSW data.
 
     Args:
@@ -133,24 +131,19 @@ def _read_psw(filename: str) -> 'HDUList':
 
     record_list, binary_data = _read_header_and_data(filename)
 
-    # tweak header to follow FITS standard
-    with tempfile.NamedTemporaryFile() as f:
-        # insert whitespace after '='
-        record_list = _follow_fits_standard(record_list)
+    record_list = _follow_fits_standard(record_list)
 
-        # rename duplicate TTYPE names
-        record_list = _rename_duplicate_types(record_list)
+    # rename duplicate TTYPE names
+    record_list = _rename_duplicate_types(record_list)
+    # for r in record_list:
+    #     print(r)
 
-        header = ''.join(record_list).encode()
+    header = ''.join(record_list).encode()
 
-        f.seek(0, os.SEEK_SET)
-        f.write(header)
-        f.write(binary_data)
+    hdulist = HDUList.fromstring(
+        header + binary_data,
+        ignore_missing_simple=True,
+        lazy_load_hdus=False
+    )
 
-        # read data using astropy
-        hdulist = fits.open(
-            f.name,
-            ignore_missing_simple=True,
-            lazy_load_hdus=False
-        )
-        return hdulist
+    return hdulist
