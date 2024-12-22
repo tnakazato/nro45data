@@ -5,6 +5,8 @@ IO utility module to read Position-Switch (PSW) data of Nobeyama 45m telescope.
 ## Installation
 
 ```
+git clone https://github.com/tnakazato/nro45data.git
+cd nro45data
 pip install .
 ```
 
