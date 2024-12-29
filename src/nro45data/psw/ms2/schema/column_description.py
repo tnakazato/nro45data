@@ -22,7 +22,6 @@ class ScalarColumn(StandardColumn):
 class ArrayColumn(StandardColumn):
     valueType: str = ''
     ndim: int = 0
-    maxlen: int = 0
     option: int = 5
     shape: npt.NDArray = field(default_factory=list)
 
@@ -31,7 +30,6 @@ class ArrayColumn(StandardColumn):
 class PositionColumn(ArrayColumn):
     valueType: str = 'double'
     ndim: int = 1
-    maxlen: int = 3
     shape: npt.NDArray = field(default_factory=lambda: np.array([3]))
     keywords: dict = field(default_factory=lambda: {
         'MEASINFO': {'Ref': 'ITRF', 'type': 'position'},
