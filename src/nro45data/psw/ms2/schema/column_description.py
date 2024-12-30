@@ -23,7 +23,24 @@ class ArrayColumn(StandardColumn):
     valueType: str = ''
     ndim: int = 0
     option: int = 5
-    shape: npt.NDArray = field(default_factory=list)
+    # shape: npt.NDArray = field(default_factory=list)
+
+
+@dataclass
+class DurationColumn(ScalarColumn):
+    valueType: str = 'double'
+    keywords: dict = field(default_factory=lambda: {
+        'QuantumUnits': np.array(['s'])
+    })
+
+
+@dataclass
+class ChronoColumn(ScalarColumn):
+    valueType: str = 'double'
+    keywords: dict = field(default_factory=lambda: {
+        'MEASINFO': {'Ref': 'UTC', 'type': 'epoch'},
+        'QuantumUnits': np.array(['s'])
+    })
 
 
 @dataclass
