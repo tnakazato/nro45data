@@ -8,80 +8,80 @@ from .table import Table
 
 
 @dataclass
-class AntennaOffsetColumn(PositionColumn):
+class MsAntennaOffsetColumn(PositionColumn):
     comment: str = 'Axes offset of mount to FEED REFERENCE point'
 
 
 @dataclass
-class AntennaPositionColumn(PositionColumn):
+class MsAntennaPositionColumn(PositionColumn):
     comment: str = 'Antenna X,Y,Z phase reference position'
 
 
 @dataclass
-class AntennaTypeColumn(ScalarColumn):
+class MsAntennaTypeColumn(ScalarColumn):
     comment: str = 'Antenna type (e.g. SPACE-BASED)'
     valueType: str = 'string'
 
 
 @dataclass
-class AntennaDishDiameterColumn(ScalarColumn):
+class MsAntennaDishDiameterColumn(ScalarColumn):
     comment: str = 'Physical diameter of dish'
     valueType: str = 'double'
 
 
 @dataclass
-class AntennaFlagRowColumn(ScalarColumn):
+class MsAntennaFlagRowColumn(ScalarColumn):
     comment: str = 'Flag for this row'
     valueType: str = 'bool'
 
 
 @dataclass
-class AntennaMountColumn(ScalarColumn):
+class MsAntennaMountColumn(ScalarColumn):
     comment: str = 'Mount type e.g. alt-az, equatorial, etc.'
     valueType: str = 'string'
 
 
 @dataclass
-class AntennaNameColumn(ScalarColumn):
+class MsAntennaNameColumn(ScalarColumn):
     comment: str = 'Antenna name, e.g. VLA22, CA03'
     valueType: str = 'string'
 
 
 @dataclass
-class AntennaStationColumn(ScalarColumn):
+class MsAntennaStationColumn(ScalarColumn):
     comment: str = 'Station (antenna pad) name'
     valueType: str = 'string'
 
 
 @dataclass
-class AntennaTableColumnDescription:
-    OFFSET: AntennaOffsetColumn
-    POSITION: AntennaPositionColumn
-    TYPE: AntennaTypeColumn
-    DISH_DIAMETER: AntennaDishDiameterColumn
-    FLAG_ROW: AntennaFlagRowColumn
-    MOUNT: AntennaMountColumn
-    NAME: AntennaNameColumn
-    STATION: AntennaStationColumn
+class MsAntennaTableColumnDescription:
+    OFFSET: MsAntennaOffsetColumn
+    POSITION: MsAntennaPositionColumn
+    TYPE: MsAntennaTypeColumn
+    DISH_DIAMETER: MsAntennaDishDiameterColumn
+    FLAG_ROW: MsAntennaFlagRowColumn
+    MOUNT: MsAntennaMountColumn
+    NAME: MsAntennaNameColumn
+    STATION: MsAntennaStationColumn
 
     @classmethod
     def as_dict(cls):
         return asdict(cls(
-            OFFSET=AntennaOffsetColumn(),
-            POSITION=AntennaPositionColumn(),
-            TYPE=AntennaTypeColumn(),
-            DISH_DIAMETER=AntennaDishDiameterColumn(),
-            FLAG_ROW=AntennaFlagRowColumn(),
-            MOUNT=AntennaMountColumn(),
-            NAME=AntennaNameColumn(),
-            STATION=AntennaStationColumn()
+            OFFSET=MsAntennaOffsetColumn(),
+            POSITION=MsAntennaPositionColumn(),
+            TYPE=MsAntennaTypeColumn(),
+            DISH_DIAMETER=MsAntennaDishDiameterColumn(),
+            FLAG_ROW=MsAntennaFlagRowColumn(),
+            MOUNT=MsAntennaMountColumn(),
+            NAME=MsAntennaNameColumn(),
+            STATION=MsAntennaStationColumn()
         ))
 
 
-class AntennaTableDataManagerInfo:
+class MsAntennaTableDataManagerInfo:
     @classmethod
     def as_dict(cls):
-        columns = np.array([f.name for f in fields(AntennaTableColumnDescription)])
+        columns = np.array([f.name for f in fields(MsAntennaTableColumnDescription)])
         info_items = [
             DataManagerInfoItem(
                 COLUMNS=columns,
@@ -98,10 +98,10 @@ class AntennaTableDataManagerInfo:
 
 
 @dataclass
-class AntennaTable(Table):
+class MsAntennaTable(Table):
     @classmethod
     def as_dict(cls):
         return asdict(cls(
-            coldesc=AntennaTableColumnDescription.as_dict(),
-            dminfo=AntennaTableDataManagerInfo.as_dict()
+            coldesc=MsAntennaTableColumnDescription.as_dict(),
+            dminfo=MsAntennaTableDataManagerInfo.as_dict()
         ))

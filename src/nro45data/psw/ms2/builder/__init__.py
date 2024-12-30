@@ -14,7 +14,7 @@ else:
 
 
 def build_ms2_antenna(msfile: str):
-    table_desc = antenna.AntennaTable.as_dict()
+    table_desc = antenna.MsAntennaTable.as_dict()
     if not os.path.exists(msfile):
         os.makedirs(msfile)
     antenna_subtable_name = os.path.join(msfile, 'ANTENNA')
