@@ -100,7 +100,6 @@ class MsMainFlagRowColumn(ScalarColumn):
 @dataclass
 class MsMainIntervalColumn(DurationColumn):
     comment: str = 'The sampling interval'
-    valueType: str = 'double'
 
 
 @dataclass

@@ -22,8 +22,7 @@ class ScalarColumn(StandardColumn):
 class ArrayColumn(StandardColumn):
     valueType: str = ''
     ndim: int = 0
-    option: int = 5
-    # shape: npt.NDArray = field(default_factory=list)
+    option: int = 0
 
 
 @dataclass
@@ -51,4 +50,15 @@ class PositionColumn(ArrayColumn):
     keywords: dict = field(default_factory=lambda: {
         'MEASINFO': {'Ref': 'ITRF', 'type': 'position'},
         'QuantumUnits': np.array(['m', 'm', 'm'])
+    })
+
+
+@dataclass
+class DirectionColumn(ArrayColumn):
+    valueType: str = 'double'
+    ndim: int = 2
+    shape: npt.NDArray = field(default_factory=lambda: np.array([2]))
+    keywords: dict = field(default_factory=lambda: {
+        'MEASINFO': {'Ref': 'J2000', 'type': 'direction'},
+        'QuantumUnits': np.array(['rad', 'rad'])
     })

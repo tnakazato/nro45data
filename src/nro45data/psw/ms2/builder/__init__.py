@@ -1,6 +1,7 @@
 import os
 
 import nro45data.psw.ms2.schema.antenna as antenna
+import nro45data.psw.ms2.schema.main as main
 
 from ._casa6 import _is_casa6_available
 from ._casacore import _is_casacore_available
@@ -23,10 +24,12 @@ def build_ms2_antenna(msfile: str):
 
 
 def build_ms2_main(msfile: str):
-    pass
+    table_desc = main.MsMainTable.as_dict()
+    build_table(msfile, table_desc['coldesc'])
+    print('created {msfile} MAIN')
 
 
 def build_ms2(msfile: str):
-    build_ms2_antenna(msfile)
     build_ms2_main(msfile)
+    build_ms2_antenna(msfile)
     print('created {msfile}')
