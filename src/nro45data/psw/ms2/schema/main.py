@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass, fields, field
 
 import numpy as np
 
-from .column_description import ArrayColumn, ChronoColumn, DurationColumn, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, PositionColumn, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
@@ -144,7 +144,7 @@ class MsMainFloatDataColumn(ArrayColumn):
 
 
 @dataclass
-class MsMainTableColumnDescription:
+class MsMainTableColumnDescription(ColumnDescription):
     ARRAY_ID: MsMainArrayIdColumn
     ANTENNA1: MsMainAntenna1Column
     ANTENNA2: MsMainAntenna2Column
@@ -168,39 +168,7 @@ class MsMainTableColumnDescription:
     SIGMA: MsMainSigmaColumn
     FLOAT_DATA: MsMainFloatDataColumn
 
-    @classmethod
-    def as_dict(cls):
-        return asdict(cls(
-            ARRAY_ID=MsMainArrayIdColumn(),
-            ANTENNA1=MsMainAntenna1Column(),
-            ANTENNA2=MsMainAntenna2Column(),
-            DATA_DESC_ID=MsMainDataDescIdColumn(),
-            EXPOSURE=MsMainExposureColumn(),
-            FEED1=MsMainFeed1Column(),
-            FEED2=MsMainFeed2Column(),
-            FIELD_ID=MsMainFieldIdColumn(),
-            FLAG=MsMainFlagColumn(),
-            FLAG_CATEGORY=MsMainFlagCategoryColumn(),
-            FLAG_ROW=MsMainFlagRowColumn(),
-            INTERVAL=MsMainIntervalColumn(),
-            OBSERVATION_ID=MsMainObservationIdColumn(),
-            PROCESSOR_ID=MsMainProcessorIdColumn(),
-            SCAN_NUMBER=MsMainScanNumberColumn(),
-            STATE_ID=MsMainStateIdColumn(),
-            TIME=MsMainTimeColumn(),
-            TIME_CENTROID=MsMainTimeCentroidColumn(),
-            UVW=MsMainUvwColumn(),
-            WEIGHT=MsMainWeightColumn(),
-            SIGMA=MsMainSigmaColumn(),
-            FLOAT_DATA=MsMainFloatDataColumn()
-        ))
-
 
 @dataclass
 class MsMainTable(Table):
-    @classmethod
-    def as_dict(cls):
-        return asdict(cls(
-            coldesc=MsMainTableColumnDescription.as_dict(),
-            dminfo={}
-        ))
+    coldesc: MsMainTableColumnDescription

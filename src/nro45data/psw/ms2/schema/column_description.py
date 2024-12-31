@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 
 import numpy as np
 import numpy.typing as npt
@@ -62,3 +62,12 @@ class DirectionColumn(ArrayColumn):
         'MEASINFO': {'Ref': 'J2000', 'type': 'direction'},
         'QuantumUnits': np.array(['rad', 'rad'])
     })
+
+
+@dataclass
+class ColumnDescription:
+    @classmethod
+    def as_dict(cls):
+        return dict(
+            (f.name, asdict(f.type())) for f in fields(cls)
+        )

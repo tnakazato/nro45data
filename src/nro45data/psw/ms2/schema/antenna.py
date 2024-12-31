@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass, fields
 
 import numpy as np
 
-from .column_description import PositionColumn, ScalarColumn
+from .column_description import ColumnDescription, PositionColumn, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
@@ -54,7 +54,7 @@ class MsAntennaStationColumn(ScalarColumn):
 
 
 @dataclass
-class MsAntennaTableColumnDescription:
+class MsAntennaTableColumnDescription(ColumnDescription):
     OFFSET: MsAntennaOffsetColumn
     POSITION: MsAntennaPositionColumn
     TYPE: MsAntennaTypeColumn
@@ -63,19 +63,6 @@ class MsAntennaTableColumnDescription:
     MOUNT: MsAntennaMountColumn
     NAME: MsAntennaNameColumn
     STATION: MsAntennaStationColumn
-
-    @classmethod
-    def as_dict(cls):
-        return asdict(cls(
-            OFFSET=MsAntennaOffsetColumn(),
-            POSITION=MsAntennaPositionColumn(),
-            TYPE=MsAntennaTypeColumn(),
-            DISH_DIAMETER=MsAntennaDishDiameterColumn(),
-            FLAG_ROW=MsAntennaFlagRowColumn(),
-            MOUNT=MsAntennaMountColumn(),
-            NAME=MsAntennaNameColumn(),
-            STATION=MsAntennaStationColumn()
-        ))
 
 
 class MsAntennaTableDataManagerInfo:
@@ -99,9 +86,5 @@ class MsAntennaTableDataManagerInfo:
 
 @dataclass
 class MsAntennaTable(Table):
-    @classmethod
-    def as_dict(cls):
-        return asdict(cls(
-            coldesc=MsAntennaTableColumnDescription.as_dict(),
-            dminfo=MsAntennaTableDataManagerInfo.as_dict()
-        ))
+    coldesc: MsAntennaTableColumnDescription
+    dminfo: MsAntennaTableDataManagerInfo
