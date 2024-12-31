@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass, fields
+from dataclasses import dataclass, fields
 
 import numpy as np
 
