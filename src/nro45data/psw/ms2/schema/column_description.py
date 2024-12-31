@@ -65,6 +65,17 @@ class DirectionColumn(ArrayColumn):
 
 
 @dataclass
+class FixedDirectionColumn(ArrayColumn):
+    valueType: str = 'double'
+    ndim: int = 1
+    shape: npt.NDArray = field(default_factory=lambda: np.array([2]))
+    keywords: dict = field(default_factory=lambda: {
+        'MEASINFO': {'Ref': 'J2000', 'type': 'direction'},
+        'QuantumUnits': np.array(['rad', 'rad'])
+    })
+
+
+@dataclass
 class ColumnDescription:
     @classmethod
     def as_dict(cls):
