@@ -30,5 +30,5 @@ class MsDataDescriptionTableColumnDescription(ColumnDescription):
 
 
 @dataclass
-class DataDescriptionTable(Table):
+class MsDataDescriptionTable(Table):
     coldesc: MsDataDescriptionTableColumnDescription

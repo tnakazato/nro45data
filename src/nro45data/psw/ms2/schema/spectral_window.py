@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ArrayColumn, ColumnDescription, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ColumnDescription, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 

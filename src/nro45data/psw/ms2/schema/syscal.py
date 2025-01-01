@@ -1,8 +1,8 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 

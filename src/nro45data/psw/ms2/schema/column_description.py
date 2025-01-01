@@ -56,8 +56,7 @@ class PositionColumn(ArrayColumn):
 @dataclass
 class DirectionColumn(ArrayColumn):
     valueType: str = 'double'
-    ndim: int = 2
-    shape: npt.NDArray = field(default_factory=lambda: np.array([2]))
+    ndim: int = -1
     keywords: dict = field(default_factory=lambda: {
         'MEASINFO': {'Ref': 'J2000', 'type': 'direction'},
         'QuantumUnits': np.array(['rad', 'rad'])

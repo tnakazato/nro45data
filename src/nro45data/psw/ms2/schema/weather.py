@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import numpy.typing as npt
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
@@ -125,6 +125,7 @@ class MsWeatherStationPositionColumn(ArrayColumn):
     comment: str =  'The position of the station'
     ndim: int = 1
     shape: npt.NDArray = field(default_factory=lambda: np.array([3]))
+    valueType: str = 'double'
 
 
 @dataclass

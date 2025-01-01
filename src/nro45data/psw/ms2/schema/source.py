@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 
 import numpy as np
+import numpy.typing as npt
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DirectionColumn, DurationColumn, FixedDirectionColumn, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, FixedDirectionColumn, PositionColumn, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
@@ -17,7 +18,7 @@ class MsSourceProperMotionColumn(ArrayColumn):
     comment: str = 'Proper motion'
     valueType: str = 'double'
     ndim: int = 1
-    shape: np.ndarray = np.array([2])
+    shape: npt.NDArray = field(default_factory=lambda: np.array([2]))
     keywords: dict = field(default_factory=lambda: {
         'QuantumUnits': np.array(['rad/s'])
     })
@@ -72,7 +73,6 @@ class MsSourceTimeColumn(ChronoColumn):
 @dataclass
 class MsSourcePositionColumn(PositionColumn):
     comment: str = 'Position (e.g. for solar system objects)'
-    ndim: int = -1
 
 
 @dataclass

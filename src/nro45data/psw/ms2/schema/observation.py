@@ -1,8 +1,9 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field
 
 import numpy as np
+import numpy.typing as npt
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
@@ -12,11 +13,11 @@ class MsObservationTimeRangeColumn(ArrayColumn):
     comment: str = 'Start and end of observation'
     valueType: str = 'double'
     ndim: int = 1
-    shape: np.ndarray = np.array([2])
-    keywords: dict = {
+    shape: npt.NDArray = field(default_factory=lambda: np.array([2]))
+    keywords: dict = field(default_factory=lambda: {
         'MEASINFO': {'Ref': 'UTC', 'type': 'epoch'},
         'QuantumUnits': np.array(['s'])
-    }
+    })
 
 
 @dataclass

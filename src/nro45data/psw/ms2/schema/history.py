@@ -1,8 +1,6 @@
-from dataclasses import asdict, dataclass, fields
+from dataclasses import dataclass
 
-import numpy as np
-
-from .column_description import ChronoColumn, ColumnDescription, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 

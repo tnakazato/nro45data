@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-import numpy as np
-
 from .column_description import ChronoColumn, ColumnDescription, DurationColumn, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ChronoColumn, ColumnDescription, DurationColumn, PositionColumn, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DirectionColumn, DurationColumn, PositionColumn, ScalarColumn
 from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
@@ -15,6 +15,7 @@ class MsFeedPositionColumn(PositionColumn):
 @dataclass
 class MsFeedBeamOffsetColumn(DirectionColumn):
     comment: str = 'Beam position offset (on sky but in antennareference frame)'
+    ndim: int = 2
 
 
 @dataclass
