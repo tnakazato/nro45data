@@ -1,8 +1,17 @@
+import logging
+
 from .io import _read_psw
 from .io import _to_fits
 from .ms2 import _to_ms2
 from .ms4 import _to_ms4
 
+
+logging.basicConfig(
+    format='%(asctime)s\t%(levelname)s\t%(funcName)s\t%(message)s',
+    # format='%(levelname)s %(message)s',
+    datefmt='%Y/%m/%d %H:%M:%S',
+    level=logging.INFO
+)
 
 def nqm2fits(nqmfile: str, fitsfile: str, overwrite: bool = False) -> bool:
     """Convert NRO45m PSW data (.nqm) to FITS.
