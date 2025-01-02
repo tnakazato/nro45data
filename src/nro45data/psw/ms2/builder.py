@@ -18,7 +18,7 @@ from nro45data.psw.ms2.schema.syscal import MsSyscalTable
 from nro45data.psw.ms2.schema.weather import MsWeatherTable
 from nro45data.psw.ms2.schema.main import MsMainTable
 
-from ._table import build_table
+from ._casa import build_table
 
 LOG = logging.getLogger(__name__)
 

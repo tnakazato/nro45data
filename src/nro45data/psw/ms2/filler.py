@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from ._table import open_table
+from ._casa import open_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU

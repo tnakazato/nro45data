@@ -3,9 +3,11 @@ import contextlib
 try:
     _is_casacore_available = True
     import casacore.tables as _table
+    import casacore.quanta as _quanta
 except ImportError:
     _is_casacore_available = False
     _table = None
+    _quanta = None
 
 
 def _test_casacore():
@@ -28,3 +30,9 @@ def open_table(table_name: str, read_only=True) -> _table:
         yield tb
     finally:
         tb.close()
+
+def convert_str_angle_to_rad(angle_str: str) -> float:
+    _test_casacore()
+
+    angle_quantity = _quanta.quantity(angle_str)
+    return angle_quantity.get('rad').get_value()
