@@ -26,7 +26,7 @@ def _get_data_description_columns(hdu: 'BinTableHDU') -> dict:
 
     columns = {
         'SPECTRAL_WINDOW_ID': spw_id,
-        'POLARIZATION_ID': pol_id
+        'POLARIZATION_ID': pol_id,
         'FLAG_ROW': flag_row
     }
     LOG.debug('columns: %s', columns)

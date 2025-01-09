@@ -72,9 +72,13 @@ def _get_spectral_window_row(hdu: 'BinTableHDU', array_conf: list) -> Generator[
         yield spectral_window_row
 
 
-def _fill_spectral_window_row(msfile: str, spw_id: int, row: dict):
+def fill_spectral_window(msfile: str, hdu: 'BinTableHDU'):
+    array_conf = get_array_configuration(hdu)
+    row_iterator = _get_spectral_window_row(hdu, array_conf)
     with open_table(msfile + '/SPECTRAL_WINDOW', read_only=False) as tb:
-        if tb.nrows() <= spw_id:
-            tb.addrows()
-        for key, value in row.items():
-            tb.putcell(key, spw_id, value)
+        for spw_id, row in enumerate(row_iterator):
+            if tb.nrows() <= spw_id:
+                tb.addrows()
+            for key, value in row.items():
+                tb.putcell(key, spw_id, value)
+            LOG.debug('spw %d row %s', spw_id, row)

@@ -18,7 +18,7 @@ from nro45data.psw.ms2.schema.syscal import MsSyscalTable
 from nro45data.psw.ms2.schema.weather import MsWeatherTable
 from nro45data.psw.ms2.schema.main import MsMainTable
 
-from ._casa import build_table
+from ._casa import build_table, put_table_keyword
 
 LOG = logging.getLogger(__name__)
 
@@ -34,6 +34,7 @@ def build_ms2_subtable(msfile: str, subtable_name: str, table_desc: dict):
 def build_ms2_main(msfile: str):
     table_desc = MsMainTable.as_dict()
     build_table(msfile, table_desc['coldesc'])
+    put_table_keyword(msfile, 'MS_VERSION', 2.0)
     LOG.info('created %s MAIN', msfile)
 
 

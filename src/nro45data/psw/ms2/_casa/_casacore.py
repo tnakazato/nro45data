@@ -36,3 +36,9 @@ def convert_str_angle_to_rad(angle_str: str) -> float:
 
     angle_quantity = _quanta.quantity(angle_str)
     return angle_quantity.get('rad').get_value()
+
+
+
+def put_table_keyword(table_name: str, keyword: str, value: Any):
+    with open_table(table_name, read_only=False) as tb:
+        tb.putkeyword(keyword, value)

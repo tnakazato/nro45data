@@ -119,6 +119,7 @@ def get_data_description_map(array_conf: dict):
     array_dd_map = {}
     pol_map = {}
     spw_map = {}
+    array_beam_map = {}
 
     beam_list = np.unique([v[1] for v in array_conf.values()])
     array_conf_per_beam = [
@@ -134,6 +135,7 @@ def get_data_description_map(array_conf: dict):
         freq_spec, beam, pol_list, array_list = conf
         for array in array_list:
             array_dd_map[array] = dd_id
+            array_beam_map[array] = np.where(beam_list == beam)[0][0]
 
         for _array_conf in array_conf_per_beam[1:]:
             if len(_array_conf) >= dd_id:
@@ -154,6 +156,15 @@ def get_data_description_map(array_conf: dict):
         dd_dict[dd_id] = (spw_id, pol_id)
         spw_id += 1
 
-    return dd_dict, array_dd_map, spw_map, pol_map
+    return dd_dict, array_dd_map, spw_map, pol_map #, array_beam_map
+
+
+def get_intent_map(scan_column: list[int], intent_column: list[str]) -> dict[str, int]:
+    scan_intents, _indices = np.unique(intent_column, return_index=True)
+    LOG.info('scan_intents %s, _indices %s', scan_intents, _indices)
+    intent_sort_index = np.argsort(_indices)
+    LOG.info('sort index %s', intent_sort_index)
+    return dict((scan_intents[j], i) for i, j in enumerate(intent_sort_index))
+
 
 

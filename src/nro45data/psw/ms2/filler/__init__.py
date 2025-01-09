@@ -9,9 +9,14 @@ from .feed import _fill_feed_columns, _get_feed_columns
 from .field import _fill_field_columns, _get_field_columns
 from .observation import _fill_observation_columns, _get_observation_columns
 from .polarization import _fill_polarization_columns, _get_polarization_columns
+from .pointing import fill_pointing
 from .processor import _fill_processor_columns, _get_processor_columns
-from .spectral_window import _fill_spectral_window_row, _get_spectral_window_row
+from .source import fill_source
+from .spectral_window import fill_spectral_window
+from .state import fill_state
+from .syscal import fill_syscal
 from .utils import get_array_configuration
+from .weather import fill_weather
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -54,9 +59,5 @@ def fill_processor(msfile: str, hdu: 'BinTableHDU'):
     _fill_processor_columns(msfile, columns)
 
 
-def fill_spectral_window(msfile: str, hdu: 'BinTableHDU'):
-    array_conf = get_array_configuration(hdu)
-    row_iterator = _get_spectral_window_row(hdu, array_conf)
-    for spw_id, row in enumerate(row_iterator):
-        _fill_spectral_window_row(msfile, spw_id, row)
-        LOG.debug('spw %d row %s', spw_id, row)
+def fill_main(msfile: str, hdu: 'BinTableHDU'):
+    pass

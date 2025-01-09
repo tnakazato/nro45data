@@ -1,4 +1,5 @@
 import contextlib
+from typing import Any
 
 try:
     _is_casa6_available = True
@@ -41,3 +42,8 @@ def convert_str_angle_to_rad(angle_str: str) -> float:
 
     qa = _quanta
     return qa.convert(qa.quantity(angle_str), 'rad')['value']
+
+
+def put_table_keyword(table_name: str, keyword: str, value: Any):
+    with open_table(table_name, read_only=False) as tb:
+        tb.putkeyword(keyword, value)

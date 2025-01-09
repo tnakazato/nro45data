@@ -66,12 +66,8 @@ class MsPointingTrackingColumn(ScalarColumn):
 
 
 @dataclass
-class MsPointingPointingOffsetColumn(DirectionColumn):
-    comment: str = 'A priori pointing correction as polynomial in time'
-    keywords: dict = field(default_factory=lambda: {
-        'MEASINFO': {'Ref': 'AZELGEO', 'type': 'direction'},
-        'QuantumUnits': np.array(['rad', 'rad'])
-    })
+class MsPointingSourceOffsetColumn(DirectionColumn):
+    comment: str = 'Offset from source position'
     ndim: int = -1
 
 
@@ -102,7 +98,7 @@ class MsPointingTableColumnDescription(ColumnDescription):
     TIME: MsPointingTimeColumn
     TIME_ORIGIN: MsPointingTimeOriginColumn
     TRACKING: MsPointingTrackingColumn
-    POINTING_OFFSET: MsPointingPointingOffsetColumn
+    SOURCE_OFFSET: MsPointingSourceOffsetColumn
     ENCODER: MsPointingEncoderColumn
     ON_SOURCE: MsPointingOnSourceColumn
 
