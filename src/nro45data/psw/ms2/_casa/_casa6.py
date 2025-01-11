@@ -31,7 +31,7 @@ def open_table(table_name: str, read_only=True) -> _table:
 
     tb = _table()
     try:
-        tb.open(table_name, nomodify=not read_only)
+        tb.open(table_name, nomodify=read_only)
         yield tb
     finally:
         tb.close()
