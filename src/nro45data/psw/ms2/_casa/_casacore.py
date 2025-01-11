@@ -1,4 +1,5 @@
 import contextlib
+from typing import Any
 
 try:
     _is_casacore_available = True

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Generator
 import numpy as np
 
 from .._casa import convert_str_angle_to_rad, open_table
-from .utils import get_array_configuration, get_data_description_map
+from .utils import get_array_configuration, get_data_description_map, get_intent_map
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -22,6 +22,13 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
     multn = hdu.data['MULTN']
     integ = hdu.data['INTEG']
     iscn = hdu.data['ISCN']
+    scntp = hdu.data['SCNTP']
+    bebw = hdu.data['BEBW']
+    sfctr = hdu.data['SFCTR']
+    adoff = hdu.data['ADOFF']
+    ldata = hdu.data['LDATA']
+
+    intent_map = get_intent_map(iscn, scntp)
 
 
     beam_list = sorted(set(multn))
@@ -77,10 +84,10 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
 
             # EXPOSURE
             if all([x == -1 for x in dd_rows]):
-                exposure = time_midpoint
+                exposure = 0
             else:
                 idx = [x for x in dd_rows if x != -1]
-                exposure = iscn[idx]
+                exposure = interval
 
             # TIME_CENTROID
             time_centroid = time_midpoint
@@ -99,6 +106,13 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
             observation_id = 0
 
             # STATE_ID
+            if all([x == -1 for x in dd_rows]):
+                state_id = -1
+            else:
+                idx = [x for x in dd_rows if x != -1]
+                scan_intent = set(scntp[idx])
+                assert len(scan_intent) == 1
+                state_id = intent_map[scan_intent.pop()]
 
             # UVW: always [0, 0, 0]
             uvw = np.zeros(3, dtype=float)
@@ -106,20 +120,55 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
             # FLOAT_DATA
             float_data = np.zeros((npol, nchan), dtype=float)
 
-            # SIGMA
-            sigma = np.zeros(npol, dtype=float)
-
-            # WEIGHT
-            weight = 1 / np.square(sigma)
-
             # FLAG
             flag = np.zeros((npol, nchan), dtype=bool)
+
+            for ipol, _row in enumerate(dd_rows):
+                if _row == -1:
+                    # invalid data
+                    flag[ipol, :] = True
+                else:
+                    # valid data
+                    scaling_factor = sfctr[_row]
+                    offset_value = adoff[_row]
+                    quantized = ldata[_row, :]
+                    assert len(quantized) == nchan
+                    float_data[ipol] = scaling_factor * quantized + offset_value
+
+            # SIGMA
+            sigma = np.zeros(npol, dtype=float)
+            for ipol, _row in enumerate(dd_rows):
+                if _row != -1:
+                    bw = bebw[_row]
+                    sigma[ipol] = 1 / np.sqrt(2 * bw * interval)
+
+            # WEIGHT
+            weight = np.array([1 / (s * s) if s else 0 for s in sigma])
 
             # FLAG_ROW
             flag_row = False
 
             row = {
-
+                'TIME': time_midpoint,
+                'ANTENNA1': antenna1,
+                'ANTENNA2': antenna2,
+                'FEED1': feed1,
+                'FEED2': feed2,
+                'DATA_DESC_ID': data_desc_id,
+                'PROCESSOR_ID': processor_id,
+                'FIELD_ID': field_id,
+                'INTERVAL': interval,
+                'EXPOSURE': exposure,
+                'TIME_CENTROID': time_centroid,
+                'SCAN_NUMBER': scan_number,
+                'OBSERVATION_ID': observation_id,
+                'STATE_ID': state_id,
+                'UVW': uvw,
+                'FLOAT_DATA': float_data,
+                'FLAG': flag,
+                'SIGMA': sigma,
+                'WEIGHT': weight,
+                'FLAG_ROW': flag_row
             }
 
             yield row
