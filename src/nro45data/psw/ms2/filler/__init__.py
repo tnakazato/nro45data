@@ -9,6 +9,7 @@ from .feed import _fill_feed_columns, _get_feed_columns
 from .field import _fill_field_columns, _get_field_columns
 from .observation import _fill_observation_columns, _get_observation_columns
 from .polarization import _fill_polarization_columns, _get_polarization_columns
+from .main import fill_main
 from .pointing import fill_pointing
 from .processor import _fill_processor_columns, _get_processor_columns
 from .source import fill_source
@@ -57,7 +58,3 @@ def fill_polarization(msfile: str, hdu: 'BinTableHDU'):
 def fill_processor(msfile: str, hdu: 'BinTableHDU'):
     columns = _get_processor_columns(hdu)
     _fill_processor_columns(msfile, columns)
-
-
-def fill_main(msfile: str, hdu: 'BinTableHDU'):
-    pass

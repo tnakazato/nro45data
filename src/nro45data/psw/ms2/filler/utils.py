@@ -167,4 +167,39 @@ def get_intent_map(scan_column: list[int], intent_column: list[str]) -> dict[str
     return dict((scan_intents[j], i) for i, j in enumerate(intent_sort_index))
 
 
+def get_processor_map(arry1: str, arry2: str, arry3: str, arry4: str):
+    # SUB_TYPE
+    processor_sub_type_list = []
+    processor_prefix_list = ''
+    # AOS-High
+    if arry1.find('1') >= 0:
+        processor_sub_type_list.append('AOS-High')
+        processor_prefix_list += 'H'
 
+    # AOS-Wide 1-10 (0-9)
+    # AOS-Ultrawide 1-5 (10-15)
+    # FX 1-5? (16-20)
+    if arry2[:10].find('1') >= 0:
+        processor_sub_type_list.append('AOS-Wide')
+        processor_prefix_list += 'W'
+
+    if arry2[10:15].find('1') >= 0:
+        processor_sub_type_list.append('AOS-Ultrawide')
+        processor_prefix_list += 'U'
+
+    if arry2[15:20].find('1') >= 0:
+        processor_sub_type_list.append('FX')
+        processor_prefix_list += 'X'
+
+    # AC45
+    if (arry3 + arry4).find('1') >= 0:
+        processor_sub_type_list.append('AC45')
+        processor_prefix_list += 'A'
+
+    LOG.debug('processor_sub_type_list: %s', processor_sub_type_list)
+    LOG.debug('arr1: %s', arry1)
+    LOG.debug('arry2: %s', arry2)
+    LOG.debug('arry3: %s', arry3)
+    LOG.debug('arry4: %s', arry4)
+
+    return processor_sub_type_list, processor_prefix_list
