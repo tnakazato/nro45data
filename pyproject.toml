@@ -26,6 +26,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+casa6 = [
+    "casatools"
+]
+casacore = [
+    "python-casacore"
+]
 spark = [
     "pyspark>=3.0.0"
 ]
