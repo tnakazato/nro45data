@@ -9,17 +9,50 @@ on:
   workflow_dispatch:
 
 jobs:
-  init_casadata:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Black
+        uses: microsoft/action-python@0.7.0
+        with:
+          black: true
+
+      - name: Bandit
+        uses: microsoft/action-python@0.7.0
+        with:
+          bandit: true
+
+      - name: Pylint
+        uses: microsoft/action-python@0.7.0
+        with:
+          pylint: true
+
+      - name: Pyright
+        uses: microsoft/action-python@0.7.0
+        with:
+          pyright: true
+
+      - name: Flake8
+        uses: microsoft/action-python@0.7.0
+        with:
+          flake8: true
+
+  testing:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize CASA data directory
         run: mkdir -p ~/.casa/data
 
-  validation:
-    needs: init_casadata
-    uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
-    with:
-      workdir: '.'
+      - name: Pytest
+        uses: microsoft/action-python@0.7.0
+        with:
+          testing: true
+
+#   validation:
+#     needs: init_casadata
+#     uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
+#     with:
+#       workdir: '.'
 
 #   publish:
 #     uses: microsoft/action-python/.github/workflows/publish.yml@0.6.4
