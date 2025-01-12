@@ -7,6 +7,11 @@ on:
   release:
     types: [created]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        default: 3.12
 
 jobs:
   linting:
@@ -19,16 +24,19 @@ jobs:
         uses: microsoft/action-python@0.7.0
         with:
           black: true
+          python-version: ${{ inputs.python-version }}
 
       - name: Bandit
         uses: microsoft/action-python@0.7.0
         with:
           bandit: true
+          python-version: ${{ inputs.python-version }}
 
       - name: Pylint
         uses: microsoft/action-python@0.7.0
         with:
           pylint: true
+          python-version: ${{ inputs.python-version }}
 
     #   - name: Pyright
     #     uses: microsoft/action-python@0.7.0
@@ -39,6 +47,7 @@ jobs:
         uses: microsoft/action-python@0.7.0
         with:
           flake8: true
+          python-version: ${{ inputs.python-version }}
 
   testing:
     runs-on: ubuntu-latest
@@ -53,6 +62,7 @@ jobs:
         uses: microsoft/action-python@0.7.0
         with:
           pytest: true
+          python-version: ${{ inputs.python-version }}
 
 #   validation:
 #     needs: init_casadata
