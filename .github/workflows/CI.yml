@@ -62,7 +62,6 @@ jobs:
         with:
           pytest: true
           python_version: 3.12
-          root: './nro45data'
           workdir: 'tests'
 
 #   validation:
