@@ -9,6 +9,9 @@ on:
   workflow_dispatch:
 
 jobs:
+  init_casadata:
+    run: mkdir -p ~/.casa/data
+
   validation:
     uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
     with:
