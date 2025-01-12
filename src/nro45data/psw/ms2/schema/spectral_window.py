@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from .column_description import ArrayColumn, ColumnDescription, ScalarColumn
-from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
 
@@ -20,8 +19,11 @@ class MsSpectralWindowChanFreqColumn(ArrayColumn):
     ndim: int = 1
     keywords: dict = field(default_factory=lambda: {
         'MEASINFO': {
-            'TabRefCodes': np.array([ 0,  1,  2,  3,  4,  5,  6,  7,  8, 64]),
-            'TabRefTypes': np.array(['REST', 'LSRK', 'LSRD', 'BARY', 'GEO', 'TOPO', 'GALACTO', 'LGROUP', 'CMB', 'Undefined']),
+            'TabRefCodes': np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 64]),
+            'TabRefTypes': np.array([
+                'REST', 'LSRK', 'LSRD', 'BARY', 'GEO', 'TOPO',
+                'GALACTO', 'LGROUP', 'CMB', 'Undefined'
+            ]),
             'VarRefCol': 'MEAS_FREQ_REF',
             'type': 'frequency'
         },
@@ -35,8 +37,11 @@ class MsSpectralWindowRefFrequencyColumn(ScalarColumn):
     valueType: str = 'double'
     keywords: dict = field(default_factory=lambda: {
         'MEASINFO': {
-            'TabRefCodes': np.array([ 0,  1,  2,  3,  4,  5,  6,  7,  8, 64]),
-            'TabRefTypes': np.array(['REST', 'LSRK', 'LSRD', 'BARY', 'GEO', 'TOPO', 'GALACTO', 'LGROUP', 'CMB', 'Undefined']),
+            'TabRefCodes': np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 64]),
+            'TabRefTypes': np.array([
+                'REST', 'LSRK', 'LSRD', 'BARY', 'GEO', 'TOPO',
+                'GALACTO', 'LGROUP', 'CMB', 'Undefined'
+            ]),
             'VarRefCol': 'MEAS_FREQ_REF',
             'type': 'frequency'
         },

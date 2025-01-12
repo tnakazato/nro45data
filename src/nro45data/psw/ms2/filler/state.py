@@ -1,8 +1,6 @@
 import logging
 from typing import TYPE_CHECKING, Generator
 
-import numpy as np
-
 from .._casa import open_table
 from .utils import get_intent_map
 

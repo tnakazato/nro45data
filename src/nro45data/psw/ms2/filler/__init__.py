@@ -1,8 +1,6 @@
 import logging
 from typing import TYPE_CHECKING
 
-import numpy as np
-
 from .antenna import _fill_antenna_columns, _get_antenna_columns
 from .data_description import _fill_data_description_columns, _get_data_description_columns
 from .feed import _fill_feed_columns, _get_feed_columns
@@ -23,6 +21,17 @@ if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
 
 LOG = logging.getLogger(__name__)
+
+__all__ = [
+    "fill_main",
+    "fill_pointing",
+    "fill_source",
+    "fill_spectral_window",
+    "fill_state",
+    "fill_syscal",
+    "fill_weather",
+    "get_array_configuration"
+]
 
 
 def fill_antenna(msfile: str, hdu: 'BinTableHDU'):

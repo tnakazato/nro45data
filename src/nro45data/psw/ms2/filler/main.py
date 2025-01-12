@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Generator
 
 import numpy as np
 
-from .._casa import convert_str_angle_to_rad, open_table
+from .._casa import open_table
 from .utils import get_array_configuration, get_data_description_map, get_intent_map, get_processor_map
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
     mjdet = hdu.data['MJDET']
     arryt = np.array([a.strip() for a in hdu.data['ARRYT']])
     multn = hdu.data['MULTN']
-    integ = hdu.data['INTEG']
+    # integ = hdu.data['INTEG']
     iscn = hdu.data['ISCN']
     scntp = hdu.data['SCNTP']
     bebw = hdu.data['BEBW']
@@ -36,7 +36,6 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
     arry4 = hdu.header['ARRY4'].strip()
     _, processor_id_map = get_processor_map(arry1, arry2, arry3, arry4)
 
-
     beam_list = sorted(set(multn))
     unique_time = np.unique(mjdst)
 
@@ -49,7 +48,6 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
         main_nominal_interval = main_end_time - main_start_time
 
         array_sub_list = arryt[rows].tolist()
-        integ_sug_list = integ[rows]
 
         for dd_id, (_, conf) in enumerate(array_conf.items()):
             _, _, nchan = conf[0]
@@ -171,6 +169,7 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
                 'EXPOSURE': exposure,
                 'TIME_CENTROID': time_centroid,
                 'SCAN_NUMBER': scan_number,
+                'ARRAY_ID': array_id,
                 'OBSERVATION_ID': observation_id,
                 'STATE_ID': state_id,
                 'UVW': uvw,

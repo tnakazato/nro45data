@@ -2,8 +2,10 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, PositionColumn, ScalarColumn
-from .data_manager_info import DataManagerInfoItem
+from .column_description import (
+    ArrayColumn, ChronoColumn, ColumnDescription,
+    DurationColumn, PositionColumn, ScalarColumn
+)
 from .table import Table
 
 

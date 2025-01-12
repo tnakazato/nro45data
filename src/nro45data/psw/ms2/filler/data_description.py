@@ -34,7 +34,6 @@ def _get_data_description_columns(hdu: 'BinTableHDU') -> dict:
     return columns
 
 
-
 def _fill_data_description_columns(msfile: str, columns: dict):
     with open_table(msfile + '/DATA_DESCRIPTION', read_only=False) as tb:
         num_dd = len(columns['SPECTRAL_WINDOW_ID'])

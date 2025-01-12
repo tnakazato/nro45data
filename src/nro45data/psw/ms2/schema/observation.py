@@ -4,7 +4,6 @@ import numpy as np
 import numpy.typing as npt
 
 from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, ScalarColumn
-from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
 

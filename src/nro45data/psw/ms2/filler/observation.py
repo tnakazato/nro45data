@@ -15,7 +15,7 @@ LOG = logging.getLogger(__name__)
 def _get_observation_columns(hdu: 'BinTableHDU') -> dict:
     history_cards = hdu.header['HISTORY']
 
-    #TELESCOPE_NAME
+    # TELESCOPE_NAME
     telescope_name = hdu.header['TELESCOP'].strip()
     LOG.debug('telescope_name: %s', telescope_name)
 

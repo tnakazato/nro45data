@@ -1,8 +1,7 @@
 import collections
 import os
 import re
-import tempfile
-from typing import List, Tuple, TYPE_CHECKING
+from typing import List, Tuple
 
 from astropy.io.fits.hdu.hdulist import HDUList
 

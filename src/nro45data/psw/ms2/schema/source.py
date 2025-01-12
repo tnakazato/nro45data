@@ -3,8 +3,10 @@ from dataclasses import dataclass, field
 import numpy as np
 import numpy.typing as npt
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, FixedDirectionColumn, PositionColumn, ScalarColumn
-from .data_manager_info import DataManagerInfoItem
+from .column_description import (
+    ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn,
+    FixedDirectionColumn, PositionColumn, ScalarColumn
+)
 from .table import Table
 
 

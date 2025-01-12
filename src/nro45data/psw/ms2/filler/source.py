@@ -77,7 +77,6 @@ def _get_source_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
         LOG.warning('Unknown velocity reference value: %s. Fallback to "LSRK"', epoch_value)
         velocity_ref = 'LSRK'
 
-
     row = {
         'TIME': source_time,
         'INTERVAL': source_interval,

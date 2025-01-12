@@ -21,7 +21,7 @@ def pol_str_to_enum(pols: list[str]) -> int:
             # RR
             return [5]
         else:
-            assert False
+            AssertionError("polarization string must be any of 'H', 'V', 'R', 'L'")
     elif len(pols) == 2:
         enum_list = []
         for v in pols:
@@ -35,10 +35,10 @@ def pol_str_to_enum(pols: list[str]) -> int:
                 case 'L':
                     enum_list.append(8)
                 case _:
-                    assert False
+                    AssertionError("polarization string must be any of 'H', 'V', 'R', 'L'")
         return enum_list
     else:
-        assert False
+        AssertionError("number of polarization must be either 1 or 2")
 
 
 def _get_polarization_columns(hdu: 'BinTableHDU') -> dict:
@@ -58,7 +58,7 @@ def _get_polarization_columns(hdu: 'BinTableHDU') -> dict:
         elif len(v) == 2:
             corr_product.append(np.array([[0, 1], [0, 1]]))
         else:
-            assert False
+            AssertionError("number of polarization must be either 1 or 2")
 
     # NUM_CORR
     num_corr = np.array([len(pol_map[ipol]) for ipol in range(num_pol)])

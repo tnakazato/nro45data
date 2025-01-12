@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Generator
 
 import numpy as np
 
-from .._casa import convert_str_angle_to_rad, open_table
+from .._casa import open_table
 from .utils import get_array_configuration, get_data_description_map
 
 if TYPE_CHECKING:

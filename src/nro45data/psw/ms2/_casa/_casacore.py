@@ -15,6 +15,7 @@ def _test_casacore():
     if not _is_casacore_available:
         raise ModuleNotFoundError('python-casacore is not available')
 
+
 def build_table(table_name: str, table_desc: dict):
     _test_casacore()
 
@@ -32,12 +33,12 @@ def open_table(table_name: str, read_only=True) -> _table:
     finally:
         tb.close()
 
+
 def convert_str_angle_to_rad(angle_str: str) -> float:
     _test_casacore()
 
     angle_quantity = _quanta.quantity(angle_str)
     return angle_quantity.get('rad').get_value()
-
 
 
 def put_table_keyword(table_name: str, keyword: str, value: Any):

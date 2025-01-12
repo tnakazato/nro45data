@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from .column_description import ArrayColumn, ColumnDescription, ScalarColumn
-from .data_manager_info import DataManagerInfoItem
 from .table import Table
 
 

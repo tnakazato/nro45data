@@ -3,6 +3,7 @@ from dataclasses import asdict, dataclass, field, fields
 import numpy as np
 import numpy.typing as npt
 
+
 @dataclass
 class StandardColumn:
     comment: str = ''

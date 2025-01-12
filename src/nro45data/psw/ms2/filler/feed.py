@@ -16,7 +16,7 @@ def _get_feed_columns(hdu: 'BinTableHDU') -> dict:
     array_conf = get_array_configuration(hdu)
     num_beam = len(np.unique([v[1] for v in array_conf.values()]))
 
-    antenna_id  = np.arange(num_beam, dtype=int)
+    antenna_id = np.arange(num_beam, dtype=int)
 
     feed_id = np.zeros(num_beam, dtype=int)
 

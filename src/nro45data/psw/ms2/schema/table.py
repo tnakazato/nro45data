@@ -9,6 +9,7 @@ def _as_dict(obj):
     else:
         return obj.__dict__
 
+
 @dataclass
 class Table:
     coldesc: dict

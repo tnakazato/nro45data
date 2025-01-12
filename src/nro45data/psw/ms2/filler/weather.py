@@ -12,7 +12,7 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_weather_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
-    multn = hdu.data['MULTN']
+    # multn = hdu.data['MULTN']
     mjdst = hdu.data['MJDST']
     mjdet = hdu.data['MJDET']
     temp = hdu.data['TEMP']
@@ -28,9 +28,9 @@ def _get_weather_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
 
     for beam in unique_beams:
         beam_indices = np.where(mjdst == beam)[0]
-        unique_times, _indices = np.unique(mjdst[beam_indices], return_index=True)
+        _, _indices = np.unique(mjdst[beam_indices], return_index=True)
         time_indices = beam_indices[_indices]
-        for t, i in zip(unique_times, time_indices):
+        for i in time_indices:
             antenna_id = int(beam)
             weather_start_time = mjdst[i]
             weather_end_time = mjdet[i]
@@ -61,8 +61,6 @@ def _get_weather_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
             }
 
             yield row
-
-
 
 
 def fill_weather(msfile: str, hdu: 'BinTableHDU'):

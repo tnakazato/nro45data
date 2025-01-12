@@ -3,10 +3,9 @@ import logging
 from typing import TYPE_CHECKING, Generator
 
 import numpy as np
-import numpy.typing as npt
 
 from .._casa import open_table
-from .utils import fix_nrow_to, get_array_configuration, get_data_description_map
+from .utils import get_array_configuration, get_data_description_map
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU

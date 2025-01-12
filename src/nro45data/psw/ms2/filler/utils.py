@@ -1,4 +1,3 @@
-import collections
 import logging
 from typing import TYPE_CHECKING
 
@@ -35,17 +34,13 @@ def get_array_configuration(hdu: 'BinTableHDU'):
     poltp = hdu.data['POLTP']
     rx = hdu.data['RX']
     fqcal = hdu.data['FQCAL']
-    cwcal = hdu.data['CWCAL']
+    # cwcal = hdu.data['CWCAL']
     chcal = hdu.data['CHCAL']
     nfcal = hdu.data['NFCAL']
     nch = hdu.data['NCH']
 
-    spw_config = {}
-    spw_id = 0
-
     array_freq_spec = {}
     for a, i in zip(unique_array_id, array_index):
-        mask = array_index == i
         ncal = nfcal[i]
         nchan = nch[i]
         chan = chcal[i, :ncal]
@@ -123,9 +118,8 @@ def get_data_description_map(array_conf: dict):
 
     beam_list = np.unique([v[1] for v in array_conf.values()])
     array_conf_per_beam = [
-        dict((k, v) for k, v in array_conf.items()
+        dict((k, v) for k, v in array_conf.items() if v[1] == beam_number)
         for beam_number in beam_list
-        if v[1] == beam_number)
     ]
     # only check frequency/polarization setup for the first beam
     dd_id = 0
@@ -156,7 +150,7 @@ def get_data_description_map(array_conf: dict):
         dd_dict[dd_id] = (spw_id, pol_id)
         spw_id += 1
 
-    return dd_dict, array_dd_map, spw_map, pol_map #, array_beam_map
+    return dd_dict, array_dd_map, spw_map, pol_map  # , array_beam_map
 
 
 def get_intent_map(scan_column: list[int], intent_column: list[str]) -> dict[str, int]:
