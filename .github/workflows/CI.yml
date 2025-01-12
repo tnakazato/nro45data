@@ -10,9 +10,12 @@ on:
 
 jobs:
   init_casadata:
-    run: mkdir -p ~/.casa/data
+    steps:
+      - name: Initialize CASA data directory
+        run: mkdir -p ~/.casa/data
 
   validation:
+    needs: init_casadata
     uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
     with:
       workdir: '.'
