@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from astropy.io.fits.hdu.hdulist import HDUList
 
 
-def _to_fits(hdulist: 'HDUList', fitsfile: str, overwrite: bool = False) -> bool:
+def _to_fits(hdulist: "HDUList", fitsfile: str, overwrite: bool = False) -> bool:
     """Export HDUList to FITS.
 
     Args:
@@ -24,11 +24,7 @@ def _to_fits(hdulist: 'HDUList', fitsfile: str, overwrite: bool = False) -> bool
     output_hdulist = fits.HDUList([primary_hdu, hdulist[0]])
 
     try:
-        output_hdulist.writeto(
-            fitsfile,
-            output_verify='fix+warn',
-            overwrite=overwrite
-        )
+        output_hdulist.writeto(fitsfile, output_verify="fix+warn", overwrite=overwrite)
     except Exception as e:
         print(e)
         status = False

@@ -6,28 +6,28 @@ from .table import Table
 
 @dataclass
 class MsPolarizationCorrTypeColumn(ArrayColumn):
-    comment: str = 'The polarization type for each correlation product, as a Stokes enum.'
+    comment: str = "The polarization type for each correlation product, as a Stokes enum."
     ndim: int = 1
-    valueType: str = 'int'
+    valueType: str = "int"
 
 
 @dataclass
 class MsPolarizationCorrProductColumn(ArrayColumn):
-    comment: str = 'Indices describing receptors of feed going into correlation'
+    comment: str = "Indices describing receptors of feed going into correlation"
     ndim: int = 2
-    valueType: str = 'int'
+    valueType: str = "int"
 
 
 @dataclass
 class MsPolarizationFlagRowColumn(ScalarColumn):
-    comment: str = 'Row flag'
-    valueType: str = 'bool'
+    comment: str = "Row flag"
+    valueType: str = "bool"
 
 
 @dataclass
 class MsPolarizationNumCorrColumn(ScalarColumn):
-    comment: str = 'Number of correlation products'
-    valueType: str = 'int'
+    comment: str = "Number of correlation products"
+    valueType: str = "int"
 
 
 @dataclass

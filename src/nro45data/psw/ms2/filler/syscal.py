@@ -12,15 +12,15 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_syscal_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
+def _get_syscal_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
     array_conf = get_array_configuration(hdu)
     dd_dict, array_dd_map, spw_map, pol_map = get_data_description_map(array_conf)
 
-    mjdst = hdu.data['MJDST']
-    mjdet = hdu.data['MJDET']
-    arryt = np.array([a.strip() for a in hdu.data['ARRYT']])
-    tsys = hdu.data['TSYS']
-    multn = hdu.data['MULTN']
+    mjdst = hdu.data["MJDST"]
+    mjdet = hdu.data["MJDET"]
+    arryt = np.array([a.strip() for a in hdu.data["ARRYT"]])
+    tsys = hdu.data["TSYS"]
+    multn = hdu.data["MULTN"]
 
     beam_list = sorted(set(multn))
     unique_time = np.unique(mjdst)
@@ -34,7 +34,7 @@ def _get_syscal_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
         syscal_nominal_interval = syscal_end_time - syscal_start_time
 
         array_sub_list = arryt[rows].tolist()
-        LOG.info('array_sub_list %s', array_sub_list)
+        LOG.info("array_sub_list %s", array_sub_list)
         tsys_sub_list = tsys[rows]
 
         for dd_id, (_, conf) in enumerate(array_conf.items()):
@@ -62,7 +62,7 @@ def _get_syscal_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
             tsys_spectrum = np.zeros((npol, nchan), dtype=float)
             tsys_flag_per_pol = np.zeros(npol, dtype=bool)
             for ipol, a in enumerate(array_list):
-                LOG.info('examining %s', a)
+                LOG.info("examining %s", a)
                 if a in array_sub_list:
                     idx = array_sub_list.index(a)
                     tsys_spectrum[ipol] = tsys_sub_list[idx]
@@ -73,25 +73,25 @@ def _get_syscal_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
             tsys_flag = np.any(tsys_flag_per_pol)
 
             row = {
-                'ANTENNA_ID': antenna_id,
-                'FEED_ID': feed_id,
-                'SPECTRAL_WINDOW_ID': spw_id,
-                'TIME': syscal_time,
-                'INTERVAL': syscal_interval,
-                'TSYS_SPECTRUM': tsys_spectrum,
-                'TSYS_FLAG': tsys_flag
+                "ANTENNA_ID": antenna_id,
+                "FEED_ID": feed_id,
+                "SPECTRAL_WINDOW_ID": spw_id,
+                "TIME": syscal_time,
+                "INTERVAL": syscal_interval,
+                "TSYS_SPECTRUM": tsys_spectrum,
+                "TSYS_FLAG": tsys_flag,
             }
 
             yield row
 
 
-def fill_syscal(msfile: str, hdu: 'BinTableHDU'):
+def fill_syscal(msfile: str, hdu: "BinTableHDU"):
     row_iterator = _get_syscal_row(hdu)
-    with open_table(msfile + '/SYSCAL', read_only=False) as tb:
+    with open_table(msfile + "/SYSCAL", read_only=False) as tb:
         for row_id, row in enumerate(row_iterator):
             if tb.nrows() <= row_id:
                 tb.addrows(tb.nrows() - row_id + 1)
 
             for key, value in row.items():
                 tb.putcell(key, row_id, value)
-            LOG.debug('source table %d row %s', row_id, row)
+            LOG.debug("source table %d row %s", row_id, row)

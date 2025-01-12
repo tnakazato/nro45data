@@ -30,40 +30,40 @@ __all__ = [
     "fill_state",
     "fill_syscal",
     "fill_weather",
-    "get_array_configuration"
+    "get_array_configuration",
 ]
 
 
-def fill_antenna(msfile: str, hdu: 'BinTableHDU'):
+def fill_antenna(msfile: str, hdu: "BinTableHDU"):
     columns = _get_antenna_columns(hdu)
     _fill_antenna_columns(msfile, columns)
 
 
-def fill_data_description(msfile: str, hdu: 'BinTableHDU'):
+def fill_data_description(msfile: str, hdu: "BinTableHDU"):
     columns = _get_data_description_columns(hdu)
     _fill_data_description_columns(msfile, columns)
 
 
-def fill_feed(msfile: str, hdu: 'BinTableHDU'):
+def fill_feed(msfile: str, hdu: "BinTableHDU"):
     columns = _get_feed_columns(hdu)
     _fill_feed_columns(msfile, columns)
 
 
-def fill_field(msfile: str, hdu: 'BinTableHDU'):
+def fill_field(msfile: str, hdu: "BinTableHDU"):
     columns = _get_field_columns(hdu)
     _fill_field_columns(msfile, columns)
 
 
-def fill_observation(msfile: str, hdu: 'BinTableHDU'):
+def fill_observation(msfile: str, hdu: "BinTableHDU"):
     columns = _get_observation_columns(hdu)
     _fill_observation_columns(msfile, columns)
 
 
-def fill_polarization(msfile: str, hdu: 'BinTableHDU'):
+def fill_polarization(msfile: str, hdu: "BinTableHDU"):
     columns = _get_polarization_columns(hdu)
     _fill_polarization_columns(msfile, columns)
 
 
-def fill_processor(msfile: str, hdu: 'BinTableHDU'):
+def fill_processor(msfile: str, hdu: "BinTableHDU"):
     columns = _get_processor_columns(hdu)
     _fill_processor_columns(msfile, columns)

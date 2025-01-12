@@ -7,10 +7,10 @@ from .ms4 import _to_ms4
 
 
 logging.basicConfig(
-    format='%(asctime)s\t%(levelname)s\t%(funcName)s\t%(message)s',
+    format="%(asctime)s\t%(levelname)s\t%(funcName)s\t%(message)s",
     # format='%(levelname)s %(message)s',
-    datefmt='%Y/%m/%d %H:%M:%S',
-    level=logging.INFO
+    datefmt="%Y/%m/%d %H:%M:%S",
+    level=logging.INFO,
 )
 
 

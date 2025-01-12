@@ -12,28 +12,28 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
+def _get_main_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
     array_conf = get_array_configuration(hdu)
     dd_dict, array_dd_map, spw_map, pol_map = get_data_description_map(array_conf)
 
-    mjdst = hdu.data['MJDST']
-    mjdet = hdu.data['MJDET']
-    arryt = np.array([a.strip() for a in hdu.data['ARRYT']])
-    multn = hdu.data['MULTN']
+    mjdst = hdu.data["MJDST"]
+    mjdet = hdu.data["MJDET"]
+    arryt = np.array([a.strip() for a in hdu.data["ARRYT"]])
+    multn = hdu.data["MULTN"]
     # integ = hdu.data['INTEG']
-    iscn = hdu.data['ISCN']
-    scntp = hdu.data['SCNTP']
-    bebw = hdu.data['BEBW']
-    sfctr = hdu.data['SFCTR']
-    adoff = hdu.data['ADOFF']
-    ldata = hdu.data['LDATA']
+    iscn = hdu.data["ISCN"]
+    scntp = hdu.data["SCNTP"]
+    bebw = hdu.data["BEBW"]
+    sfctr = hdu.data["SFCTR"]
+    adoff = hdu.data["ADOFF"]
+    ldata = hdu.data["LDATA"]
 
     intent_map = get_intent_map(iscn, scntp)
 
-    arry1 = hdu.header['ARRY1'].strip()
-    arry2 = hdu.header['ARRY2'].strip()
-    arry3 = hdu.header['ARRY3'].strip()
-    arry4 = hdu.header['ARRY4'].strip()
+    arry1 = hdu.header["ARRY1"].strip()
+    arry2 = hdu.header["ARRY2"].strip()
+    arry3 = hdu.header["ARRY3"].strip()
+    arry4 = hdu.header["ARRY4"].strip()
     _, processor_id_map = get_processor_map(arry1, arry2, arry3, arry4)
 
     beam_list = sorted(set(multn))
@@ -52,10 +52,7 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
         for dd_id, (_, conf) in enumerate(array_conf.items()):
             _, _, nchan = conf[0]
             array_list = conf[3]
-            dd_rows = [
-                rows[array_sub_list.index(a)] if a in array_sub_list else -1
-                for a in array_list
-            ]
+            dd_rows = [rows[array_sub_list.index(a)] if a in array_sub_list else -1 for a in array_list]
             npol = len(dd_rows)
 
             # TIME
@@ -157,33 +154,33 @@ def _get_main_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
             flag_row = False
 
             row = {
-                'TIME': time_midpoint,
-                'ANTENNA1': antenna1,
-                'ANTENNA2': antenna2,
-                'FEED1': feed1,
-                'FEED2': feed2,
-                'DATA_DESC_ID': data_desc_id,
-                'PROCESSOR_ID': processor_id,
-                'FIELD_ID': field_id,
-                'INTERVAL': interval,
-                'EXPOSURE': exposure,
-                'TIME_CENTROID': time_centroid,
-                'SCAN_NUMBER': scan_number,
-                'ARRAY_ID': array_id,
-                'OBSERVATION_ID': observation_id,
-                'STATE_ID': state_id,
-                'UVW': uvw,
-                'FLOAT_DATA': float_data,
-                'FLAG': flag,
-                'SIGMA': sigma,
-                'WEIGHT': weight,
-                'FLAG_ROW': flag_row
+                "TIME": time_midpoint,
+                "ANTENNA1": antenna1,
+                "ANTENNA2": antenna2,
+                "FEED1": feed1,
+                "FEED2": feed2,
+                "DATA_DESC_ID": data_desc_id,
+                "PROCESSOR_ID": processor_id,
+                "FIELD_ID": field_id,
+                "INTERVAL": interval,
+                "EXPOSURE": exposure,
+                "TIME_CENTROID": time_centroid,
+                "SCAN_NUMBER": scan_number,
+                "ARRAY_ID": array_id,
+                "OBSERVATION_ID": observation_id,
+                "STATE_ID": state_id,
+                "UVW": uvw,
+                "FLOAT_DATA": float_data,
+                "FLAG": flag,
+                "SIGMA": sigma,
+                "WEIGHT": weight,
+                "FLAG_ROW": flag_row,
             }
 
             yield row
 
 
-def fill_main(msfile: str, hdu: 'BinTableHDU'):
+def fill_main(msfile: str, hdu: "BinTableHDU"):
     row_iterator = _get_main_row(hdu)
     with open_table(msfile, read_only=False) as tb:
         for row_id, row in enumerate(row_iterator):
@@ -191,6 +188,6 @@ def fill_main(msfile: str, hdu: 'BinTableHDU'):
                 tb.addrows(tb.nrows() - row_id + 1)
 
             for key, value in row.items():
-                LOG.debug('row %d key %s', row_id, key)
+                LOG.debug("row %d key %s", row_id, key)
                 tb.putcell(key, row_id, value)
-            LOG.debug('main table %d row %s', row_id, row)
+            LOG.debug("main table %d row %s", row_id, row)

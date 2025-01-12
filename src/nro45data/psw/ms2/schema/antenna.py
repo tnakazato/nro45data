@@ -9,48 +9,48 @@ from .table import Table
 
 @dataclass
 class MsAntennaOffsetColumn(PositionColumn):
-    comment: str = 'Axes offset of mount to FEED REFERENCE point'
+    comment: str = "Axes offset of mount to FEED REFERENCE point"
 
 
 @dataclass
 class MsAntennaPositionColumn(PositionColumn):
-    comment: str = 'Antenna X,Y,Z phase reference position'
+    comment: str = "Antenna X,Y,Z phase reference position"
 
 
 @dataclass
 class MsAntennaTypeColumn(ScalarColumn):
-    comment: str = 'Antenna type (e.g. SPACE-BASED)'
-    valueType: str = 'string'
+    comment: str = "Antenna type (e.g. SPACE-BASED)"
+    valueType: str = "string"
 
 
 @dataclass
 class MsAntennaDishDiameterColumn(ScalarColumn):
-    comment: str = 'Physical diameter of dish'
-    valueType: str = 'double'
+    comment: str = "Physical diameter of dish"
+    valueType: str = "double"
 
 
 @dataclass
 class MsAntennaFlagRowColumn(ScalarColumn):
-    comment: str = 'Flag for this row'
-    valueType: str = 'bool'
+    comment: str = "Flag for this row"
+    valueType: str = "bool"
 
 
 @dataclass
 class MsAntennaMountColumn(ScalarColumn):
-    comment: str = 'Mount type e.g. alt-az, equatorial, etc.'
-    valueType: str = 'string'
+    comment: str = "Mount type e.g. alt-az, equatorial, etc."
+    valueType: str = "string"
 
 
 @dataclass
 class MsAntennaNameColumn(ScalarColumn):
-    comment: str = 'Antenna name, e.g. VLA22, CA03'
-    valueType: str = 'string'
+    comment: str = "Antenna name, e.g. VLA22, CA03"
+    valueType: str = "string"
 
 
 @dataclass
 class MsAntennaStationColumn(ScalarColumn):
-    comment: str = 'Station (antenna pad) name'
-    valueType: str = 'string'
+    comment: str = "Station (antenna pad) name"
+    valueType: str = "string"
 
 
 @dataclass
@@ -73,15 +73,10 @@ class MsAntennaTableDataManagerInfo:
             DataManagerInfoItem(
                 COLUMNS=columns,
                 SEQNR=0,
-                SPEC={
-                    'BUCKETSIZE': 3332,
-                    'IndexLength': 126,
-                    'MaxCacheSize': 2,
-                    'PERSCACHESIZE': 2
-                }
+                SPEC={"BUCKETSIZE": 3332, "IndexLength": 126, "MaxCacheSize": 2, "PERSCACHESIZE": 2},
             )
         ]
-        return dict((f'*{i.SEQNR + 1}', i) for i in info_items)
+        return dict((f"*{i.SEQNR + 1}", i) for i in info_items)
 
 
 @dataclass

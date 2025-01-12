@@ -14,10 +14,10 @@ LOG = logging.getLogger(__name__)
 
 def pol_str_to_enum(pols: list[str]) -> int:
     if len(pols) == 1:
-        if pols[0][-1] in ('H', 'V'):
+        if pols[0][-1] in ("H", "V"):
             # XX
             return [9]
-        elif pols[0][-1] in ('R', 'L'):
+        elif pols[0][-1] in ("R", "L"):
             # RR
             return [5]
         else:
@@ -26,13 +26,13 @@ def pol_str_to_enum(pols: list[str]) -> int:
         enum_list = []
         for v in pols:
             match v[-1]:
-                case 'H':
+                case "H":
                     enum_list.append(9)
-                case 'V':
+                case "V":
                     enum_list.append(12)
-                case 'R':
+                case "R":
                     enum_list.append(5)
-                case 'L':
+                case "L":
                     enum_list.append(8)
                 case _:
                     AssertionError("polarization string must be any of 'H', 'V', 'R', 'L'")
@@ -41,7 +41,7 @@ def pol_str_to_enum(pols: list[str]) -> int:
         AssertionError("number of polarization must be either 1 or 2")
 
 
-def _get_polarization_columns(hdu: 'BinTableHDU') -> dict:
+def _get_polarization_columns(hdu: "BinTableHDU") -> dict:
     array_conf = get_array_configuration(hdu)
     _, _, _, pol_map = get_data_description_map(array_conf)
     num_pol = len(pol_map)
@@ -66,23 +66,18 @@ def _get_polarization_columns(hdu: 'BinTableHDU') -> dict:
     # FLAG_ROW
     flag_row = np.zeros(num_pol, dtype=bool)
 
-    columns = {
-        'CORR_TYPE': corr_type,
-        'CORR_PRODUCT': corr_product,
-        'NUM_CORR': num_corr,
-        'FLAG_ROW': flag_row
-    }
+    columns = {"CORR_TYPE": corr_type, "CORR_PRODUCT": corr_product, "NUM_CORR": num_corr, "FLAG_ROW": flag_row}
 
     return columns
 
 
 def _fill_polarization_columns(msfile: str, columns: dict):
-    with open_table(msfile + '/POLARIZATION', read_only=False) as tb:
-        num_pol = len(columns['NUM_CORR'])
+    with open_table(msfile + "/POLARIZATION", read_only=False) as tb:
+        num_pol = len(columns["NUM_CORR"])
         fix_nrow_to(num_pol, tb)
 
-        tb.putcol('NUM_CORR', columns['NUM_CORR'])
-        tb.putcol('FLAG_ROW', columns['FLAG_ROW'])
+        tb.putcol("NUM_CORR", columns["NUM_CORR"])
+        tb.putcol("FLAG_ROW", columns["FLAG_ROW"])
         for i in range(num_pol):
-            tb.putcell('CORR_TYPE', i, columns['CORR_TYPE'][i])
-            tb.putcell('CORR_PRODUCT', i, columns['CORR_PRODUCT'][i])
+            tb.putcell("CORR_TYPE", i, columns["CORR_TYPE"][i])
+            tb.putcell("CORR_PRODUCT", i, columns["CORR_PRODUCT"][i])

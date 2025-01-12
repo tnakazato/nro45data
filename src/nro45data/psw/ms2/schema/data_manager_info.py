@@ -5,6 +5,6 @@ from dataclasses import dataclass, field
 class DataManagerInfoItem:
     SEQNR: int
     COLUMNS: list[str] = field(default_factory=list)
-    NAME: str = 'StandardStMan'
+    NAME: str = "StandardStMan"
     SPEC: dict = field(default_factory=dict)
-    TYPE: str = 'StandardStMan'
+    TYPE: str = "StandardStMan"

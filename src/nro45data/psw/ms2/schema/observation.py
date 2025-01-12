@@ -9,63 +9,62 @@ from .table import Table
 
 @dataclass
 class MsObservationTimeRangeColumn(ArrayColumn):
-    comment: str = 'Start and end of observation'
-    valueType: str = 'double'
+    comment: str = "Start and end of observation"
+    valueType: str = "double"
     ndim: int = 1
     shape: npt.NDArray = field(default_factory=lambda: np.array([2]))
-    keywords: dict = field(default_factory=lambda: {
-        'MEASINFO': {'Ref': 'UTC', 'type': 'epoch'},
-        'QuantumUnits': np.array(['s'])
-    })
+    keywords: dict = field(
+        default_factory=lambda: {"MEASINFO": {"Ref": "UTC", "type": "epoch"}, "QuantumUnits": np.array(["s"])}
+    )
 
 
 @dataclass
 class MsObservationLogColumn(ArrayColumn):
-    comment: str = 'Observation log'
-    valueType: str = 'string'
+    comment: str = "Observation log"
+    valueType: str = "string"
     ndim: int = 1
 
 
 @dataclass
 class MsObservationScheduleColumn(ArrayColumn):
-    comment: str = 'Observing schedule'
-    valueType: str = 'string'
+    comment: str = "Observing schedule"
+    valueType: str = "string"
     ndim: int = 1
 
 
 @dataclass
 class MsObservationFlagRowColumn(ScalarColumn):
-    comment: str = 'Row flag'
-    valueType: str = 'bool'
+    comment: str = "Row flag"
+    valueType: str = "bool"
 
 
 @dataclass
 class MsObservationObserverColumn(ScalarColumn):
-    comment: str = 'Name of observer(s)'
-    valueType: str = 'string'
+    comment: str = "Name of observer(s)"
+    valueType: str = "string"
 
 
 @dataclass
 class MsObservationProjectColumn(ScalarColumn):
-    comment: str = 'Project identification string'
-    valueType: str = 'string'
+    comment: str = "Project identification string"
+    valueType: str = "string"
 
 
 @dataclass
 class MsObservationReleaseDateColumn(ChronoColumn):
-    comment: str = 'Release date when data becomes public'
+    comment: str = "Release date when data becomes public"
 
 
 @dataclass
 class MsObservationScheduleTypeColumn(ScalarColumn):
-    comment: str = 'Observing schedule type'
-    valueType: str = 'string'
+    comment: str = "Observing schedule type"
+    valueType: str = "string"
 
 
 @dataclass
 class MsObservationTelescopeNameColumn(ScalarColumn):
-    comment: str = 'Telescope Name (e.g. WSRT, VLBA)'
-    valueType: str = 'string'
+    comment: str = "Telescope Name (e.g. WSRT, VLBA)"
+    valueType: str = "string"
 
 
 @dataclass

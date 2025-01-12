@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_data_description_columns(hdu: 'BinTableHDU') -> dict:
+def _get_data_description_columns(hdu: "BinTableHDU") -> dict:
     array_conf = get_array_configuration(hdu)
     ddd, _, _, _ = get_data_description_map(array_conf)
     num_dd = len(ddd)
@@ -24,20 +24,16 @@ def _get_data_description_columns(hdu: 'BinTableHDU') -> dict:
 
     flag_row = np.zeros(num_dd, dtype=bool)
 
-    columns = {
-        'SPECTRAL_WINDOW_ID': spw_id,
-        'POLARIZATION_ID': pol_id,
-        'FLAG_ROW': flag_row
-    }
-    LOG.debug('columns: %s', columns)
+    columns = {"SPECTRAL_WINDOW_ID": spw_id, "POLARIZATION_ID": pol_id, "FLAG_ROW": flag_row}
+    LOG.debug("columns: %s", columns)
 
     return columns
 
 
 def _fill_data_description_columns(msfile: str, columns: dict):
-    with open_table(msfile + '/DATA_DESCRIPTION', read_only=False) as tb:
-        num_dd = len(columns['SPECTRAL_WINDOW_ID'])
+    with open_table(msfile + "/DATA_DESCRIPTION", read_only=False) as tb:
+        num_dd = len(columns["SPECTRAL_WINDOW_ID"])
         fix_nrow_to(num_dd, tb)
 
-        tb.putcol('SPECTRAL_WINDOW_ID', columns['SPECTRAL_WINDOW_ID'])
-        tb.putcol('POLARIZATION_ID', columns['POLARIZATION_ID'])
+        tb.putcol("SPECTRAL_WINDOW_ID", columns["SPECTRAL_WINDOW_ID"])
+        tb.putcol("POLARIZATION_ID", columns["POLARIZATION_ID"])

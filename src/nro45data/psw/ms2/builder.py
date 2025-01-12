@@ -24,40 +24,40 @@ LOG = logging.getLogger(__name__)
 
 
 def build_ms2_subtable(msfile: str, subtable_name: str, table_desc: dict):
-    assert os.path.exists(msfile), f'{msfile} MAIN table does not exist'
+    assert os.path.exists(msfile), f"{msfile} MAIN table does not exist"
     subtable_path = os.path.join(msfile, subtable_name)
     build_table(subtable_path, table_desc)
-    LOG.info('created %s', subtable_name)
-    LOG.debug('subtable path is %s', subtable_path)
+    LOG.info("created %s", subtable_name)
+    LOG.debug("subtable path is %s", subtable_path)
 
 
 def build_ms2_main(msfile: str):
     table_desc = MsMainTable.as_dict()
-    build_table(msfile, table_desc['coldesc'])
-    put_table_keyword(msfile, 'MS_VERSION', 2.0)
-    LOG.info('created %s MAIN', msfile)
+    build_table(msfile, table_desc["coldesc"])
+    put_table_keyword(msfile, "MS_VERSION", 2.0)
+    LOG.info("created %s MAIN", msfile)
 
 
 def build_ms2(msfile: str):
-    LOG.info('Building MS')
+    LOG.info("Building MS")
     build_ms2_main(msfile)
     subtables = [
-        ('ANTENNA', MsAntennaTable),
-        ('DATA_DESCRIPTION', MsDataDescriptionTable),
-        ('FEED', MsFeedTable),
-        ('FIELD', MsFieldTable),
-        ('FLAG_CMD', MsFlagCmdTable),
-        ('HISTORY', MsHistoryTable),
-        ('OBSERVATION', MsObservationTable),
-        ('POINTING', MsPointingTable),
-        ('POLARIZATION', MsPolarizationTable),
-        ('PROCESSOR', MsProcessorTable),
-        ('SOURCE', MsSourceTable),
-        ('SPECTRAL_WINDOW', MsSpectralWindowTable),
-        ('STATE', MsStateTable),
-        ('SYSCAL', MsSyscalTable),
-        ('WEATHER', MsWeatherTable)
+        ("ANTENNA", MsAntennaTable),
+        ("DATA_DESCRIPTION", MsDataDescriptionTable),
+        ("FEED", MsFeedTable),
+        ("FIELD", MsFieldTable),
+        ("FLAG_CMD", MsFlagCmdTable),
+        ("HISTORY", MsHistoryTable),
+        ("OBSERVATION", MsObservationTable),
+        ("POINTING", MsPointingTable),
+        ("POLARIZATION", MsPolarizationTable),
+        ("PROCESSOR", MsProcessorTable),
+        ("SOURCE", MsSourceTable),
+        ("SPECTRAL_WINDOW", MsSpectralWindowTable),
+        ("STATE", MsStateTable),
+        ("SYSCAL", MsSyscalTable),
+        ("WEATHER", MsWeatherTable),
     ]
     for subtable_name, table_schema in subtables:
-        build_ms2_subtable(msfile, subtable_name, table_schema.as_dict()['coldesc'])
-    LOG.info('created %s', msfile)
+        build_ms2_subtable(msfile, subtable_name, table_schema.as_dict()["coldesc"])
+    LOG.info("created %s", msfile)

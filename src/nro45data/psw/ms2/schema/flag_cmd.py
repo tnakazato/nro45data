@@ -6,48 +6,48 @@ from .table import Table
 
 @dataclass
 class MsFlagCmdAppliedColumn(ScalarColumn):
-    comment: str = 'True if flag has been applied to main table'
-    valueType: str = 'bool'
+    comment: str = "True if flag has been applied to main table"
+    valueType: str = "bool"
 
 
 @dataclass
 class MsFlagCmdCommandColumn(ScalarColumn):
-    comment: str = 'Flagging command'
-    valueType: str = 'string'
+    comment: str = "Flagging command"
+    valueType: str = "string"
 
 
 @dataclass
 class MsFlagCmdIntervalColumn(DurationColumn):
-    comment: str = 'Time interval for which this flag is valid'
+    comment: str = "Time interval for which this flag is valid"
 
 
 @dataclass
 class MsFlagCmdLevelColumn(ScalarColumn):
-    comment: str = 'Flag level - revision level '
-    valueType: str = 'int'
+    comment: str = "Flag level - revision level "
+    valueType: str = "int"
 
 
 @dataclass
 class MsFlagCmdReasonColumn(ScalarColumn):
-    comment: str = 'Flag reason'
-    valueType: str = 'string'
+    comment: str = "Flag reason"
+    valueType: str = "string"
 
 
 @dataclass
 class MsFlagCmdSeverityColumn(ScalarColumn):
-    comment: str = 'Severity code (0-10) '
-    valueType: str = 'int'
+    comment: str = "Severity code (0-10) "
+    valueType: str = "int"
 
 
 @dataclass
 class MsFlagCmdTimeColumn(ChronoColumn):
-    comment: str = 'Midpoint of interval for which this flag is valid'
+    comment: str = "Midpoint of interval for which this flag is valid"
 
 
 @dataclass
 class MsFlagCmdTypeColumn(ScalarColumn):
-    comment: str = 'Type of flag (FLAG or UNFLAG)'
-    valueType: str = 'string'
+    comment: str = "Type of flag (FLAG or UNFLAG)"
+    valueType: str = "string"
 
 
 @dataclass

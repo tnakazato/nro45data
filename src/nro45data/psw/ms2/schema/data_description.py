@@ -6,20 +6,20 @@ from .table import Table
 
 @dataclass
 class MsDataDescriptionFlagRowColumn(ScalarColumn):
-    comment: str = 'Flag this row'
-    valueType: str = 'bool'
+    comment: str = "Flag this row"
+    valueType: str = "bool"
 
 
 @dataclass
 class MsDataDescriptionPolarizationIdColumn(ScalarColumn):
-    comment: str = 'Pointer to polarization table'
-    valueType: str = 'int'
+    comment: str = "Pointer to polarization table"
+    valueType: str = "int"
 
 
 @dataclass
 class MsDataDescriptionSpectralWindowIdColumn(ScalarColumn):
-    comment: str = 'Pointer to spectralwindow table'
-    valueType: str = 'int'
+    comment: str = "Pointer to spectralwindow table"
+    valueType: str = "int"
 
 
 @dataclass

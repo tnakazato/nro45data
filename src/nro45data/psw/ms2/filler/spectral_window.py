@@ -13,15 +13,15 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_spectral_window_row(hdu: 'BinTableHDU', array_conf: list) -> Generator[dict, None, None]:
+def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[dict, None, None]:
     ddd, adm, spw_map, _ = get_data_description_map(array_conf)
 
     data = hdu.data
-    arry = data['ARRYT']
-    nfcal = data['NFCAL']
-    fqcal = data['FQCAL']
-    chcal = data['CHCAL']
-    nch = data['NCH']
+    arry = data["ARRYT"]
+    nfcal = data["NFCAL"]
+    fqcal = data["FQCAL"]
+    chcal = data["CHCAL"]
+    nch = data["NCH"]
 
     num_spw = len(spw_map)
 
@@ -45,39 +45,39 @@ def _get_spectral_window_row(hdu: 'BinTableHDU', array_conf: list) -> Generator[
             for _array in dd_array_map[_dd_id]:
                 array_list.append(_array)
 
-        spw_name = '_'.join(array_list)
-        _fqcal = fqcal[i][:nfcal[i]]
-        _chcal = chcal[i][:nfcal[i]]
+        spw_name = "_".join(array_list)
+        _fqcal = fqcal[i][: nfcal[i]]
+        _chcal = chcal[i][: nfcal[i]]
         chan_edge_freq = np.interp(np.arange(-0.5, nchan), _chcal, _fqcal)
         chan_freq = (chan_edge_freq[1:] + chan_edge_freq[:-1]) / 2
         chan_width = np.diff(chan_edge_freq)
         net_sideband = 1 if chan_freq[0] < chan_freq[-1] else -1
         ref_freq = chan_freq[0]  # frequency of the first channel
         spectral_window_row = {
-            'NUM_CHAN': nchan,
-            'NAME': spw_name,
-            'REF_FREQUENCY': ref_freq,
-            'CHAN_FREQ': chan_freq,
-            'CHAN_WIDTH': chan_width,
-            'MEAS_FREQ_REF': meas_freq_ref,
-            'EFFECTIVE_BW': chan_width,
-            'RESOLUTION': chan_width,
-            'TOTAL_BANDWIDTH': sum(chan_width),
-            'NET_SIDEBAND': net_sideband,
-            'IF_CONV_CHAIN': 0,
-            'FLAG_ROW': False,
+            "NUM_CHAN": nchan,
+            "NAME": spw_name,
+            "REF_FREQUENCY": ref_freq,
+            "CHAN_FREQ": chan_freq,
+            "CHAN_WIDTH": chan_width,
+            "MEAS_FREQ_REF": meas_freq_ref,
+            "EFFECTIVE_BW": chan_width,
+            "RESOLUTION": chan_width,
+            "TOTAL_BANDWIDTH": sum(chan_width),
+            "NET_SIDEBAND": net_sideband,
+            "IF_CONV_CHAIN": 0,
+            "FLAG_ROW": False,
         }
 
         yield spectral_window_row
 
 
-def fill_spectral_window(msfile: str, hdu: 'BinTableHDU'):
+def fill_spectral_window(msfile: str, hdu: "BinTableHDU"):
     array_conf = get_array_configuration(hdu)
     row_iterator = _get_spectral_window_row(hdu, array_conf)
-    with open_table(msfile + '/SPECTRAL_WINDOW', read_only=False) as tb:
+    with open_table(msfile + "/SPECTRAL_WINDOW", read_only=False) as tb:
         for spw_id, row in enumerate(row_iterator):
             if tb.nrows() <= spw_id:
                 tb.addrows()
             for key, value in row.items():
                 tb.putcell(key, spw_id, value)
-            LOG.debug('spw %d row %s', spw_id, row)
+            LOG.debug("spw %d row %s", spw_id, row)

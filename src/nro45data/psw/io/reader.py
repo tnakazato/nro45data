@@ -20,7 +20,7 @@ def _is_nro_psw(filename: str) -> bool:
         True if the file is in NRO 45m PSW format, otherwise False.
     """
     expected = "XTENSION='BINTABLE'"
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         first_record = f.read(FITS_RECORD_SIZE).decode()
 
     return first_record.startswith(expected)
@@ -35,7 +35,7 @@ def _read_header_and_data(filename: str) -> Tuple[List[str], bytes]:
     Returns:
         List of header records and binary data
     """
-    with open(filename, 'rb+') as f:
+    with open(filename, "rb+") as f:
         # header
         header = []
         is_end_of_header = False
@@ -49,7 +49,7 @@ def _read_header_and_data(filename: str) -> Tuple[List[str], bytes]:
                 num_records += 1
                 record = record_bytes.decode()
                 header.append(record)
-                is_end_of_header = record.strip() == 'END'
+                is_end_of_header = record.strip() == "END"
                 if is_end_of_header:
                     break
 
@@ -73,20 +73,19 @@ def _follow_fits_standard(records: List[str]) -> List[str]:
     Returns:
         List of tweaked header records
     """
+
     def __insert_space_before_value(record: str) -> str:
-        if record.startswith('END'):
+        if record.startswith("END"):
             return record
 
-        fixed_record = re.sub('=', '= ', record, count=1)
-        if ' /' in fixed_record:
-            fixed_record = fixed_record.replace(' /', '/')
-        elif fixed_record.endswith(' '):
+        fixed_record = re.sub("=", "= ", record, count=1)
+        if " /" in fixed_record:
+            fixed_record = fixed_record.replace(" /", "/")
+        elif fixed_record.endswith(" "):
             fixed_record = fixed_record[:-1]
         return fixed_record
 
-    return list(map(
-        __insert_space_before_value, records
-    ))
+    return list(map(__insert_space_before_value, records))
 
 
 def _rename_duplicate_types(records: List[str]) -> List[str]:
@@ -100,7 +99,7 @@ def _rename_duplicate_types(records: List[str]) -> List[str]:
     """
     duplicate_rows = collections.defaultdict(list)
     for i, r in enumerate(records):
-        if r.startswith('TTYPE'):
+        if r.startswith("TTYPE"):
             k = re.match(r".*= '([^']+)'.*", r)[1]
             duplicate_rows[k].append(i)
     fixed_records = records[::]
@@ -123,10 +122,7 @@ def _read_psw(filename: str) -> HDUList:
         mode: Observation mode. Either 'psw' or 'otf'.
     """
     if not _is_nro_psw(filename):
-        raise RuntimeError(
-            'Incompatible data: '
-            f'"{filename}" is not in NRO 45m PSW format.'
-        )
+        raise RuntimeError("Incompatible data: " f'"{filename}" is not in NRO 45m PSW format.')
 
     record_list, binary_data = _read_header_and_data(filename)
 
@@ -137,12 +133,8 @@ def _read_psw(filename: str) -> HDUList:
     # for r in record_list:
     #     print(r)
 
-    header = ''.join(record_list).encode()
+    header = "".join(record_list).encode()
 
-    hdulist = HDUList.fromstring(
-        header + binary_data,
-        ignore_missing_simple=True,
-        lazy_load_hdus=False
-    )
+    hdulist = HDUList.fromstring(header + binary_data, ignore_missing_simple=True, lazy_load_hdus=False)
 
     return hdulist

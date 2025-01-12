@@ -11,17 +11,17 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_weather_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
+def _get_weather_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
     # multn = hdu.data['MULTN']
-    mjdst = hdu.data['MJDST']
-    mjdet = hdu.data['MJDET']
-    temp = hdu.data['TEMP']
-    patm = hdu.data['PATM']
-    vwind = hdu.data['VWIND']
-    dwind = hdu.data['DWIND']
+    mjdst = hdu.data["MJDST"]
+    mjdet = hdu.data["MJDET"]
+    temp = hdu.data["TEMP"]
+    patm = hdu.data["PATM"]
+    vwind = hdu.data["VWIND"]
+    dwind = hdu.data["DWIND"]
 
-    temp_unit = hdu.header['TUNIT56']
-    if temp_unit == 'C':
+    temp_unit = hdu.header["TUNIT56"]
+    if temp_unit == "C":
         temp += 273.16
 
     unique_beams = np.unique(mjdst)
@@ -45,31 +45,31 @@ def _get_weather_row(hdu: 'BinTableHDU') -> Generator[dict, None, None]:
             wind_direction = dwind[i]
 
             row = {
-                'ANTENNA_ID': antenna_id,
-                'TIME': weather_mid_time,
-                'INTERVAL': weather_interval,
-                'TEMPERATURE': temperature,
-                'TEMPERATURE_FLAG': False,
-                'PRESSURE': pressure,
-                'PRESSURE_FLAG': False,
-                'REL_HUMIDITY': 0.0,
-                'REL_HUMIDITY_FLAG': False,
-                'WIND_SPEED': wind_speed,
-                'WIND_SPEED_FLAG': False,
-                'WIND_DIRECTION': wind_direction,
-                'WIND_DIRECTION_FLAG': False
+                "ANTENNA_ID": antenna_id,
+                "TIME": weather_mid_time,
+                "INTERVAL": weather_interval,
+                "TEMPERATURE": temperature,
+                "TEMPERATURE_FLAG": False,
+                "PRESSURE": pressure,
+                "PRESSURE_FLAG": False,
+                "REL_HUMIDITY": 0.0,
+                "REL_HUMIDITY_FLAG": False,
+                "WIND_SPEED": wind_speed,
+                "WIND_SPEED_FLAG": False,
+                "WIND_DIRECTION": wind_direction,
+                "WIND_DIRECTION_FLAG": False,
             }
 
             yield row
 
 
-def fill_weather(msfile: str, hdu: 'BinTableHDU'):
+def fill_weather(msfile: str, hdu: "BinTableHDU"):
     row_iterator = _get_weather_row(hdu)
-    with open_table(msfile + '/WEATHER', read_only=False) as tb:
+    with open_table(msfile + "/WEATHER", read_only=False) as tb:
         for row_id, row in enumerate(row_iterator):
             if tb.nrows() <= row_id:
                 tb.addrows(tb.nrows() - row_id + 1)
 
             for key, value in row.items():
                 tb.putcell(key, row_id, value)
-            LOG.debug('weather table %d row %s', row_id, row)
+            LOG.debug("weather table %d row %s", row_id, row)

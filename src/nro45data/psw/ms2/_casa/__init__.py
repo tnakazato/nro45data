@@ -14,12 +14,6 @@ elif _is_casacore_available:
     from ._casacore import convert_str_angle_to_rad
     from ._casacore import put_table_keyword
 else:
-    raise ModuleNotFoundError('Neither casatools or python-casacore is available')
+    raise ModuleNotFoundError("Neither casatools or python-casacore is available")
 
-__all__ = [
-    "build_table",
-    "open_table",
-    "_table",
-    "convert_str_angle_to_rad",
-    "put_table_keyword"
-]
+__all__ = ["build_table", "open_table", "_table", "convert_str_angle_to_rad", "put_table_keyword"]
