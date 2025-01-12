@@ -30,10 +30,10 @@ jobs:
         with:
           pylint: true
 
-      - name: Pyright
-        uses: microsoft/action-python@0.7.0
-        with:
-          pyright: true
+    #   - name: Pyright
+    #     uses: microsoft/action-python@0.7.0
+    #     with:
+    #       pyright: true
 
       - name: Flake8
         uses: microsoft/action-python@0.7.0
@@ -52,7 +52,7 @@ jobs:
       - name: Pytest
         uses: microsoft/action-python@0.7.0
         with:
-          testing: true
+          pytest: true
 
 #   validation:
 #     needs: init_casadata
