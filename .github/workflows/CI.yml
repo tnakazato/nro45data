@@ -9,14 +9,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  validation:
-    steps:
-      - name: Initialize CASA data directory
-        run: mkdir -p ~/.casa/data
+  init_casadata:
+    run: mkdir -p ~/.casa/data
 
-      - uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
-        with:
-          workdir: '.'
+  validation:
+    uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
+    with:
+      workdir: '.'
 
 #   publish:
 #     uses: microsoft/action-python/.github/workflows/publish.yml@0.6.4
