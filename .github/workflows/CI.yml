@@ -10,6 +10,7 @@ on:
 
 jobs:
   init_casadata:
+    runs-on: ubuntu-latest
     steps:
       - name: Initialize CASA data directory
         run: mkdir -p ~/.casa/data
