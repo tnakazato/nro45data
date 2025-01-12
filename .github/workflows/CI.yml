@@ -19,24 +19,21 @@ jobs:
         uses: microsoft/action-python@0.7.0
         with:
           black: true
-          python-version: 3.12
-          root: './nro45data'
+          python_version: 3.12
           workdir: 'src'
 
       - name: Bandit
         uses: microsoft/action-python@0.7.0
         with:
           bandit: true
-          python-version: 3.12
-          root: './nro45data'
+          python_version: 3.12
           workdir: 'src'
 
       - name: Pylint
         uses: microsoft/action-python@0.7.0
         with:
           pylint: true
-          python-version: 3.12
-          root: './nro45data'
+          python_version: 3.12
           workdir: 'src'
 
     #   - name: Pyright
@@ -48,8 +45,7 @@ jobs:
         uses: microsoft/action-python@0.7.0
         with:
           flake8: true
-          python-version: 3.12
-          root: './nro45data'
+          python_version: 3.12
           workdir: 'src'
 
   testing:
@@ -65,7 +61,7 @@ jobs:
         uses: microsoft/action-python@0.7.0
         with:
           pytest: true
-          python-version: 3.12
+          python_version: 3.12
           root: './nro45data'
           workdir: 'tests'
 
