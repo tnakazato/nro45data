@@ -12,14 +12,14 @@ import pytest
 
 from nro45data.psw import nqm2fits
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
-@pytest.mark.skip(reason='test data not registered yet')
+@pytest.mark.skip(reason="test data not registered yet")
 def test_nqm2fits():
     """test nqm2fits"""
-    nqmfile = os.path.join(DATA_DIR, 'T12tztu.140321203430.01.nqm')
-    fitsfile = 'test.fits'
+    nqmfile = os.path.join(DATA_DIR, "T12tztu.140321203430.01.nqm")
+    fitsfile = "test.fits"
     status = nqm2fits(nqmfile, fitsfile, overwrite=True)
     assert status is True
     fitsdata = fits.open(fitsfile)
@@ -29,8 +29,7 @@ def test_nqm2fits():
 @pytest.mark.unit
 def test_nqm2fits_invalid_nqmfile():
     """test nqm2fits with invalid nqmfile"""
-    nqmfile = 'invalid.nqm'
-    fitsfile = 'test.fits'
+    nqmfile = "invalid.nqm"
+    fitsfile = "test.fits"
     with pytest.raises(FileNotFoundError):
         nqm2fits(nqmfile, fitsfile, overwrite=True)
-
