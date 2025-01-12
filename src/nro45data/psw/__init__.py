@@ -1,7 +1,7 @@
 import logging
 
-from .io.fits import _read_psw
-from .io.fits import _to_fits
+from .io import _read_psw
+from .io import _to_fits
 from .ms2 import _to_ms2
 from .ms4 import _to_ms4
 
