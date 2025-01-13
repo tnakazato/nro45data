@@ -42,16 +42,19 @@ class MsFieldTimeColumn(ChronoColumn):
 @dataclass
 class MsFieldPhaseDirColumn(DirectionColumn):
     comment: str = "Phase direction"
+    ndim: int = 2
 
 
 @dataclass
 class MsFieldDelayDirColumn(DirectionColumn):
     comment: str = "Delay direction"
+    ndim: int = 2
 
 
 @dataclass
 class MsFieldReferenceDirColumn(DirectionColumn):
     comment: str = "Reference direction"
+    ndim: int = 2
 
 
 @dataclass
