@@ -57,6 +57,9 @@ jobs:
       - name: Initialize CASA data directory
         run: mkdir -p ~/.casa/data
 
+      - name: install nro45data
+        run: pip install .[casa6,tesst]
+
       - name: Pytest
         uses: microsoft/action-python@0.7.0
         with:
