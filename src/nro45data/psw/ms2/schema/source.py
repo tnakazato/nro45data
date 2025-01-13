@@ -84,14 +84,14 @@ class MsSourcePositionColumn(PositionColumn):
 class MsSourceTransitionColumn(ArrayColumn):
     comment: str = "Line Transition name"
     valueType: str = "string"
-    ndim: int = -1
+    ndim: int = 1
 
 
 @dataclass
 class MsSourceRestFrequencyColumn(ArrayColumn):
     comment: str = "Line rest frequency"
     valueType: str = "double"
-    ndim: int = -1
+    ndim: int = 1
     keywords: dict = field(
         default_factory=lambda: {"MEASINFO": {"Ref": "LSRK", "type": "frequency"}, "QuantumUnits": np.array(["Hz"])}
     )
@@ -101,7 +101,7 @@ class MsSourceRestFrequencyColumn(ArrayColumn):
 class MsSourceSysvelColumn(ArrayColumn):
     comment: str = "Systemic velocity at reference"
     valueType: str = "double"
-    ndim: int = -1
+    ndim: int = 1
     keywords: dict = field(
         default_factory=lambda: {
             "MEASINFO": {"Ref": "LSRK", "type": "radialvelocity"},
