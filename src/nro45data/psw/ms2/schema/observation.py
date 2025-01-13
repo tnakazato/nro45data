@@ -22,14 +22,12 @@ class MsObservationTimeRangeColumn(ArrayColumn):
 class MsObservationLogColumn(ArrayColumn):
     comment: str = "Observation log"
     valueType: str = "string"
-    ndim: int = 1
 
 
 @dataclass
 class MsObservationScheduleColumn(ArrayColumn):
     comment: str = "Observing schedule"
     valueType: str = "string"
-    ndim: int = 1
 
 
 @dataclass
