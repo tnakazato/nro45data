@@ -22,6 +22,8 @@ def pytest_collection_modifyitems(items: list[Item]):
             item.add_marker(pytest.mark.spark)
         elif "_int_" in item.nodeid:
             item.add_marker(pytest.mark.integration)
+        else:
+            item.add_marker(pytest.mark.unit)
 
 
 @pytest.fixture
