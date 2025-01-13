@@ -26,9 +26,10 @@ class MsFeedBeamOffsetColumn(DirectionColumn):
 
 
 @dataclass
-class MsFeedPolarizationTypeColumn(ScalarColumn):
+class MsFeedPolarizationTypeColumn(ArrayColumn):
     comment: str = "Type of polarization to which a given RECEPTOR responds"
     valueType: str = "string"
+    ndim: int = 1
 
 
 @dataclass
