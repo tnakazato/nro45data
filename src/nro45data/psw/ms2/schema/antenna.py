@@ -1,4 +1,4 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 
 from .column_description import PositionColumn, ScalarColumn
 from .table import Table

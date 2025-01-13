@@ -71,7 +71,7 @@ def _get_processor_columns(hdu: "BinTableHDU") -> dict:
 def _fill_processor_columns(msfile: str, columns: dict):
     with open_table(msfile + "/PROCESSOR", read_only=False) as tb:
         nrow = len(columns["SUB_TYPE"])
-        fix_nrow_to(tb, nrow)
+        fix_nrow_to(nrow, tb)
         type_column = np.array([columns["TYPE"]] * nrow)
         tb.putcol("TYPE", type_column)
         tb.putcol("SUB_TYPE", columns["SUB_TYPE"])

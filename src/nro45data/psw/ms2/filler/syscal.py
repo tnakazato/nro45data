@@ -70,7 +70,7 @@ def _get_syscal_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
                     tsys_flag_per_pol[ipol] = True
 
             # TSYS_FLAG
-            tsys_flag = np.any(tsys_flag_per_pol)
+            tsys_flag = bool(np.any(tsys_flag_per_pol))
 
             row = {
                 "ANTENNA_ID": antenna_id,
@@ -93,5 +93,6 @@ def fill_syscal(msfile: str, hdu: "BinTableHDU"):
                 tb.addrows(tb.nrows() - row_id + 1)
 
             for key, value in row.items():
+                LOG.debug("row_id %d key %s value %s (type %s)", row_id, key, value, type(value))
                 tb.putcell(key, row_id, value)
-            LOG.debug("source table %d row %s", row_id, row)
+            LOG.debug("syscal table %d row %s", row_id, row)

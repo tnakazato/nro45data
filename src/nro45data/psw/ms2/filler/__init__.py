@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import TYPE_CHECKING
 
 from .antenna import _fill_antenna_columns, _get_antenna_columns
@@ -14,24 +15,12 @@ from .source import fill_source
 from .spectral_window import fill_spectral_window
 from .state import fill_state
 from .syscal import fill_syscal
-from .utils import get_array_configuration
 from .weather import fill_weather
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
 
 LOG = logging.getLogger(__name__)
-
-__all__ = [
-    "fill_main",
-    "fill_pointing",
-    "fill_source",
-    "fill_spectral_window",
-    "fill_state",
-    "fill_syscal",
-    "fill_weather",
-    "get_array_configuration",
-]
 
 
 def fill_antenna(msfile: str, hdu: "BinTableHDU"):
@@ -67,3 +56,23 @@ def fill_polarization(msfile: str, hdu: "BinTableHDU"):
 def fill_processor(msfile: str, hdu: "BinTableHDU"):
     columns = _get_processor_columns(hdu)
     _fill_processor_columns(msfile, columns)
+
+
+def fill_ms2(msfile: str, hdu: "BinTableHDU"):
+    if not os.path.exists(msfile):
+        FileNotFoundError("MS must be built before calling fill_ms2")
+
+    fill_main(msfile, hdu)
+    fill_antenna(msfile, hdu)
+    fill_data_description(msfile, hdu)
+    fill_feed(msfile, hdu)
+    fill_field(msfile, hdu)
+    fill_observation(msfile, hdu)
+    fill_pointing(msfile, hdu)
+    fill_polarization(msfile, hdu)
+    fill_processor(msfile, hdu)
+    fill_source(msfile, hdu)
+    fill_spectral_window(msfile, hdu)
+    fill_state(msfile, hdu)
+    fill_syscal(msfile, hdu)
+    fill_weather(msfile, hdu)

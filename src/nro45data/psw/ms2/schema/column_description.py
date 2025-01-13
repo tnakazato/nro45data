@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass, field, fields
+from dataclasses import dataclass, field
 
 import numpy as np
 import numpy.typing as npt

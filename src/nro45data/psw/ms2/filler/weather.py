@@ -22,7 +22,7 @@ def _get_weather_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
 
     temp_unit = hdu.header["TUNIT56"]
     if temp_unit == "C":
-        temp += 273.16
+        temp = temp.copy() + 273.16
 
     unique_beams = np.unique(mjdst)
 
