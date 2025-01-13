@@ -10,7 +10,7 @@ on:
 
 jobs:
   linting:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,18 +57,17 @@ jobs:
       - name: Initialize CASA data directory
         run: mkdir -p ~/.casa/data
 
-      - name: install casatools
-        run: pip install casatools
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
 
       - name: install nro45data
-        run: pip install -e .
+        run: pip install -e .[casa6,test]
 
       - name: Pytest
-        uses: microsoft/action-python@0.7.0
-        with:
-          pytest: true
-          python_version: 3.10
-          workdir: '.'
+        run: pytest
 
 #   validation:
 #     needs: init_casadata
