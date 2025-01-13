@@ -9,7 +9,7 @@ from .table import Table
 @dataclass
 class TemperatureArrayColumn(ArrayColumn):
     valueType: str = "float"
-    ndim: int = -1
+    ndim: int = 2
     keywords: dict = field(default_factory=lambda: {"QuantumUnits": np.array(["K"])})
 
 
@@ -70,7 +70,7 @@ class MsSyscalTantSpectrumColumn(TemperatureArrayColumn):
 class MsSyscalTantTsysSpectrumColumn(ArrayColumn):
     comment: str = "Ratio of antenna to system temperature for each channel and receptor"
     valueType: str = "float"
-    ndim: int = -1
+    ndim: int = 2
 
 
 @dataclass
