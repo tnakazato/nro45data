@@ -2,7 +2,10 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ChronoColumn, ColumnDescription, DirectionColumn, DurationColumn, ScalarColumn
+from .column_description import (
+    ChronoColumn, ColumnDescription, DirectionColumn,
+    DurationColumn, FixedDirectionColumn, ScalarColumn
+)
 from .table import Table
 
 
@@ -15,6 +18,7 @@ class MsPointingDirectionColumn(DirectionColumn):
             "QuantumUnits": np.array(["rad", "rad"]),
         }
     )
+    ndim: int = 2
 
 
 @dataclass
@@ -49,7 +53,7 @@ class MsPointingTargetColumn(DirectionColumn):
             "QuantumUnits": np.array(["rad", "rad"]),
         }
     )
-    ndim: int = -1
+    ndim: int = 2
 
 
 @dataclass
@@ -71,11 +75,11 @@ class MsPointingTrackingColumn(ScalarColumn):
 @dataclass
 class MsPointingSourceOffsetColumn(DirectionColumn):
     comment: str = "Offset from source position"
-    ndim: int = -1
+    ndim: int = 2
 
 
 @dataclass
-class MsPointingEncoderColumn(DirectionColumn):
+class MsPointingEncoderColumn(FixedDirectionColumn):
     comment: str = "Encoder values"
     keywords: dict = field(
         default_factory=lambda: {
@@ -83,7 +87,6 @@ class MsPointingEncoderColumn(DirectionColumn):
             "QuantumUnits": np.array(["rad", "rad"]),
         }
     )
-    ndim: int = -1
 
 
 @dataclass
