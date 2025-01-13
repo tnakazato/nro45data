@@ -7,14 +7,12 @@ from .table import Table
 @dataclass
 class MsHistoryAppParamsColumn(ArrayColumn):
     comment: str = "Application parameters"
-    ndim: int = 1
     valueType: str = "string"
 
 
 @dataclass
 class MsHistoryCliCommandColumn(ArrayColumn):
     comment: str = "CLI command sequence"
-    ndim: int = 1
     valueType: str = "string"
 
 
@@ -33,7 +31,7 @@ class MsHistoryMessageColumn(ScalarColumn):
 @dataclass
 class MsHitoryObjectIdColumn(ScalarColumn):
     comment: str = "Originating ObjectID"
-    valueType: str = "int"
+    valueType: str = "string"
 
 
 @dataclass
