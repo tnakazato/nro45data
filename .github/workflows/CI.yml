@@ -20,21 +20,21 @@ jobs:
         with:
           black: true
           python_version: 3.12
-          workdir: 'src'
+          workdir: '.'
 
       - name: Bandit
         uses: microsoft/action-python@0.7.0
         with:
           bandit: true
           python_version: 3.12
-          workdir: 'src'
+          workdir: '.'
 
       - name: Pylint
         uses: microsoft/action-python@0.7.0
         with:
           pylint: true
           python_version: 3.12
-          workdir: 'src'
+          workdir: '.'
 
     #   - name: Pyright
     #     uses: microsoft/action-python@0.7.0
@@ -46,7 +46,7 @@ jobs:
         with:
           flake8: true
           python_version: 3.12
-          workdir: 'src'
+          workdir: '.'
 
   testing:
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
         with:
           pytest: true
           python_version: 3.12
-          workdir: 'tests'
+          workdir: '.'
 
 #   validation:
 #     needs: init_casadata
