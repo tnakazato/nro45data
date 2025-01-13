@@ -165,6 +165,7 @@ def test_main_schema_flag_category(tb):
     assert col.is_array()
     assert col.get_ndim() == 3
     assert col.get_type() == "boolean"
+    assert "CATEGORY" in col.kw
 
 
 def test_main_schema_flag_row(tb):

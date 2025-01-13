@@ -32,6 +32,9 @@ class MsMainFlagCategoryColumn(ScalarColumn):
     comment: str = "The flag category, NUM_CAT flags for each datum"
     valueType: str = "bool"
     ndim: int = 3
+    keywords: dict = field(
+        default_factory=lambda: {"CATEGORY": np.array([], dtype=str)}
+    )
 
 
 @dataclass
