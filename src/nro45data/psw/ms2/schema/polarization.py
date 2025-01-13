@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .column_description import ArrayColumn, ColumnDescription, ScalarColumn
+from .column_description import ArrayColumn, ScalarColumn
 from .table import Table
 
 
@@ -31,13 +31,8 @@ class MsPolarizationNumCorrColumn(ScalarColumn):
 
 
 @dataclass
-class MsPolarizationTableColumnDescription(ColumnDescription):
+class MsPolarizationTable(Table):
     CORR_TYPE: MsPolarizationCorrTypeColumn
     CORR_PRODUCT: MsPolarizationCorrProductColumn
     FLAG_ROW: MsPolarizationFlagRowColumn
     NUM_CORR: MsPolarizationNumCorrColumn
-
-
-@dataclass
-class MsPolarizationTable(Table):
-    coldesc: MsPolarizationTableColumnDescription

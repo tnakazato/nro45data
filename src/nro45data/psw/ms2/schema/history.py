@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ScalarColumn
 from .table import Table
 
 
@@ -58,7 +58,7 @@ class MsHistoryTimeColumn(ChronoColumn):
 
 
 @dataclass
-class MsHistoryTableColumnDescription(ColumnDescription):
+class MsHistoryTable(Table):
     APP_PARAMS: MsHistoryAppParamsColumn
     CLI_COMMAND: MsHistoryCliCommandColumn
     APPLICATION: MsHistoryApplicationColumn
@@ -68,8 +68,3 @@ class MsHistoryTableColumnDescription(ColumnDescription):
     ORIGIN: MsHistoryOriginColumn
     PRIORITY: MsHistoryPriorityColumn
     TIME: MsHistoryTimeColumn
-
-
-@dataclass
-class MsHistoryTable(Table):
-    coldesc: MsHistoryTableColumnDescription

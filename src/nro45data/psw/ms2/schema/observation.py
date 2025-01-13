@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import numpy.typing as npt
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, ScalarColumn
+from .column_description import ArrayColumn, ChronoColumn, ScalarColumn
 from .table import Table
 
 
@@ -66,7 +66,7 @@ class MsObservationTelescopeNameColumn(ScalarColumn):
 
 
 @dataclass
-class MsObservationTableColumnDescription(ColumnDescription):
+class MsObservationTable(Table):
     TIME_RANGE: MsObservationTimeRangeColumn
     LOG: MsObservationLogColumn
     SCHEDULE: MsObservationScheduleColumn
@@ -76,8 +76,3 @@ class MsObservationTableColumnDescription(ColumnDescription):
     RELEASE_DATE: MsObservationReleaseDateColumn
     SCHEDULE_TYPE: MsObservationScheduleTypeColumn
     TELESCOPE_NAME: MsObservationTelescopeNameColumn
-
-
-@dataclass
-class MsObservationTable(Table):
-    coldesc: MsObservationTableColumnDescription

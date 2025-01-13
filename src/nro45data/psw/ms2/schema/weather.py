@@ -3,7 +3,12 @@ from dataclasses import dataclass, field
 import numpy as np
 import numpy.typing as npt
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, ScalarColumn
+from .column_description import (
+    ArrayColumn,
+    ChronoColumn,
+    DurationColumn,
+    ScalarColumn
+)
 from .table import Table
 
 
@@ -116,7 +121,7 @@ class MsWeatherStationPositionColumn(ArrayColumn):
 
 
 @dataclass
-class MsWeatherTableColumnDescription(ColumnDescription):
+class MsWeatherTable(Table):
     ANTENNA_ID: MsWeatherAntennaIdColumn
     INTERVAL: MsWeatherIntervalColumn
     TIME: MsWeatherTimeColumn
@@ -134,8 +139,3 @@ class MsWeatherTableColumnDescription(ColumnDescription):
     WIND_SPEED_FLAG: MsWeatherWindSpeedFlagColumn
     NS_WX_STATION_ID: MsWeatherStationIdColumn
     NS_WX_STATION_POSITION: MsWeatherStationPositionColumn
-
-
-@dataclass
-class MsWeatherTable(Table):
-    coldesc: MsWeatherTableColumnDescription

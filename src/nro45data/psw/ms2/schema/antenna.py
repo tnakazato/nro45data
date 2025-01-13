@@ -1,9 +1,6 @@
 from dataclasses import dataclass, fields
 
-import numpy as np
-
-from .column_description import ColumnDescription, PositionColumn, ScalarColumn
-from .data_manager_info import DataManagerInfoItem
+from .column_description import PositionColumn, ScalarColumn
 from .table import Table
 
 
@@ -54,7 +51,7 @@ class MsAntennaStationColumn(ScalarColumn):
 
 
 @dataclass
-class MsAntennaTableColumnDescription(ColumnDescription):
+class MsAntennaTable(Table):
     OFFSET: MsAntennaOffsetColumn
     POSITION: MsAntennaPositionColumn
     TYPE: MsAntennaTypeColumn
@@ -63,23 +60,3 @@ class MsAntennaTableColumnDescription(ColumnDescription):
     MOUNT: MsAntennaMountColumn
     NAME: MsAntennaNameColumn
     STATION: MsAntennaStationColumn
-
-
-class MsAntennaTableDataManagerInfo:
-    @classmethod
-    def as_dict(cls):
-        columns = np.array([f.name for f in fields(MsAntennaTableColumnDescription)])
-        info_items = [
-            DataManagerInfoItem(
-                COLUMNS=columns,
-                SEQNR=0,
-                SPEC={"BUCKETSIZE": 3332, "IndexLength": 126, "MaxCacheSize": 2, "PERSCACHESIZE": 2},
-            )
-        ]
-        return dict((f"*{i.SEQNR + 1}", i) for i in info_items)
-
-
-@dataclass
-class MsAntennaTable(Table):
-    coldesc: MsAntennaTableColumnDescription
-    dminfo: MsAntennaTableDataManagerInfo

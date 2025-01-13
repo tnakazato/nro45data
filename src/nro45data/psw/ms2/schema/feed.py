@@ -5,7 +5,6 @@ import numpy as np
 from .column_description import (
     ArrayColumn,
     ChronoColumn,
-    ColumnDescription,
     DirectionColumn,
     DurationColumn,
     PositionColumn,
@@ -95,7 +94,7 @@ class MsFeedFocusLengthColumn(ScalarColumn):
 
 
 @dataclass
-class MsFeedTableColumnDescription(ColumnDescription):
+class MsFeedTable(Table):
     ANTENNA_ID: MsFeedAntennaIdColumn
     BEAM_ID: MsFeedBeamIdColumn
     BEAM_OFFSET: MsFeedBeamOffsetColumn
@@ -109,8 +108,3 @@ class MsFeedTableColumnDescription(ColumnDescription):
     RECEPTOR_ANGLE: MsFeedReceptorAngleColumn
     SPECTRAL_WINDOW_ID: MsFeedSpectralWindowIdColumn
     TIME: MsFeedTimeColumn
-
-
-@dataclass
-class MsFeedTable(Table):
-    coldesc: MsFeedTableColumnDescription

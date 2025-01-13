@@ -2,7 +2,12 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ArrayColumn, ChronoColumn, ColumnDescription, DurationColumn, ScalarColumn
+from .column_description import (
+    ArrayColumn,
+    ChronoColumn,
+    DurationColumn,
+    ScalarColumn
+)
 from .table import Table
 
 
@@ -110,7 +115,7 @@ class MsSyscalTantTsysFlagColumn(ScalarColumn):
 
 
 @dataclass
-class MsSyscalTableColumnDescription(ColumnDescription):
+class MsSyscalTable(Table):
     ANTENNA_ID: MsSyscalAntennaIdColumn
     FEED_ID: MsSyscalFeedIdColumn
     INTERVAL: MsSyscalIntervalColumn
@@ -128,8 +133,3 @@ class MsSyscalTableColumnDescription(ColumnDescription):
     TSYS_FLAG: MsSyscalTsysFlagColumn
     TANT_FLAG: MsSyscalTantFlagColumn
     TANT_TSYS_FLAG: MsSyscalTantTsysFlagColumn
-
-
-@dataclass
-class MsSyscalTable(Table):
-    coldesc: MsSyscalTableColumnDescription

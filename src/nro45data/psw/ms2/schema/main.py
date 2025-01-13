@@ -5,7 +5,6 @@ import numpy as np
 from .column_description import (
     ArrayColumn,
     ChronoColumn,
-    ColumnDescription,
     DurationColumn,
     PositionColumn,
     ScalarColumn,
@@ -149,7 +148,7 @@ class MsMainFloatDataColumn(ArrayColumn):
 
 
 @dataclass
-class MsMainTableColumnDescription(ColumnDescription):
+class MsMainTable(Table):
     ARRAY_ID: MsMainArrayIdColumn
     ANTENNA1: MsMainAntenna1Column
     ANTENNA2: MsMainAntenna2Column
@@ -172,8 +171,3 @@ class MsMainTableColumnDescription(ColumnDescription):
     WEIGHT: MsMainWeightColumn
     SIGMA: MsMainSigmaColumn
     FLOAT_DATA: MsMainFloatDataColumn
-
-
-@dataclass
-class MsMainTable(Table):
-    coldesc: MsMainTableColumnDescription

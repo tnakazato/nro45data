@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ColumnDescription, ScalarColumn
+from .column_description import ScalarColumn
 from .table import Table
 
 
@@ -51,7 +51,7 @@ class MsStateSubScanColumn(ScalarColumn):
 
 
 @dataclass
-class MsStateTableColumnDescription(ColumnDescription):
+class MsStateTable(Table):
     CAL: MsStateCalColumn
     FLAG_ROW: MsStateFlagRowColumn
     LOAD: MsStateLoadColumn
@@ -59,8 +59,3 @@ class MsStateTableColumnDescription(ColumnDescription):
     REF: MsStateRefColumn
     SIG: MsStateSigColumn
     SUB_SCAN: MsStateSubScanColumn
-
-
-@dataclass
-class MsStateTable(Table):
-    coldesc: MsStateTableColumnDescription

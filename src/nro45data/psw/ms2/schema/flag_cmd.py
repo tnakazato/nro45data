@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .column_description import ChronoColumn, ColumnDescription, DurationColumn, ScalarColumn
+from .column_description import ChronoColumn, DurationColumn, ScalarColumn
 from .table import Table
 
 
@@ -51,7 +51,7 @@ class MsFlagCmdTypeColumn(ScalarColumn):
 
 
 @dataclass
-class MsFlagCmdTableColumnDescription(ColumnDescription):
+class MsFlagCmdTable(Table):
     APPLIED: MsFlagCmdAppliedColumn
     COMMAND: MsFlagCmdCommandColumn
     INTERVAL: MsFlagCmdIntervalColumn
@@ -60,8 +60,3 @@ class MsFlagCmdTableColumnDescription(ColumnDescription):
     SEVERITY: MsFlagCmdSeverityColumn
     TIME: MsFlagCmdTimeColumn
     TYPE: MsFlagCmdTypeColumn
-
-
-@dataclass
-class MsFlagCmdTable(Table):
-    coldesc: MsFlagCmdTableColumnDescription

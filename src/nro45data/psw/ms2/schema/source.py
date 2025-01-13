@@ -6,7 +6,6 @@ import numpy.typing as npt
 from .column_description import (
     ArrayColumn,
     ChronoColumn,
-    ColumnDescription,
     DurationColumn,
     FixedDirectionColumn,
     PositionColumn,
@@ -111,7 +110,7 @@ class MsSourceSysvelColumn(ArrayColumn):
 
 
 @dataclass
-class MsSourceTableColumnDescription(ColumnDescription):
+class MsSourceTable(Table):
     DIRECTION: MsSourceDirectionColumn
     PROPER_MOTION: MsSourceProperMotionColumn
     CALIBRATION_GROUP: MsSourceCalibrationGroupColumn
@@ -126,8 +125,3 @@ class MsSourceTableColumnDescription(ColumnDescription):
     TRANSITION: MsSourceTransitionColumn
     REST_FREQUENCY: MsSourceRestFrequencyColumn
     SYSVEL: MsSourceSysvelColumn
-
-
-@dataclass
-class MsSourceTable(Table):
-    coldesc: MsSourceTableColumnDescription

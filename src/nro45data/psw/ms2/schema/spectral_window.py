@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .column_description import ArrayColumn, ColumnDescription, ScalarColumn
+from .column_description import ArrayColumn, ScalarColumn
 from .table import Table
 
 
@@ -145,7 +145,7 @@ class MsSpectralWindowAssocNatureColumn(ArrayColumn):
 
 
 @dataclass
-class MsSpectralWindowTableColumnDescription(ColumnDescription):
+class MsSpectralWindowTable(Table):
     MEAS_FREQ_REF: MsSpectralWindowMeasFreqRefColumn
     CHAN_FREQ: MsSpectralWindowChanFreqColumn
     REF_FREQUENCY: MsSpectralWindowRefFrequencyColumn
@@ -163,8 +163,3 @@ class MsSpectralWindowTableColumnDescription(ColumnDescription):
     BBC_NO: MsSpectralWindowBbcNoColumn
     ASSOC_SPW_ID: MsSpectralWindowAssocSpwIdColumn
     ASSOC_NATURE: MsSpectralWindowAssocNatureColumn
-
-
-@dataclass
-class MsSpectralWindowTable(Table):
-    coldesc: MsSpectralWindowTableColumnDescription

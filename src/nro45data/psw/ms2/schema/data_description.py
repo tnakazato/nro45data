@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .column_description import ScalarColumn, ColumnDescription
+from .column_description import ScalarColumn
 from .table import Table
 
 
@@ -23,12 +23,7 @@ class MsDataDescriptionSpectralWindowIdColumn(ScalarColumn):
 
 
 @dataclass
-class MsDataDescriptionTableColumnDescription(ColumnDescription):
+class MsDataDescriptionTable(Table):
     FLAG_ROW: MsDataDescriptionFlagRowColumn
     POLARIZATION_ID: MsDataDescriptionPolarizationIdColumn
     SPECTRAL_WINDOW_ID: MsDataDescriptionSpectralWindowIdColumn
-
-
-@dataclass
-class MsDataDescriptionTable(Table):
-    coldesc: MsDataDescriptionTableColumnDescription

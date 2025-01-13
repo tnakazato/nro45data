@@ -33,7 +33,7 @@ def build_ms2_subtable(msfile: str, subtable_name: str, table_desc: dict):
 
 def build_ms2_main(msfile: str):
     table_desc = MsMainTable.as_dict()
-    build_table(msfile, table_desc["coldesc"])
+    build_table(msfile, table_desc)
     put_table_keyword(msfile, "MS_VERSION", 2.0)
     LOG.info("created %s MAIN", msfile)
 
@@ -59,5 +59,5 @@ def build_ms2(msfile: str):
         ("WEATHER", MsWeatherTable),
     ]
     for subtable_name, table_schema in subtables:
-        build_ms2_subtable(msfile, subtable_name, table_schema.as_dict()["coldesc"])
+        build_ms2_subtable(msfile, subtable_name, table_schema.as_dict())
     LOG.info("created %s", msfile)

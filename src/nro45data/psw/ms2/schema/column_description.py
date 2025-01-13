@@ -76,10 +76,3 @@ class FixedDirectionColumn(ArrayColumn):
             "QuantumUnits": np.array(["rad", "rad"]),
         }
     )
-
-
-@dataclass
-class ColumnDescription:
-    @classmethod
-    def as_dict(cls):
-        return dict((f.name, asdict(f.type())) for f in fields(cls))

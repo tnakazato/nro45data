@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .column_description import ColumnDescription, ScalarColumn
+from .column_description import ScalarColumn
 from .table import Table
 
 
@@ -35,14 +35,9 @@ class MsProcessorSubTypeColumn(ScalarColumn):
 
 
 @dataclass
-class MsProcessorTableColumnDescription(ColumnDescription):
+class MsProcessorTable(Table):
     FLAG_ROW: MsProcessorFlagRowColumn
     MODE_ID: MsProcessorModeIdColumn
     TYPE: MsProcessorTypeColumn
     TYPE_ID: MsProcessorTypeIdColumn
     SUB_TYPE: MsProcessorSubTypeColumn
-
-
-@dataclass
-class MsProcessorTable(Table):
-    coldesc: MsProcessorTableColumnDescription

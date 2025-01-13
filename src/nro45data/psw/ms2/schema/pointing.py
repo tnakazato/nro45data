@@ -3,8 +3,11 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from .column_description import (
-    ChronoColumn, ColumnDescription, DirectionColumn,
-    DurationColumn, FixedDirectionColumn, ScalarColumn
+    ChronoColumn,
+    DirectionColumn,
+    DurationColumn,
+    FixedDirectionColumn,
+    ScalarColumn
 )
 from .table import Table
 
@@ -96,7 +99,7 @@ class MsPointingOnSourceColumn(ScalarColumn):
 
 
 @dataclass
-class MsPointingTableColumnDescription(ColumnDescription):
+class MsPointingTable(Table):
     ANTENNA_ID: MsPointingAntennaIdColumn
     DIRECTION: MsPointingDirectionColumn
     INTERVAL: MsPointingIntervalColumn
@@ -109,8 +112,3 @@ class MsPointingTableColumnDescription(ColumnDescription):
     SOURCE_OFFSET: MsPointingSourceOffsetColumn
     ENCODER: MsPointingEncoderColumn
     ON_SOURCE: MsPointingOnSourceColumn
-
-
-@dataclass
-class MsPointingTable(Table):
-    coldesc: MsPointingTableColumnDescription

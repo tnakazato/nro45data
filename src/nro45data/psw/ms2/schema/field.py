@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .column_description import ChronoColumn, ColumnDescription, DirectionColumn, ScalarColumn
+from .column_description import ChronoColumn, DirectionColumn, ScalarColumn
 from .table import Table
 
 
@@ -58,7 +58,7 @@ class MsFieldReferenceDirColumn(DirectionColumn):
 
 
 @dataclass
-class MsFieldTableColumnDescription(ColumnDescription):
+class MsFieldTable(Table):
     CODE: MsFieldCodeColumn
     FLAG_ROW: MsFieldFlagRowColumn
     NAME: MsFieldNameColumn
@@ -68,8 +68,3 @@ class MsFieldTableColumnDescription(ColumnDescription):
     PHASE_DIR: MsFieldPhaseDirColumn
     DELAY_DIR: MsFieldDelayDirColumn
     REFERENCE_DIR: MsFieldReferenceDirColumn
-
-
-@dataclass
-class MsFieldTable(Table):
-    coldesc: MsFieldTableColumnDescription
