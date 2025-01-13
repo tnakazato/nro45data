@@ -10,7 +10,7 @@ from ._utils import get_checker
 
 @pytest.fixture(scope="module")
 def tb(msfile):
-    antenna_table = os.path.join(msfile, 'ANTENNA')
+    antenna_table = os.path.join(msfile, "ANTENNA")
     assert os.path.exists(antenna_table)
 
     with open_table(antenna_table, read_only=True) as _tb:
