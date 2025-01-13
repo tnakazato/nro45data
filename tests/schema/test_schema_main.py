@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pytest
 
-from nro45data.psw.ms2._casa import open_table, _table
+from nro45data.psw.ms2._casa import open_table
 
 from ._utils import get_checker
 
