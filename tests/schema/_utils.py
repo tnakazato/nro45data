@@ -44,7 +44,7 @@ class ColumnDescriptionChecker:
         return self.kw["MEASINFO"]["Ref"] if self.is_meas() else None
 
     def get_meas_unit(self):
-        return self.kw["QuantumUnits"] if self.is_meas() else None
+        return self.kw.get("QuantumUnits", None)
 
     def is_epoch_meas(self):
         return self.is_meas() and (self.get_meas_type() == "epoch")
@@ -57,6 +57,13 @@ class ColumnDescriptionChecker:
 
     def is_uvw_meas(self):
         return self.is_meas() and self.get_meas_type() == "uvw"
+
+    def is_frequency_meas(self):
+        return self.is_meas() and self.get_meas_type() == "frequency"
+
+    def is_velocity_meas(self):
+        return self.is_meas() and self.get_meas_type() == "radialvelocity"
+
 
 
 def get_checker(tb: "_table", name: str) -> ColumnDescriptionChecker:
