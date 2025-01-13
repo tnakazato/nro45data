@@ -67,7 +67,7 @@ jobs:
         uses: microsoft/action-python@0.7.0
         with:
           pytest: true
-          python_version: 3.12
+          python_version: 3.10
           workdir: '.'
 
 #   validation:
