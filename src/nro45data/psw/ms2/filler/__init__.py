@@ -59,6 +59,10 @@ def fill_processor(msfile: str, hdu: "BinTableHDU"):
     _fill_processor_columns(msfile, columns)
 
 
+def fill_nothing(msfile: str, hdu: "BinTableHDU"):
+    pass
+
+
 def fill_ms2(msfile: str, hdu: "BinTableHDU"):
     if not os.path.exists(msfile):
         FileNotFoundError("MS must be built before calling fill_ms2")
@@ -77,7 +81,9 @@ def fill_ms2(msfile: str, hdu: "BinTableHDU"):
         'SPECTRAL_WINDOW': fill_spectral_window,
         'STATE': fill_state,
         'SYSCAL': fill_syscal,
-        'WEATHER': fill_weather
+        'WEATHER': fill_weather,
+        'FLAG_CMD': fill_nothing,
+        'HISTORY': fill_nothing,
     }
     for subtable_name, filler_method in subtable_filler_methods.items():
         filler_method(msfile, hdu)
