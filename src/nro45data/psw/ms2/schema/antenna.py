@@ -1,4 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+import numpy as np
 
 from .column_description import PositionColumn, ScalarColumn
 from .table import Table
@@ -23,13 +25,14 @@ class MsAntennaTypeColumn(ScalarColumn):
 @dataclass
 class MsAntennaDishDiameterColumn(ScalarColumn):
     comment: str = "Physical diameter of dish"
+    keywords: dict = field(default_factory=lambda: {'QuantumUnits': np.array(['m'])})
     valueType: str = "double"
 
 
 @dataclass
 class MsAntennaFlagRowColumn(ScalarColumn):
     comment: str = "Flag for this row"
-    valueType: str = "bool"
+    valueType: str = "boolean"
 
 
 @dataclass

@@ -71,6 +71,8 @@ def test_antenna_schema_dish_diameter(tb):
     col = get_checker(tb, "DISH_DIAMETER")
     assert col.is_scalar()
     assert col.get_type() == "double"
+    assert len(col.get_meas_unit()) == 1
+    assert np.all(col.get_meas_unit() == "m")
 
 
 def test_antenna_schema_flag_row(tb):

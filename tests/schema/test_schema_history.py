@@ -54,7 +54,7 @@ def test_history_schema_origin(tb):
 def test_history_schema_object_id(tb):
     col = get_checker(tb, "OBJECT_ID")
     assert col.is_scalar()
-    assert col.get_type() == "string"
+    assert col.get_type() == "int"
 
 
 def test_history_schema_application(tb):

@@ -31,7 +31,7 @@ class MsHistoryMessageColumn(ScalarColumn):
 @dataclass
 class MsHitoryObjectIdColumn(ScalarColumn):
     comment: str = "Originating ObjectID"
-    valueType: str = "string"
+    valueType: str = "int"
 
 
 @dataclass
