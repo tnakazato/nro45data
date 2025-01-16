@@ -28,8 +28,8 @@ def test_weather_schema_time(tb):
     assert col.is_scalar()
     assert col.is_epoch_meas()
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 
@@ -42,8 +42,8 @@ def test_weather_schema_interval(tb):
 def test_weather_schema_pressure(tb):
     col = get_checker(tb, "PRESSURE")
     assert col.is_scalar()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'hPa'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'hPa'
     assert col.get_type() == "float"
 
 
@@ -56,8 +56,8 @@ def test_weather_schema_pressure_flag(tb):
 def test_weather_schema_rel_humidity(tb):
     col = get_checker(tb, "REL_HUMIDITY")
     assert col.is_scalar()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == '%'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == '%'
     assert col.get_type() == "float"
 
 
@@ -70,8 +70,8 @@ def test_weather_schema_rel_humidity_flag(tb):
 def test_weather_schema_temperature(tb):
     col = get_checker(tb, "TEMPERATURE")
     assert col.is_scalar()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'K'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'K'
     assert col.get_type() == "float"
 
 
@@ -84,8 +84,8 @@ def test_weather_schema_temperature_flag(tb):
 def test_weather_schema_dew_point(tb):
     col = get_checker(tb, "DEW_POINT")
     assert col.is_scalar()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'K'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'K'
     assert col.get_type() == "float"
 
 
@@ -98,8 +98,8 @@ def test_weather_schema_dew_point_flag(tb):
 def test_weather_schema_wind_direction(tb):
     col = get_checker(tb, "WIND_DIRECTION")
     assert col.is_scalar()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'rad'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'rad'
     assert col.get_type() == "float"
 
 
@@ -112,8 +112,8 @@ def test_weather_schema_wind_direction_flag(tb):
 def test_weather_schema_wind_speed(tb):
     col = get_checker(tb, "WIND_SPEED")
     assert col.is_scalar()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'm/s'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'm/s'
     assert col.get_type() == "float"
 
 

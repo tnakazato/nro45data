@@ -47,8 +47,8 @@ def test_antenna_schema_position(tb):
     assert col.is_position_meas()
     assert col.get_ndim() == 1
     assert col.get_meas_ref() == "ITRF"
-    assert len(col.get_meas_unit()) == 3
-    assert np.all(col.get_meas_unit() == "m")
+    assert len(col.get_unit()) == 3
+    assert np.all(col.get_unit() == "m")
     assert len(col.get_shape()) == 1
     assert col.get_shape()[0] == 3
     assert col.get_type() == "double"
@@ -60,8 +60,8 @@ def test_antenna_schema_offset(tb):
     assert col.is_position_meas()
     assert col.get_ndim() == 1
     assert col.get_meas_ref() == "ITRF"
-    assert len(col.get_meas_unit()) == 3
-    assert np.all(col.get_meas_unit() == "m")
+    assert len(col.get_unit()) == 3
+    assert np.all(col.get_unit() == "m")
     assert len(col.get_shape()) == 1
     assert col.get_shape()[0] == 3
     assert col.get_type() == "double"
@@ -71,8 +71,8 @@ def test_antenna_schema_dish_diameter(tb):
     col = get_checker(tb, "DISH_DIAMETER")
     assert col.is_scalar()
     assert col.get_type() == "double"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "m")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "m")
 
 
 def test_antenna_schema_flag_row(tb):

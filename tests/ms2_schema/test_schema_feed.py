@@ -40,8 +40,8 @@ def test_feed_schema_time(tb):
     assert col.is_scalar()
     assert col.is_epoch_meas()
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 
@@ -69,8 +69,8 @@ def test_feed_schema_beam_offset(tb):
     assert col.is_direction_meas()
     assert col.get_ndim() == 2
     assert col.get_meas_ref() == "J2000"
-    assert len(col.get_meas_unit()) == 2
-    assert np.all(col.get_meas_unit() == "rad")
+    assert len(col.get_unit()) == 2
+    assert np.all(col.get_unit() == "rad")
     assert col.get_type() == "double"
 
 
@@ -94,8 +94,8 @@ def test_feed_schema_position(tb):
     assert col.is_position_meas()
     assert col.get_ndim() == 1
     assert col.get_meas_ref() == "ITRF"
-    assert len(col.get_meas_unit()) == 3
-    assert np.all(col.get_meas_unit() == "m")
+    assert len(col.get_unit()) == 3
+    assert np.all(col.get_unit() == "m")
     assert len(col.get_shape()) == 1
     assert col.get_shape()[0] == 3
     assert col.get_type() == "double"

@@ -22,8 +22,8 @@ def test_pointing_schema_time(tb):
     assert col.is_scalar()
     assert col.is_epoch_meas()
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 
@@ -50,8 +50,8 @@ def test_pointing_schema_time_origin(tb):
     assert col.is_scalar()
     assert col.is_epoch_meas()
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 
@@ -61,8 +61,8 @@ def test_pointing_schema_direction(tb):
     assert col.is_direction_meas()
     assert col.get_ndim() == 2
     assert col.get_meas_ref() == "AZELGEO"
-    assert len(col.get_meas_unit()) == 2
-    assert np.all(col.get_meas_unit() == "rad")
+    assert len(col.get_unit()) == 2
+    assert np.all(col.get_unit() == "rad")
     assert col.get_type() == "double"
 
 
@@ -72,8 +72,8 @@ def test_pointing_schema_target(tb):
     assert col.is_direction_meas()
     assert col.get_ndim() == 2
     assert col.get_meas_ref() == "AZELGEO"
-    assert len(col.get_meas_unit()) == 2
-    assert np.all(col.get_meas_unit() == "rad")
+    assert len(col.get_unit()) == 2
+    assert np.all(col.get_unit() == "rad")
     assert col.get_type() == "double"
 
 
@@ -83,8 +83,8 @@ def test_pointing_schema_source_offset(tb):
     assert col.is_direction_meas()
     assert col.get_ndim() == 2
     assert col.get_meas_ref() == "J2000"
-    assert len(col.get_meas_unit()) == 2
-    assert np.all(col.get_meas_unit() == "rad")
+    assert len(col.get_unit()) == 2
+    assert np.all(col.get_unit() == "rad")
     assert col.get_type() == "double"
 
 
@@ -94,8 +94,8 @@ def test_pointing_schema_encoder(tb):
     assert col.is_direction_meas()
     assert col.get_ndim() == 1
     assert col.get_meas_ref() == "AZELGEO"
-    assert len(col.get_meas_unit()) == 2
-    assert np.all(col.get_meas_unit() == "rad")
+    assert len(col.get_unit()) == 2
+    assert np.all(col.get_unit() == "rad")
     assert col.get_type() == "double"
 
 

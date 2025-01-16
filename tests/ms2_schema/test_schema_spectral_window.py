@@ -33,8 +33,8 @@ def test_spectral_window_schema_ref_frequency(tb):
     col = get_checker(tb, "REF_FREQUENCY")
     assert col.is_scalar()
     assert col.is_frequency_meas()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'Hz'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'Hz'
     assert col.get_type() == "double"
 
 
@@ -42,8 +42,8 @@ def test_spectral_window_schema_chan_freq(tb):
     col = get_checker(tb, "CHAN_FREQ")
     assert col.is_array()
     assert col.is_frequency_meas()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'Hz'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'Hz'
     assert col.get_ndim() == 1
     assert col.get_type() == "double"
 
@@ -51,8 +51,8 @@ def test_spectral_window_schema_chan_freq(tb):
 def test_spectral_window_schema_chan_width(tb):
     col = get_checker(tb, "CHAN_WIDTH")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'Hz'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'Hz'
     assert col.get_ndim() == 1
     assert col.get_type() == "double"
 
@@ -66,8 +66,8 @@ def test_spectral_window_schema_meas_freq_ref(tb):
 def test_spectral_window_schema_effective_bw(tb):
     col = get_checker(tb, "EFFECTIVE_BW")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'Hz'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'Hz'
     assert col.get_ndim() == 1
     assert col.get_type() == "double"
 
@@ -75,8 +75,8 @@ def test_spectral_window_schema_effective_bw(tb):
 def test_spectral_window_schema_resolution(tb):
     col = get_checker(tb, "RESOLUTION")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'Hz'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'Hz'
     assert col.get_ndim() == 1
     assert col.get_type() == "double"
 
@@ -84,8 +84,8 @@ def test_spectral_window_schema_resolution(tb):
 def test_spectral_window_schema_total_bandwidth(tb):
     col = get_checker(tb, "TOTAL_BANDWIDTH")
     assert col.is_scalar()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'Hz'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'Hz'
     assert col.get_type() == "double"
 
 

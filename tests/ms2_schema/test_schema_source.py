@@ -28,8 +28,8 @@ def test_source_schema_time(tb):
     assert col.is_scalar()
     assert col.is_epoch_meas()
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 
@@ -75,8 +75,8 @@ def test_source_schema_direction(tb):
     assert col.is_direction_meas()
     assert col.get_ndim() == 1
     assert col.get_meas_ref() == "J2000"
-    assert len(col.get_meas_unit()) == 2
-    assert np.all(col.get_meas_unit() == "rad")
+    assert len(col.get_unit()) == 2
+    assert np.all(col.get_unit() == "rad")
     assert col.get_type() == "double"
 
 
@@ -86,8 +86,8 @@ def test_source_schema_position(tb):
     assert col.is_position_meas()
     assert col.get_ndim() == 1
     assert col.get_meas_ref() == "ITRF"
-    assert len(col.get_meas_unit()) == 3
-    assert np.all(col.get_meas_unit() == "m")
+    assert len(col.get_unit()) == 3
+    assert np.all(col.get_unit() == "m")
     assert len(col.get_shape()) == 1
     assert col.get_shape()[0] == 3
     assert col.get_type() == "double"
@@ -97,8 +97,8 @@ def test_source_schema_proper_motion(tb):
     col = get_checker(tb, "PROPER_MOTION")
     assert col.is_array()
     assert col.get_ndim() == 1
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "rad/s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "rad/s")
     assert len(col.get_shape()) == 1
     assert col.get_shape()[0] == 2
     assert col.get_type() == "double"
@@ -116,8 +116,8 @@ def test_source_schema_rest_frequency(tb):
     assert col.is_array()
     assert col.is_frequency_meas()
     assert col.get_meas_ref() == "LSRK"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "Hz")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "Hz")
     assert col.get_ndim() == 1
     assert col.get_type() == "double"
 
@@ -127,7 +127,7 @@ def test_source_schema_sysvel(tb):
     assert col.is_array()
     assert col.is_velocity_meas()
     assert col.get_meas_ref() == "LSRK"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "m/s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "m/s")
     assert col.get_ndim() == 1
     assert col.get_type() == "double"

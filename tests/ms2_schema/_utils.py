@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 if TYPE_CHECKING:
     from nro45data.psw.ms2._casa import _table
 
@@ -32,7 +34,7 @@ class ColumnDescriptionChecker:
         return self.desc.get("shape", None)
 
     def get_unit(self):
-        return self.desc.get("QuantumUnit", None)
+        return np.array(self.kw.get("QuantumUnits", None))
 
     def is_meas(self):
         return "MEASINFO" in self.kw
@@ -42,9 +44,6 @@ class ColumnDescriptionChecker:
 
     def get_meas_ref(self):
         return self.kw["MEASINFO"]["Ref"] if self.is_meas() else None
-
-    def get_meas_unit(self):
-        return self.kw.get("QuantumUnits", None)
 
     def is_epoch_meas(self):
         return self.is_meas() and (self.get_meas_type() == "epoch")

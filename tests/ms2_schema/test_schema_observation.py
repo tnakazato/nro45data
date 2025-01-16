@@ -31,8 +31,8 @@ def test_observation_schema_time_range(tb):
     assert len(col.get_shape()) == 1
     assert col.get_shape()[0] == 2
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 
@@ -71,8 +71,8 @@ def test_observation_schema_release_date(tb):
     assert col.is_scalar()
     assert col.is_epoch_meas()
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 

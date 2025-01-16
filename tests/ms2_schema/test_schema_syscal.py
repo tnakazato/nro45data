@@ -40,8 +40,8 @@ def test_syscal_schema_time(tb):
     assert col.is_scalar()
     assert col.is_epoch_meas()
     assert col.get_meas_ref() == "UTC"
-    assert len(col.get_meas_unit()) == 1
-    assert np.all(col.get_meas_unit() == "s")
+    assert len(col.get_unit()) == 1
+    assert np.all(col.get_unit() == "s")
     assert col.get_type() == "double"
 
 
@@ -54,8 +54,8 @@ def test_syscal_schema_interval(tb):
 def test_syscal_schema_tcal_spectrum(tb):
     col = get_checker(tb, "TCAL_SPECTRUM")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'K'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'K'
     assert col.get_ndim() == 2
     assert col.get_type() == "float"
 
@@ -69,8 +69,8 @@ def test_syscal_schema_tcal_flag(tb):
 def test_syscal_schema_trx_spectrum(tb):
     col = get_checker(tb, "TRX_SPECTRUM")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'K'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'K'
     assert col.get_ndim() == 2
     assert col.get_type() == "float"
 
@@ -84,8 +84,8 @@ def test_syscal_schema_trx_flag(tb):
 def test_syscal_schema_tsky_spectrum(tb):
     col = get_checker(tb, "TSKY_SPECTRUM")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'K'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'K'
     assert col.get_ndim() == 2
     assert col.get_type() == "float"
 
@@ -99,8 +99,8 @@ def test_syscal_schema_tsky_flag(tb):
 def test_syscal_schema_tsys_spectrum(tb):
     col = get_checker(tb, "TSYS_SPECTRUM")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'K'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'K'
     assert col.get_ndim() == 2
     assert col.get_type() == "float"
 
@@ -114,8 +114,8 @@ def test_syscal_schema_tsys_flag(tb):
 def test_syscal_schema_tant_spectrum(tb):
     col = get_checker(tb, "TANT_SPECTRUM")
     assert col.is_array()
-    assert len(col.get_meas_unit()) == 1
-    assert col.get_meas_unit()[0] == 'K'
+    assert len(col.get_unit()) == 1
+    assert col.get_unit()[0] == 'K'
     assert col.get_ndim() == 2
     assert col.get_type() == "float"
 
