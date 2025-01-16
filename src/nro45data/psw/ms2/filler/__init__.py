@@ -2,6 +2,7 @@ import logging
 import os
 from typing import TYPE_CHECKING
 
+import nro45data.psw.ms2._casa as _casa
 from .antenna import _fill_antenna_columns, _get_antenna_columns
 from .data_description import _fill_data_description_columns, _get_data_description_columns
 from .feed import _fill_feed_columns, _get_feed_columns
@@ -63,16 +64,22 @@ def fill_ms2(msfile: str, hdu: "BinTableHDU"):
         FileNotFoundError("MS must be built before calling fill_ms2")
 
     fill_main(msfile, hdu)
-    fill_antenna(msfile, hdu)
-    fill_data_description(msfile, hdu)
-    fill_feed(msfile, hdu)
-    fill_field(msfile, hdu)
-    fill_observation(msfile, hdu)
-    fill_pointing(msfile, hdu)
-    fill_polarization(msfile, hdu)
-    fill_processor(msfile, hdu)
-    fill_source(msfile, hdu)
-    fill_spectral_window(msfile, hdu)
-    fill_state(msfile, hdu)
-    fill_syscal(msfile, hdu)
-    fill_weather(msfile, hdu)
+    subtable_filler_methods = {
+        'ANTENNA': fill_antenna,
+        'DATA_DESCRIPTION': fill_data_description,
+        'FEED': fill_feed,
+        'FIELD': fill_field,
+        'OBSERVATION': fill_observation,
+        'POINTING': fill_pointing,
+        'POLARIZATION': fill_polarization,
+        'PROCESSOR': fill_processor,
+        'SOURCE': fill_source,
+        'SPECTRAL_WINDOW': fill_spectral_window,
+        'STATE': fill_state,
+        'SYSCAL': fill_syscal,
+        'WEATHER': fill_weather
+    }
+    for subtable_name, filler_method in subtable_filler_methods.items():
+        filler_method(msfile, hdu)
+        subtable_path = os.path.join(msfile, subtable_name)
+        _casa.put_table_keyword(msfile, subtable_name, f"Table: {subtable_path}")
