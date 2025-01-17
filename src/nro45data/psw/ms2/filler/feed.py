@@ -41,6 +41,9 @@ def _get_feed_columns(hdu: "BinTableHDU") -> dict:
         _pol_type = ["X", "Y"]
     elif rx_str[0][-1] in ("R", "L"):
         _pol_type = ["R", "L"]
+    else:
+        # fall back to ["X", "Y"]
+        _pol_type = ["X", "Y"]
     pol_type = [np.array(_pol_type) for _ in range(num_beam)]
 
     pol_response = [np.zeros((2, 2), dtype=complex) for _ in range(num_beam)]
