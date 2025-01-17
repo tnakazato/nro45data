@@ -37,13 +37,20 @@ def _get_syscal_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
         LOG.info("array_sub_list %s", array_sub_list)
         tsys_sub_list = tsys[rows]
 
-        for dd_id, (_, conf) in enumerate(array_conf.items()):
+        for _, conf in array_conf.items():
+            spw_conf, beam, pol_list, array_list = conf
+
             # ANTENNA_ID: beam_id
             beam_number = conf[1]
             antenna_id = beam_list.index(beam_number)
 
             # FEED_ID: always 0
             feed_id = 0
+
+            # DATA_DESC_ID
+            dd_id_set = set(array_dd_map[a] for a in array_list)
+            assert len(dd_id_set) == 1
+            dd_id = dd_id_set.pop()
 
             # SPECTRAL_WINDOW_ID
             spw_id = dd_dict[dd_id][0]
@@ -55,9 +62,9 @@ def _get_syscal_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
             syscal_interval = syscal_nominal_interval
 
             # TSYS_SPECTRUM
-            spw_conf = conf[0]
+            # spw_conf = conf[0]
             nchan = spw_conf[2]
-            array_list = conf[3]
+            # array_list = conf[3]
             npol = len(array_list)
             tsys_spectrum = np.zeros((npol, nchan), dtype=float)
             tsys_flag_per_pol = np.zeros(npol, dtype=bool)
