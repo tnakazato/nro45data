@@ -12,14 +12,15 @@ import pytest
 
 from nro45data.psw import nqm2fits
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+# DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+from . import _utils
 
 
 @pytest.mark.skip(reason="test data not registered yet")
 def test_nqm2fits():
     """test nqm2fits"""
-    nqmfile = os.path.join(DATA_DIR, "T12tztu.140321203430.01.nqm")
-    fitsfile = "test.fits"
+    nqmfile = os.path.join(_utils._get_data_dir(), "T12tztu.140321203430.01.nqm")
+    fitsfile = _utils._generate_random_name(suffix='fits')
     status = nqm2fits(nqmfile, fitsfile, overwrite=True)
     assert status is True
     fitsdata = fits.open(fitsfile)
