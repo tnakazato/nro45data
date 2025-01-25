@@ -44,3 +44,15 @@ def convert_str_angle_to_rad(angle_str: str) -> float:
 def put_table_keyword(table_name: str, keyword: str, value: Any):
     with open_table(table_name, read_only=False) as tb:
         tb.putkeyword(keyword, value)
+
+def datestr2mjd(date_str: str) -> float:
+    """Convert datetime string into MJD in sec.
+
+    Args:
+        date_str: datetime string YYYY/MM/DD HH:MM:SS
+
+    Returns:
+        MJD in sec
+    """
+    q = _quanta.quantity(date_str)
+    return q.get("s").get_value()

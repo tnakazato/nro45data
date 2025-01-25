@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from .._casa import open_table
+from .._casa import open_table, datestr2mjd
 from .utils import fix_nrow_to
 
 if TYPE_CHECKING:
@@ -20,10 +20,15 @@ def _get_observation_columns(hdu: "BinTableHDU") -> dict:
     LOG.debug("telescope_name: %s", telescope_name)
 
     # TIME_RANGE
+    # NOTE: sstr and estr are in JST
     start_time_card = [x for x in history_cards if x.startswith("NEWSTAR START-TIME")]
-    start_time = float(start_time_card[0].split("=")[-1].strip(" '"))
+    sstr = start_time_card[0].split("=")[-1].strip(" '")
+    datestr = sstr[0:4] + "/" + sstr[4:6] + "/" + sstr[6:8] + " " + sstr[8:10] + ":" + sstr[10:12] + ":" + sstr[12:14]
+    start_time = datestr2mjd(datestr) - 9 * 3600
     end_time_card = [x for x in history_cards if x.startswith("NEWSTAR END-TIME")]
-    end_time = float(end_time_card[0].split("=")[-1].strip(" '"))
+    estr = end_time_card[0].split("=")[-1].strip(" '")
+    datestr = estr[0:4] + "/" + estr[4:6] + "/" + estr[6:8] + " " + estr[8:10] + ":" + estr[10:12] + ":" + estr[12:14]
+    end_time = datestr2mjd(datestr) - 9 * 3600
     time_range = np.array([start_time, end_time])
     LOG.debug("time_range: %s", time_range)
 
