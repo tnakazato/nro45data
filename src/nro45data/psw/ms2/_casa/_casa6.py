@@ -1,4 +1,5 @@
 import contextlib
+import datetime
 from typing import Any
 
 try:
@@ -61,3 +62,28 @@ def datestr2mjd(date_str: str) -> float:
     """
     q = _quanta.quantity(date_str)
     return _quanta.convert(q, "s")["value"]
+
+
+def mjd2datetime(mjd: float) -> datetime.datetime:
+    """Convert MJD time in sec to datetime object.
+
+    Args:
+        mjd: MJD time in sec
+
+    Returns:
+        datetime object
+    """
+    qa = _quanta
+    qtime = qa.quantity(mjd, "s")
+    dtdict = qa.splitdate(qtime)
+    dtobj = datetime.datetime(
+        dtdict["year"],
+        dtdict["month"],
+        dtdict["monthday"],
+        dtdict["hour"],
+        dtdict["min"],
+        dtdict["sec"],
+        dtdict["usec"]
+    )
+
+    return dtobj

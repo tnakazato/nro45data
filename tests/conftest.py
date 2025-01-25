@@ -33,7 +33,7 @@ def unit_test_mocks(monkeypatch: None):
     pass
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def data_dir() -> str:
     """Return the path to the data directory."""
     return os.path.join(os.path.dirname(__file__), "data")
