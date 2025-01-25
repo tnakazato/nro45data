@@ -55,13 +55,13 @@ def test_ms2_structure_h40(msfile):
     with open_table(os.path.join(msfile, "OBSERVATION")) as tb:
         assert tb.nrows() == 1
         time_range = tb.getcell("TIME_RANGE", 0)
-        # start time: 2024/09/26 00:58:54
-        # end time: 2024/09/26 01:03:50
-        start_expected = datetime.datetime(2024, 9, 26, 0, 58, 54)
+        # start time: 2024/09/25 15:58:54
+        # end time: 2024/09/25 16:03:50
+        start_expected = datetime.datetime(2024, 9, 25, 15, 58, 54, tzinfo=datetime.UTC)
         start_time = mjd2datetime(time_range[0])
         assert start_time == start_expected
 
-        end_expected = datetime.datetime(2024, 9, 26, 1, 3, 50)
+        end_expected = datetime.datetime(2024, 9, 25, 16, 3, 50, tzinfo=datetime.UTC)
         end_time = mjd2datetime(time_range[1])
         assert end_time == end_expected
 
@@ -105,13 +105,13 @@ def test_ms2_structure_h40(msfile):
         assert len(nonzero_intents) == 1
         assert "OBSERVE_TARGET#ON_SOURCE" in nonzero_intents.pop()
 
-        # start time: 2024/9/26 0:59:19, integration time 1sec
-        start_expected = datetime.datetime(2024, 9, 26, 0, 59, 19, 500000)
+        # start time: 2024/9/25 15:59:19, integration time 1sec
+        start_expected = datetime.datetime(2024, 9, 25, 15, 59, 19, 500000, tzinfo=datetime.UTC)
         start_time = mjd2datetime(tb.getcell("TIME", 0))
         assert start_time == start_expected
 
-        # end time: 2024/9/26 1:3:50, integration time 5sec
-        end_expected = datetime.datetime(2024, 9, 26, 1, 3, 47, 500000)
+        # end time: 2024/9/25 16:3:50, integration time 5sec
+        end_expected = datetime.datetime(2024, 9, 25, 16, 3, 47, 500000, tzinfo=datetime.UTC)
         end_time = mjd2datetime(tb.getcell("TIME", nrows - 1))
         assert end_time == end_expected
 

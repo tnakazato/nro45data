@@ -23,11 +23,15 @@ def _get_observation_columns(hdu: "BinTableHDU") -> dict:
     # NOTE: sstr and estr are in JST
     start_time_card = [x for x in history_cards if x.startswith("NEWSTAR START-TIME")]
     sstr = start_time_card[0].split("=")[-1].strip(" '")
+    LOG.debug("sstr: %s", sstr)
     datestr = sstr[0:4] + "/" + sstr[4:6] + "/" + sstr[6:8] + " " + sstr[8:10] + ":" + sstr[10:12] + ":" + sstr[12:14]
+    LOG.debug("formatted sstr: %s", datestr)
     start_time = datestr2mjd(datestr) - 9 * 3600
     end_time_card = [x for x in history_cards if x.startswith("NEWSTAR END-TIME")]
     estr = end_time_card[0].split("=")[-1].strip(" '")
+    LOG.debug("estr: %s", estr)
     datestr = estr[0:4] + "/" + estr[4:6] + "/" + estr[6:8] + " " + estr[8:10] + ":" + estr[10:12] + ":" + estr[12:14]
+    LOG.debug("formatted estr: %s", datestr)
     end_time = datestr2mjd(datestr) - 9 * 3600
     time_range = np.array([start_time, end_time])
     LOG.debug("time_range: %s", time_range)
