@@ -83,7 +83,8 @@ def mjd2datetime(mjd: float) -> datetime.datetime:
         dtdict["hour"],
         dtdict["min"],
         dtdict["sec"],
-        dtdict["usec"]
+        dtdict["usec"],
+        tzinfo=datetime.timezone.utc
     )
 
     return dtobj
