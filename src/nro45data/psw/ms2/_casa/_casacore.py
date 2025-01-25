@@ -70,6 +70,6 @@ def mjd2datetime(mjd: float) -> datetime.datetime:
     """
     qa = _quanta
     qtime = qa.quantity(mjd, "s")
-    dtobj = datetime.datetime.fromtimestamp(qtime.to_unix_time(), datetime.UTC)
+    dtobj = datetime.datetime.fromtimestamp(qtime.to_unix_time(), datetime.timezone.utc)
 
     return dtobj
