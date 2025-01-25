@@ -102,7 +102,7 @@ def get_array_configuration(hdu: "BinTableHDU"):
         for _ps in _pol_spec:
             freq_beam_pol_spec.append([f, b, _ps])
 
-    LOG.info("freq_beam_pol_spec: %s", pprint.pformat(freq_beam_pol_spec))
+    LOG.debug("freq_beam_pol_spec: %s", pprint.pformat(freq_beam_pol_spec))
 
     array_config = {}
     for fspec, beam_id, palist in freq_beam_pol_spec:

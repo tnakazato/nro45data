@@ -14,12 +14,19 @@ LOG = logging.getLogger(__name__)
 
 def pol_str_to_enum(pols: list[str]) -> int:
     if len(pols) == 1:
-        if pols[0][-1] in ("H", "V"):
+        pol_type = pols[0][-1]
+        if pol_type == "H":
             # XX
             return [9]
-        elif pols[0][-1] in ("R", "L"):
+        elif pol_type == "V":
+            # YY
+            return [12]
+        elif pol_type == "R":
             # RR
             return [5]
+        elif pol_type == "L":
+            # LL
+            return [8]
         else:
             AssertionError("polarization string must be any of 'H', 'V', 'R', 'L'")
     elif len(pols) == 2:
