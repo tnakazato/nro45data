@@ -10,6 +10,7 @@ In VSCode, Code Coverage is recorded in config.xml. Delete this file to reset re
 
 from __future__ import annotations
 
+import os
 from typing import List
 
 import pytest
@@ -30,3 +31,9 @@ def pytest_collection_modifyitems(items: list[Item]):
 def unit_test_mocks(monkeypatch: None):
     """Include Mocks here to execute all commands offline and fast."""
     pass
+
+
+@pytest.fixture
+def data_dir() -> str:
+    """Return the path to the data directory."""
+    return os.path.join(os.path.dirname(__file__), "data")

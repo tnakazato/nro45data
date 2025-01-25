@@ -6,24 +6,27 @@
 from __future__ import annotations
 
 import os
+import time
 
 import astropy.io.fits as fits
 import pytest
 
 from nro45data.psw import nqm2fits
 
-import _utils
 
-
-@pytest.mark.skip(reason="test data not registered yet")
-def test_nqm2fits():
+def test_nqm2fits(data_dir):
     """test nqm2fits"""
-    nqmfile = os.path.join(_utils._get_data_dir(), "T12tztu.140321203430.01.nqm")
-    fitsfile = _utils._generate_random_name(suffix='fits')
-    status = nqm2fits(nqmfile, fitsfile, overwrite=True)
-    assert status is True
-    fitsdata = fits.open(fitsfile)
-    os.remove(fitsfile)
+    nqmfile = "nmlh40.240926005833.01.nqm"
+    nqmpath = os.path.join(data_dir, nqmfile)
+    fitsfile = ".".join([nqmpath, time.strftime("%Y%M%dT%H%M%S"), 'fits'])
+    try:
+        status = nqm2fits(nqmpath, fitsfile, overwrite=True)
+        assert status is True
+        fitsdata = fits.open(fitsfile)
+        assert isinstance(fitsdata, fits.HDUList)
+        assert len(fitsdata) == 2
+    finally:
+        os.remove(fitsfile)
 
 
 @pytest.mark.unit
