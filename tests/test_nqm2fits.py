@@ -12,8 +12,7 @@ import pytest
 
 from nro45data.psw import nqm2fits
 
-# DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-from . import _utils
+import _utils
 
 
 @pytest.mark.skip(reason="test data not registered yet")
