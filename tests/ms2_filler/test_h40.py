@@ -14,8 +14,6 @@ except Exception:
 import nro45data.psw as psw
 from nro45data.psw.ms2._casa import open_table, mjd2datetime
 
-datetime_attributes = ("year", "month", "day", "hour", "minute", "second", "microsecond")
-
 
 @pytest.fixture(scope="module")
 def msfile(data_dir):
@@ -45,11 +43,11 @@ def test_ms2_structure_h40(msfile):
     print(f"msfile = {msfile}")
     assert os.path.exists(msfile)
 
-    # number of records = 76
-    # number of arrays = 4
-    # number of spectral windows = 4
-    # number of polarizations = 1
-    # number of beams = 1
+    num_records = 76
+    num_arrays = 4
+    num_spws = 4
+    num_pols = 1
+    num_beams = 1
 
     with open_table(os.path.join(msfile, "STATE")) as tb:
         intents_map = dict((i, v) for i, v in enumerate(tb.getcol("OBS_MODE")))
@@ -70,7 +68,7 @@ def test_ms2_structure_h40(msfile):
         assert abs((end_time - end_expected).total_seconds()) < 1e-3
 
     with open_table(os.path.join(msfile, "SPECTRAL_WINDOW")) as tb:
-        assert tb.nrows() == 4
+        assert tb.nrows() == num_spws
         nchan_map = dict((i, v) for i, v in enumerate(tb.getcol("NUM_CHAN")))
 
     # test polarization setup
@@ -78,22 +76,22 @@ def test_ms2_structure_h40(msfile):
         assert tb.nrows() == 1
         npol = tb.getcell("NUM_CORR", 0)
         corr_type = tb.getcell("CORR_TYPE", 0)
-        assert npol == 1
-        assert len(corr_type) == npol
-        assert corr_type[0] == 8
+        assert npol == num_pols
+        assert len(corr_type) == num_pols
+        assert corr_type[0] == 8  # RR
 
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
         # number of MS2 rows = 76
         nrows = tb.nrows()
-        assert nrows == 76
+        assert nrows == num_records // num_pols
 
         # scans = 0~18
         scans = tb.getcol("SCAN_NUMBER")
         # expected scans are [0, 0, 0, 0, 1, 1, ..., 18, 18, 18, 18]
-        num_arrays = 4
+        nrows_per_scan = num_arrays // num_pols * num_beams
         num_scans_expected = 19
-        scans_expected = np.concatenate([[i] * num_arrays for i in range(num_scans_expected)])
+        scans_expected = np.concatenate([[i] * nrows_per_scan for i in range(num_scans_expected)])
         assert np.all(scans == scans_expected)
 
         # intents = ZERO if scan number is 0
@@ -127,7 +125,7 @@ def test_ms2_structure_h40(msfile):
             dd_id = tb.getcell("DATA_DESC_ID", irow)
             spw_id = dd_id
             nchan = nchan_map[spw_id]
-            shape_expected = (npol, nchan)
+            shape_expected = (num_pols, nchan)
             assert float_data.shape == shape_expected
 
 
