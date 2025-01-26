@@ -39,7 +39,7 @@ def msfile(data_dir):
 
 
 # TODO: implement more detailed tests
-def test_ms2_structure_h40(msfile):
+def test_h40_ms2_structure(msfile):
     print(f"msfile = {msfile}")
     assert os.path.exists(msfile)
 
@@ -130,7 +130,7 @@ def test_ms2_structure_h40(msfile):
 
 
 @pytest.mark.skipif(_ms is None, reason="casatools is not available")
-def test_listobs(msfile):
+def test_h40_ms2_summary(msfile):
     ms = _ms()
     ms.open(msfile)
     try:
