@@ -9,10 +9,71 @@ on:
   workflow_dispatch:
 
 jobs:
-  validation:
-    uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
-    with:
-      workdir: '.'
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Black
+        uses: microsoft/action-python@0.7.0
+        with:
+          black: true
+          python_version: 3.12
+          workdir: '.'
+
+      - name: Bandit
+        uses: microsoft/action-python@0.7.0
+        with:
+          bandit: true
+          python_version: 3.12
+          workdir: '.'
+
+      - name: Pylint
+        uses: microsoft/action-python@0.7.0
+        with:
+          pylint: true
+          python_version: 3.12
+          workdir: '.'
+
+    #   - name: Pyright
+    #     uses: microsoft/action-python@0.7.0
+    #     with:
+    #       pyright: true
+
+      - name: Flake8
+        uses: microsoft/action-python@0.7.0
+        with:
+          flake8: true
+          python_version: 3.12
+          workdir: '.'
+
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CASA data directory
+        run: mkdir -p ~/.casa/data
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+
+      - name: install nro45data
+        run: pip install -e .[casa6,test]
+
+      - name: Pytest
+        run: pytest -v
+
+#   validation:
+#     needs: init_casadata
+#     uses: microsoft/action-python/.github/workflows/validation.yml@0.7.3
+#     with:
+#       workdir: '.'
 
 #   publish:
 #     uses: microsoft/action-python/.github/workflows/publish.yml@0.6.4

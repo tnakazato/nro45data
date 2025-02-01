@@ -4,11 +4,7 @@ if TYPE_CHECKING:
     from astropy.io.fits.hdu.hdulist import HDUList
 
 
-def _to_ms4(
-        hdulist: 'HDUList',
-        psfile: str,
-        overwrite: bool = False
-) -> bool:
+def _to_ms4(hdulist: "HDUList", psfile: str, overwrite: bool = False) -> bool:
     """Export HDUList to MeasurementSet v4 (ProcessingSet).
 
     Not implemented yet.

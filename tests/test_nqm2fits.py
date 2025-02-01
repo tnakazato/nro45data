@@ -6,31 +6,33 @@
 from __future__ import annotations
 
 import os
+import time
 
 import astropy.io.fits as fits
 import pytest
 
 from nro45data.psw import nqm2fits
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
-
-@pytest.mark.skip(reason='test data not registered yet')
-def test_nqm2fits():
+def test_nqm2fits(data_dir):
     """test nqm2fits"""
-    nqmfile = os.path.join(DATA_DIR, 'T12tztu.140321203430.01.nqm')
-    fitsfile = 'test.fits'
-    status = nqm2fits(nqmfile, fitsfile, overwrite=True)
-    assert status is True
-    fitsdata = fits.open(fitsfile)
-    os.remove(fitsfile)
+    nqmfile = "nmlh40.240926005833.01.nqm"
+    nqmpath = os.path.join(data_dir, nqmfile)
+    fitsfile = ".".join([nqmpath, time.strftime("%Y%M%dT%H%M%S"), 'fits'])
+    try:
+        status = nqm2fits(nqmpath, fitsfile, overwrite=True)
+        assert status is True
+        fitsdata = fits.open(fitsfile)
+        assert isinstance(fitsdata, fits.HDUList)
+        assert len(fitsdata) == 2
+    finally:
+        os.remove(fitsfile)
 
 
 @pytest.mark.unit
 def test_nqm2fits_invalid_nqmfile():
     """test nqm2fits with invalid nqmfile"""
-    nqmfile = 'invalid.nqm'
-    fitsfile = 'test.fits'
+    nqmfile = "invalid.nqm"
+    fitsfile = "test.fits"
     with pytest.raises(FileNotFoundError):
         nqm2fits(nqmfile, fitsfile, overwrite=True)
-

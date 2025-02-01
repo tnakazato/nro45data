@@ -26,6 +26,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+casa6 = [
+    "casatools"
+]
+casacore = [
+    "python-casacore"
+]
 spark = [
     "pyspark>=3.0.0"
 ]
@@ -178,6 +184,7 @@ limit-inference-results=100
 persistent="yes"
 suggestion-mode="yes"
 unsafe-load-any-extension="no"
+disable="W,C,R"
 
 [tool.pylint.'MESSAGES CONTROL']
 enable="c-extension-no-member"
