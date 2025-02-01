@@ -49,9 +49,14 @@ def _get_main_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
 
         array_sub_list = arryt[rows].tolist()
 
-        for dd_id, (_, conf) in enumerate(array_conf.items()):
+        for _, conf in array_conf.items():
             _, _, nchan = conf[0]
             array_list = conf[3]
+            dd_id_list = set([array_dd_map[_a] for _a in array_list])
+            if not len(dd_id_list) == 1:
+                raise RuntimeError(f"Mismatch of DATA_DESC_ID in dual-pol data: array {array_list}")
+
+            dd_id = dd_id_list.pop()
             dd_rows = [rows[array_sub_list.index(a)] if a in array_sub_list else -1 for a in array_list]
             npol = len(dd_rows)
 
