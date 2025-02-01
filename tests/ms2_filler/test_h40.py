@@ -88,8 +88,7 @@ def test_h40_ms2_structure(msfile):
 
         # scans = 0~18
         scans = tb.getcol("SCAN_NUMBER")
-        # expected scans are [0, 0, 0, 0, 1, 1, ..., 18, 18, 18, 18]
-        nrows_per_scan = num_arrays // num_pols * num_beams
+        nrows_per_scan = num_arrays // num_pols
         num_scans_expected = 19
         scans_expected = np.concatenate([[i] * nrows_per_scan for i in range(num_scans_expected)])
         assert np.all(scans == scans_expected)
@@ -107,13 +106,13 @@ def test_h40_ms2_structure(msfile):
         assert len(nonzero_intents) == 1
         assert "OBSERVE_TARGET#ON_SOURCE" in nonzero_intents.pop()
 
-        # start time: 2024/9/25 15:59:19, integration time 1sec
+        # start time of first integration: 2024/9/25 15:59:19, integration time 1sec
         start_expected = datetime.datetime(2024, 9, 25, 15, 59, 19, 500000, tzinfo=datetime.timezone.utc)
         start_time = mjd2datetime(tb.getcell("TIME", 0))
         # impose msec accuracy
         assert abs((start_time - start_expected).total_seconds()) < 1e-3
 
-        # end time: 2024/9/25 16:3:50, integration time 5sec
+        # start time of last integration: 2024/9/25 16:3:50, integration time 5sec
         end_expected = datetime.datetime(2024, 9, 25, 16, 3, 47, 500000, tzinfo=datetime.timezone.utc)
         end_time = mjd2datetime(tb.getcell("TIME", nrows - 1))
         # impose msec accuracy
