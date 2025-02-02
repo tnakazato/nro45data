@@ -47,6 +47,21 @@ def test_forest_ms2_structure(msfile):
     num_pols = 2
     num_beams = 4
 
+    with open_table(os.path.join(msfile, "ANTENNA")) as tb:
+        assert tb.nrows() == num_beams
+        for i in range(num_beams):
+            assert tb.getcell("NAME", i) == f"NRO45M-BEAM{i}"
+            assert tb.getcell("DISH_DIAMETER", i) == 45.0
+            assert tb.getcell("TYPE", i) == "GROUND-BASED"
+            assert tb.getcell("MOUNT", i) == "ALT-AZ"
+            assert tb.getcell("STATION", i) == "NRO45M"
+            offset = tb.getcell("OFFSET", i)
+            assert offset.shape == (3,)
+            assert np.all(offset == 0.0)
+            position = tb.getcell("POSITION", i)
+            assert position.shape == (3,)
+            assert np.allclose(position, np.array([-3871023.46, 3428106.87, 3724039.47]))
+
     with open_table(os.path.join(msfile, "STATE")) as tb:
         intents_map = dict((i, v) for i, v in enumerate(tb.getcol("OBS_MODE")))
 
