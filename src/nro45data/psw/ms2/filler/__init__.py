@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import nro45data.psw.ms2._casa as _casa
 from .antenna import fill_antenna
 from .data_description import fill_data_description
-from .feed import _fill_feed_columns, _get_feed_columns
+from .feed import fill_feed
 from .field import _fill_field_columns, _get_field_columns
 from .observation import _fill_observation_columns, _get_observation_columns
 from .polarization import _fill_polarization_columns, _get_polarization_columns
@@ -24,11 +24,6 @@ if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
 
 LOG = logging.getLogger(__name__)
-
-
-def fill_feed(msfile: str, hdu: BinTableHDU):
-    columns = _get_feed_columns(hdu)
-    _fill_feed_columns(msfile, columns)
 
 
 def fill_field(msfile: str, hdu: BinTableHDU):
