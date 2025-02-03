@@ -16,33 +16,33 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Black
-        uses: microsoft/action-python@0.7.0
+        uses: microsoft/action-python@0.7.3
         with:
           black: true
           python_version: 3.12
           workdir: '.'
 
       - name: Bandit
-        uses: microsoft/action-python@0.7.0
+        uses: microsoft/action-python@0.7.3
         with:
           bandit: true
           python_version: 3.12
           workdir: '.'
 
       - name: Pylint
-        uses: microsoft/action-python@0.7.0
+        uses: microsoft/action-python@0.7.3
         with:
           pylint: true
           python_version: 3.12
           workdir: '.'
 
     #   - name: Pyright
-    #     uses: microsoft/action-python@0.7.0
+    #     uses: microsoft/action-python@0.7.3
     #     with:
     #       pyright: true
 
       - name: Flake8
-        uses: microsoft/action-python@0.7.0
+        uses: microsoft/action-python@0.7.3
         with:
           flake8: true
           python_version: 3.12
