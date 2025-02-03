@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import logging
 import os
 from typing import TYPE_CHECKING
 
 import nro45data.psw.ms2._casa as _casa
-from .antenna import _fill_antenna_columns, _get_antenna_columns
+from .antenna import fill_antenna  # _fill_antenna_columns, _get_antenna_columns
 from .data_description import _fill_data_description_columns, _get_data_description_columns
 from .feed import _fill_feed_columns, _get_feed_columns
 from .field import _fill_field_columns, _get_field_columns
@@ -24,46 +26,46 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def fill_antenna(msfile: str, hdu: "BinTableHDU"):
-    columns = _get_antenna_columns(hdu)
-    _fill_antenna_columns(msfile, columns)
+# def fill_antenna(msfile: str, hdu: BinTableHDU):
+#     columns = _get_antenna_columns(hdu)
+#     _fill_antenna_columns(msfile, columns)
 
 
-def fill_data_description(msfile: str, hdu: "BinTableHDU"):
+def fill_data_description(msfile: str, hdu: BinTableHDU):
     columns = _get_data_description_columns(hdu)
     _fill_data_description_columns(msfile, columns)
 
 
-def fill_feed(msfile: str, hdu: "BinTableHDU"):
+def fill_feed(msfile: str, hdu: BinTableHDU):
     columns = _get_feed_columns(hdu)
     _fill_feed_columns(msfile, columns)
 
 
-def fill_field(msfile: str, hdu: "BinTableHDU"):
+def fill_field(msfile: str, hdu: BinTableHDU):
     columns = _get_field_columns(hdu)
     _fill_field_columns(msfile, columns)
 
 
-def fill_observation(msfile: str, hdu: "BinTableHDU"):
+def fill_observation(msfile: str, hdu: BinTableHDU):
     columns = _get_observation_columns(hdu)
     _fill_observation_columns(msfile, columns)
 
 
-def fill_polarization(msfile: str, hdu: "BinTableHDU"):
+def fill_polarization(msfile: str, hdu: BinTableHDU):
     columns = _get_polarization_columns(hdu)
     _fill_polarization_columns(msfile, columns)
 
 
-def fill_processor(msfile: str, hdu: "BinTableHDU"):
+def fill_processor(msfile: str, hdu: BinTableHDU):
     columns = _get_processor_columns(hdu)
     _fill_processor_columns(msfile, columns)
 
 
-def fill_nothing(msfile: str, hdu: "BinTableHDU"):
+def fill_nothing(msfile: str, hdu: BinTableHDU):
     pass
 
 
-def fill_ms2(msfile: str, hdu: "BinTableHDU"):
+def fill_ms2(msfile: str, hdu: BinTableHDU):
     if not os.path.exists(msfile):
         FileNotFoundError("MS must be built before calling fill_ms2")
 

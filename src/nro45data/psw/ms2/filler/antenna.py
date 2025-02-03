@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import logging
-from typing import TYPE_CHECKING
+from typing import Generator, TYPE_CHECKING
 
 import numpy as np
 
 from .._casa import open_table
-from .utils import fix_nrow_to, get_array_configuration
+from .utils import get_array_configuration, fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -12,72 +14,72 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_antenna_columns(hdu: "BinTableHDU") -> dict:
+def _get_antenna_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
+    """Provide antenna row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing antenna row information.
+    """
     array_conf = get_array_configuration(hdu)
     beam_list = np.unique(sorted([x[1] for x in array_conf.values()]))
     num_beam = len(beam_list)
 
-    # NAME
     antenna_name_base = hdu.header["TELESCOP"].strip()
-    antenna_name = np.array([f"{antenna_name_base}-BEAM{i}" for i in range(num_beam)])
-    LOG.debug("antenna_name: %s", antenna_name)
 
-    # POSITION
-    # in ITRF, from casadata/geodetic/Observatories table
-    antenna_position = np.array([-3871023.46, 3428106.87, 3724039.47])
-    position = np.zeros((3, num_beam), dtype=float)
-    position[0] = antenna_position[0]
-    position[1] = antenna_position[1]
-    position[2] = antenna_position[2]
-    LOG.debug("position: %s", position)
+    for i in range(num_beam):
+        # NAME
+        antenna_name = f"{antenna_name_base}-BEAM{i}"
+        LOG.debug("antenna_name: %s", antenna_name)
 
-    # OFFSET
-    offset = np.zeros(position.shape, dtype=float)
-    LOG.debug("offset: %s", offset)
+        # POSITION
+        # in ITRF, from casadata/geodetic/Observatories table
+        position = np.array([-3871023.46, 3428106.87, 3724039.47])
+        LOG.debug("position: %s", position)
 
-    # DIAMETER
-    diameter = np.array([45.0] * num_beam)
+        # OFFSET
+        offset = np.zeros(position.shape, dtype=float)
+        LOG.debug("offset: %s", offset)
 
-    # TYPE
-    antenna_type = np.array(["GROUND-BASED"] * num_beam)
-    LOG.debug("antenna_type: %s", antenna_type)
+        # DIAMETER
+        diameter = 45.0
 
-    # MOUNT
-    mount = np.array(["ALT-AZ"] * num_beam)
-    LOG.debug("mount: %s", mount)
+        # TYPE
+        antenna_type = "GROUND-BASED"
+        LOG.debug("antenna_type: %s", antenna_type)
 
-    # STATION
-    station = np.array([antenna_name_base] * num_beam)
-    LOG.debug("station: %s", station)
+        # MOUNT
+        mount = "ALT-AZ"
+        LOG.debug("mount: %s", mount)
 
-    # FLAG_ROW
-    flag_row = np.zeros(num_beam, dtype=bool)
+        # STATION
+        station = antenna_name_base
+        LOG.debug("station: %s", station)
 
-    columns = {
-        "NAME": antenna_name,
-        "POSITION": position,
-        "OFFSET": offset,
-        "DISH_DIAMETER": diameter,
-        "TYPE": antenna_type,
-        "MOUNT": mount,
-        "STATION": station,
-        "FLAG_ROW": flag_row,
-    }
+        # FLAG_ROW
+        flag_row = False
 
-    return columns
+        row = {
+            "NAME": antenna_name,
+            "POSITION": position,
+            "OFFSET": offset,
+            "DISH_DIAMETER": diameter,
+            "TYPE": antenna_type,
+            "MOUNT": mount,
+            "STATION": station,
+            "FLAG_ROW": flag_row,
+        }
+
+        yield row
 
 
-def _fill_antenna_columns(msfile: str, columns: dict):
-    with open_table(msfile + "/ANTENNA", read_only=False) as tb:
-        nrow = len(columns["NAME"])
-        fix_nrow_to(nrow, tb)
+def fill_antenna(msfile: str, hdu: BinTableHDU):
+    """Fill MS ANTENNA table.
 
-        tb.putcol("NAME", columns["NAME"])
-        tb.putcol("DISH_DIAMETER", columns["DISH_DIAMETER"])
-        tb.putcol("TYPE", columns["TYPE"])
-        tb.putcol("MOUNT", columns["MOUNT"])
-        tb.putcol("STATION", columns["STATION"])
-        tb.putcol("FLAG_ROW", columns["FLAG_ROW"])
-        for i in range(nrow):
-            tb.putcell("POSITION", i, columns["POSITION"][:, i])
-            tb.putcell("OFFSET", i, columns["OFFSET"][:, i])
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
+    fill_ms_table(msfile, hdu, "ANTENNA", _get_antenna_row)
