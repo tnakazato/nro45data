@@ -72,6 +72,40 @@ def test_h40_ms2_structure(msfile):
             assert tb.getcell("POLARIZATION_ID", i) == 0
             assert tb.getcell("FLAG_ROW", i) is False
 
+    with open_table(os.path.join(msfile, "FEED")) as tb:
+        assert tb.nrows() == num_beams
+        # start time: 2024/09/25 15:58:54
+        # end time: 2024/09/25 16:03:50
+        # ---> mid-time 2024/09/25 16:01:22
+        #      interval 4min 56sec = 296sec
+        time_expected = datetime.datetime(2024, 9, 25, 16, 1, 22, tzinfo=datetime.timezone.utc)
+        interval_expected = 296.0  # sec
+        for i in range(num_beams):
+            assert tb.getcell("ANTENNA_ID", i) == i
+            assert tb.getcell("FEED_ID", i) == 0
+            assert tb.getcell("SPECTRAL_WINDOW_ID", i) == -1
+            assert tb.getcell("NUM_RECEPTORS", i) == 2
+            assert tb.getcell("BEAM_ID", i) == 0
+            feed_time = mjd2datetime(tb.getcell("TIME", i))
+            assert abs((feed_time - time_expected).total_seconds()) < 1e-3
+            assert tb.getcell("INTERVAL", i) == interval_expected
+            beam_offset = np.array(tb.getcell("BEAM_OFFSET", i))
+            assert beam_offset.shape == (2, 2)
+            assert np.all(beam_offset == 0.0)
+            pol_type = np.array(tb.getcell("POLARIZATION_TYPE", i))
+            assert pol_type.shape == (2,)
+            assert pol_type[0] == "R"
+            assert pol_type[1] == "L"
+            pol_response = np.array(tb.getcell("POL_RESPONSE", i))
+            assert pol_response.shape == (2, 2)
+            assert np.all(pol_response == 0.0)
+            feed_position = np.array(tb.getcell("POSITION", i))
+            assert feed_position.shape == (3,)
+            assert np.all(feed_position == 0.0)
+            receptor_angle = np.array(tb.getcell("RECEPTOR_ANGLE", i))
+            assert receptor_angle.shape == (2,)
+            assert np.all(receptor_angle == 0.0)
+
     with open_table(os.path.join(msfile, "STATE")) as tb:
         intents_map = dict((i, v) for i, v in enumerate(tb.getcol("OBS_MODE")))
 
