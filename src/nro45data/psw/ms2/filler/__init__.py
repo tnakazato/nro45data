@@ -5,7 +5,7 @@ import os
 from typing import TYPE_CHECKING
 
 import nro45data.psw.ms2._casa as _casa
-from .antenna import _fill_antenna_columns, _get_antenna_columns
+from .antenna import fill_antenna  # _fill_antenna_columns, _get_antenna_columns
 from .data_description import _fill_data_description_columns, _get_data_description_columns
 from .feed import _fill_feed_columns, _get_feed_columns
 from .field import _fill_field_columns, _get_field_columns
@@ -26,9 +26,9 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def fill_antenna(msfile: str, hdu: BinTableHDU):
-    columns = _get_antenna_columns(hdu)
-    _fill_antenna_columns(msfile, columns)
+# def fill_antenna(msfile: str, hdu: BinTableHDU):
+#     columns = _get_antenna_columns(hdu)
+#     _fill_antenna_columns(msfile, columns)
 
 
 def fill_data_description(msfile: str, hdu: BinTableHDU):
