@@ -14,6 +14,14 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_data_description_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
+    """Provide data description row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing data description row information.
+    """
     array_conf = get_array_configuration(hdu)
     ddd, _, _, _ = get_data_description_map(array_conf)
 
@@ -34,4 +42,10 @@ def _get_data_description_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
 
 
 def fill_data_description(msfile: str, hdu: BinTableHDU):
+    """Fill MS DATA_DESCRIPTION table.
+
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
     fill_ms_table(msfile, hdu, "DATA_DESCRIPTION", _get_data_description_row)
