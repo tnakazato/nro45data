@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import pprint
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 import numpy as np
 
