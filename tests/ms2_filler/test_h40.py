@@ -148,6 +148,19 @@ def test_h40_ms2_structure(msfile):
         end_time = mjd2datetime(time_range[1])
         # impose msec accuracy
         assert abs((end_time - end_expected).total_seconds()) < 1e-3
+        assert tb.getcell("TELESCOPE_NAME", 0) == "NRO45M"
+        assert tb.getcell("OBSERVER", 0) == "csv24"
+        log = tb.getcell("LOG", 0)
+        assert len(log) == 1
+        assert log[0] == ""
+        assert tb.getcell("SCHEDULE_TYPE", 0) == "NRO45M nmlh40"
+        schedule = tb.getcell("SCHEDULE", 0)
+        assert len(schedule) == 2
+        assert schedule[0] == "NRO45M csv24"
+        assert schedule[1] == "ffix                           z=1 3b= 0"
+        assert tb.getcell("PROJECT", 0) == "squint"
+        assert tb.getcell("RELEASE_DATE", 0) == 0
+        assert tb.getcell("FLAG_ROW", 0) is False
 
     with open_table(os.path.join(msfile, "SPECTRAL_WINDOW")) as tb:
         assert tb.nrows() == num_spws
