@@ -5,7 +5,6 @@ from typing import Generator, TYPE_CHECKING
 
 import numpy as np
 
-from .._casa import open_table
 from .utils import get_array_configuration, fill_ms_table
 
 if TYPE_CHECKING:
