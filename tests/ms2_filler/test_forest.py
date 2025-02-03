@@ -173,6 +173,11 @@ def test_forest_ms2_structure(msfile):
         assert len(corr_type) == num_pols
         assert corr_type[0] == 9   # XX
         assert corr_type[1] == 12  # YY
+        corr_product = tb.getcell("CORR_PRODUCT", 0)
+        assert corr_product.shape == (2, num_pols)
+        product_expected = np.array([[1, 0], [0, 1]])
+        assert np.all(corr_product == product_expected)
+        assert tb.getcell("FLAG_ROW", 0) is False
 
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
