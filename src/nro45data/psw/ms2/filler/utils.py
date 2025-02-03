@@ -284,6 +284,18 @@ def fill_ms_table(
         row_generator: Callable,
         column_keywords: Optional[dict[str, dict[str, Any]]] = None
 ):
+    """Fill MS table.
+
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+        table_name: Name of subtable or "MAIN" for MAIN table.
+        row_generator: Generator to yield table row.
+        column_keywords: Optional information to update column
+            keywords. Defaults to None.
+            Key is column name and value is a dictionary of
+            column keywords to be updated.
+    """
     if table_name.upper() == "MAIN":
         table_path = msfile
     else:

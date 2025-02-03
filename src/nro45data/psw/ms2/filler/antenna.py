@@ -15,6 +15,14 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_antenna_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
+    """Provide antenna row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing antenna row information.
+    """
     array_conf = get_array_configuration(hdu)
     beam_list = np.unique(sorted([x[1] for x in array_conf.values()]))
     num_beam = len(beam_list)
@@ -68,4 +76,10 @@ def _get_antenna_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
 
 
 def fill_antenna(msfile: str, hdu: BinTableHDU):
+    """Fill MS ANTENNA table.
+
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
     fill_ms_table(msfile, hdu, "ANTENNA", _get_antenna_row)
