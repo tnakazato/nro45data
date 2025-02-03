@@ -104,6 +104,31 @@ def test_forest_ms2_structure(msfile):
             assert receptor_angle.shape == (2,)
             assert np.all(receptor_angle == 0.0)
 
+    with open_table(os.path.join(msfile, "FIELD")) as tb:
+        assert tb.nrows() == 1
+        assert tb.getcell("NAME", 0) == "NML-Tau"
+        assert tb.getcell("CODE", 0) == ""
+        # start time: 2024/09/30 17:49:19
+        field_time = mjd2datetime(tb.getcell("TIME", 0))
+        time_expected = datetime.datetime(2024, 9, 30, 17, 49, 19, tzinfo=datetime.timezone.utc)
+        assert abs((field_time - time_expected).total_seconds()) < 1e-3
+        assert tb.getcell("NUM_POLY", 0) == 0
+        # RA  = 03:53:28.860
+        # DEC = +11:24:22.40
+        # Epoch = J2000
+        ra_expected = 1.0187530477122202  # rad
+        dec_expected = 2.9861419948788317  # rad
+        for col in ["DELAY_DIR", "PHASE_DIR", "REFERENCE_DIR"]:
+            meas_info = tb.getcolkeyword(col, "MEASINFO")
+            assert "Ref" in meas_info
+            assert meas_info["Ref"] == "J2000"
+            direction = tb.getcell(col, 0)
+            assert direction.shape == (1, 2)
+            assert abs(direction[0, 0] - ra_expected) / ra_expected < 1e-6
+            assert abs(direction[0, 1] - dec_expected) / dec_expected < 1e-6
+        assert tb.getcell("SOURCE_ID", 0) == 0
+        assert tb.getcell("FLAG_ROW", 0) is False
+
     with open_table(os.path.join(msfile, "STATE")) as tb:
         intents_map = dict((i, v) for i, v in enumerate(tb.getcol("OBS_MODE")))
 

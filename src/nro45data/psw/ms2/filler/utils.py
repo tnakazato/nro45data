@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import pprint
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 import numpy as np
 
@@ -281,8 +281,7 @@ def fill_ms_table(
         msfile: str,
         hdu: BinTableHDU,
         table_name: str,
-        row_generator: Callable,
-        column_keywords: Optional[dict[str, dict[str, Any]]] = None
+        row_generator: Callable
 ):
     """Fill MS table.
 
@@ -291,10 +290,6 @@ def fill_ms_table(
         hdu: NRO45m psw data in the form of BinTableHDU object.
         table_name: Name of subtable or "MAIN" for MAIN table.
         row_generator: Generator to yield table row.
-        column_keywords: Optional information to update column
-            keywords. Defaults to None.
-            Key is column name and value is a dictionary of
-            column keywords to be updated.
     """
     if table_name.upper() == "MAIN":
         table_path = msfile
@@ -302,25 +297,35 @@ def fill_ms_table(
         table_path = f"{msfile}/{table_name.upper()}"
 
     with open_table(table_path, read_only=False) as tb:
-        # update table column keywords
-        if column_keywords is None:
-            column_keywords = {}
+        # iterator should provide row dictionary in order,
+        # and then, if necessary, column keywords dictionary
+        # should be returned additionally
+        iterator = enumerate(row_generator(hdu))
+        try:
+            # fill table rows
+            while True:
+                row_id, row = next(iterator)
+                if tb.nrows() <= row_id:
+                    tb.addrows(tb.nrows() - row_id + 1)
 
-        for colname, colkeywords_new in column_keywords.items():
-            colkeywords = tb.getcolkeywords(colname)
-            for key, value_new in colkeywords_new.items():
-                if key in colkeywords and isinstance(value_new, dict):
-                    colkeywords[key].update(value_new)
-                else:
-                    colkeywords[key] = value_new
-            tb.putcolkeywords(colname, colkeywords)
+                for key, value in row.items():
+                    LOG.debug("row %d key %s", row_id, key)
+                    tb.putcell(key, row_id, value)
+                LOG.debug("%s table %d row %s", table_name, row_id, row)
 
-        # fill table rows
-        for row_id, row in enumerate(row_generator(hdu)):
-            if tb.nrows() <= row_id:
-                tb.addrows(tb.nrows() - row_id + 1)
-
-            for key, value in row.items():
-                LOG.debug("row %d key %s", row_id, key)
-                tb.putcell(key, row_id, value)
-            LOG.debug("%s table %d row %s", table_name, row_id, row)
+        except StopIteration as s:
+            # update column keywords if necessary
+            column_keywords = s.value
+            LOG.debug("return value: %s", s.value)
+            if isinstance(column_keywords, dict):
+                LOG.debug("column_keywords: %s", column_keywords)
+                for colname, colkeywords_new in column_keywords.items():
+                    colkeywords = tb.getcolkeywords(colname)
+                    for key, value_new in colkeywords_new.items():
+                        if key in colkeywords and isinstance(value_new, dict):
+                            LOG.debug("updating column keyword %s: %s, %s", colname, key, value_new)
+                            colkeywords[key].update(value_new)
+                        else:
+                            LOG.debug("adding column keyword %s: %s, %s", colname, key, value_new)
+                            colkeywords[key] = value_new
+                    tb.putcolkeywords(colname, colkeywords)
