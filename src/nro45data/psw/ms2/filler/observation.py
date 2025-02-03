@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import logging
-from typing import TYPE_CHECKING
+from typing import Generator, TYPE_CHECKING
 
 import numpy as np
 
-from .._casa import open_table, datestr2mjd
-from .utils import fix_nrow_to
+from .._casa import datestr2mjd
+from .utils import fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -12,7 +14,15 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_observation_columns(hdu: "BinTableHDU") -> dict:
+def _get_observation_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
+    """Provide observation row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing observation row information.
+    """
     history_cards = hdu.header["HISTORY"]
 
     # TELESCOPE_NAME
@@ -45,17 +55,17 @@ def _get_observation_columns(hdu: "BinTableHDU") -> dict:
 
     # SCHEDULE_TYPE
     schedule_card = [x for x in history_cards if x.startswith("NEWSTAR SCHED")]
-    _schedule_type = schedule_card[0].split("=")[-1].strip(" '")
+    _schedule_type = schedule_card[0].split("=", maxsplit=1)[-1].strip(" '")
     schedule_type = f"{telescope_name} {_schedule_type}"
     LOG.debug("schedule_type: %s", schedule_type)
 
     # SCHEDULE
     group_card = [x for x in history_cards if x.startswith("NEWSTAR GROUP")]
-    _group = group_card[0].split("=")[-1].strip(" '")
+    _group = group_card[0].split("=", maxsplit=1)[-1].strip(" '")
     title1_card = [x for x in history_cards if x.startswith("NEWSTAR TITLE1")]
-    _title1 = title1_card[0].split("=")[-1].strip(" '")
+    _title1 = title1_card[0].split("=", maxsplit=1)[-1].strip(" '")
     title2_card = [x for x in history_cards if x.startswith("NEWSTAR TITLE2")]
-    _title2 = title2_card[0].split("=")[-1].strip(" '")
+    _title2 = title2_card[0].split("=", maxsplit=1)[-1].strip(" '")
     schedule = [f"{telescope_name} {_group}"]
     if _title1:
         schedule.append(_title1)
@@ -65,7 +75,7 @@ def _get_observation_columns(hdu: "BinTableHDU") -> dict:
 
     # PROJECT
     project_card = [x for x in history_cards if x.startswith("NEWSTAR PROJECT")]
-    project = project_card[0].split("=")[-1].strip(" '")
+    project = project_card[0].split("=", maxsplit=1)[-1].strip(" '")
     LOG.debug("project: %s", project)
 
     # RELEASE_DATE
@@ -74,7 +84,7 @@ def _get_observation_columns(hdu: "BinTableHDU") -> dict:
     # FLAG_ROW
     flag_row = False
 
-    columns = {
+    row = {
         "TELESCOPE_NAME": telescope_name,
         "TIME_RANGE": time_range,
         "OBSERVER": observer,
@@ -86,19 +96,14 @@ def _get_observation_columns(hdu: "BinTableHDU") -> dict:
         "FLAG_ROW": flag_row,
     }
 
-    return columns
+    yield row
 
 
-def _fill_observation_columns(msfile: str, columns: dict):
-    with open_table(msfile + "/OBSERVATION", read_only=False) as tb:
-        fix_nrow_to(1, tb)
+def fill_observation(msfile: str, hdu: BinTableHDU):
+    """Fill MS OBSERVATION table.
 
-        tb.putcell("TELESCOPE_NAME", 0, columns["TELESCOPE_NAME"])
-        tb.putcell("TIME_RANGE", 0, columns["TIME_RANGE"])
-        tb.putcell("OBSERVER", 0, columns["OBSERVER"])
-        tb.putcell("LOG", 0, columns["LOG"])
-        tb.putcell("SCHEDULE_TYPE", 0, columns["SCHEDULE_TYPE"])
-        tb.putcell("SCHEDULE", 0, columns["SCHEDULE"])
-        tb.putcell("PROJECT", 0, columns["PROJECT"])
-        tb.putcell("RELEASE_DATE", 0, columns["RELEASE_DATE"])
-        tb.putcell("FLAG_ROW", 0, columns["FLAG_ROW"])
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
+    fill_ms_table(msfile, hdu, "OBSERVATION", _get_observation_row)

@@ -9,7 +9,7 @@ from .antenna import fill_antenna
 from .data_description import fill_data_description
 from .feed import fill_feed
 from .field import fill_field
-from .observation import _fill_observation_columns, _get_observation_columns
+from .observation import fill_observation
 from .polarization import _fill_polarization_columns, _get_polarization_columns
 from .main import fill_main
 from .pointing import fill_pointing
@@ -24,11 +24,6 @@ if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
 
 LOG = logging.getLogger(__name__)
-
-
-def fill_observation(msfile: str, hdu: BinTableHDU):
-    columns = _get_observation_columns(hdu)
-    _fill_observation_columns(msfile, columns)
 
 
 def fill_polarization(msfile: str, hdu: BinTableHDU):
