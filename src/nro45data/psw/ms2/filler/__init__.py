@@ -13,7 +13,7 @@ from .observation import fill_observation
 from .polarization import fill_polarization
 from .main import fill_main
 from .pointing import fill_pointing
-from .processor import _fill_processor_columns, _get_processor_columns
+from .processor import fill_processor
 from .source import fill_source
 from .spectral_window import fill_spectral_window
 from .state import fill_state
@@ -26,16 +26,18 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def fill_processor(msfile: str, hdu: BinTableHDU):
-    columns = _get_processor_columns(hdu)
-    _fill_processor_columns(msfile, columns)
-
-
-def fill_nothing(msfile: str, hdu: BinTableHDU):
-    pass
-
-
 def fill_ms2(msfile: str, hdu: BinTableHDU):
+    """Fill MS tables with data from FITS HDU.
+
+    Note that the MS file must be generated before calling this function.
+
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Raises:
+        FileNotFoundError: If MS file does not exist.
+    """
     if not os.path.exists(msfile):
         FileNotFoundError("MS must be built before calling fill_ms2")
 
@@ -54,10 +56,11 @@ def fill_ms2(msfile: str, hdu: BinTableHDU):
         'STATE': fill_state,
         'SYSCAL': fill_syscal,
         'WEATHER': fill_weather,
-        'FLAG_CMD': fill_nothing,
-        'HISTORY': fill_nothing,
+        'FLAG_CMD': None,
+        'HISTORY': None,
     }
     for subtable_name, filler_method in subtable_filler_methods.items():
-        filler_method(msfile, hdu)
+        if filler_method:
+            filler_method(msfile, hdu)
         subtable_path = os.path.join(msfile, subtable_name)
         _casa.put_table_keyword(msfile, subtable_name, f"Table: {subtable_path}")
