@@ -179,6 +179,14 @@ def test_h40_ms2_structure(msfile):
         assert np.all(corr_product == 0)
         assert tb.getcell("FLAG_ROW", 0) is False
 
+    with open_table(os.path.join(msfile, "PROCESSOR")) as tb:
+        assert tb.nrows() == 1
+        assert tb.getcell("TYPE", 0) == "SPECTROMETER"
+        assert tb.getcell("SUB_TYPE", 0) == "AC45"
+        assert tb.getcell("TYPE_ID", 0) == 0
+        assert tb.getcell("MODE_ID", 0) == 0
+        assert tb.getcell("FLAG_ROW", 0) is False
+
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
         # number of MS2 rows = 76

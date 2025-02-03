@@ -1,10 +1,9 @@
+from __future__ import annotations
+
 import logging
-from typing import TYPE_CHECKING
+from typing import Generator, TYPE_CHECKING
 
-import numpy as np
-
-from .._casa import open_table
-from .utils import fix_nrow_to
+from .utils import fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -12,7 +11,15 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_processor_columns(hdu: "BinTableHDU") -> dict:
+def _get_processor_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
+    """Provide processor row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing processor row information.
+    """
     # TYPE
     processor_type = "SPECTROMETER"
 
@@ -42,6 +49,8 @@ def _get_processor_columns(hdu: "BinTableHDU") -> dict:
     if (arry3 + arry4).find("1") >= 0:
         processor_sub_type_list.append("AC45")
 
+    processor_sub_type = ",".join(processor_sub_type_list)
+
     LOG.debug("processor_sub_type_list: %s", processor_sub_type_list)
     LOG.debug("arr1: %s", arry1)
     LOG.debug("arry2: %s", arry2)
@@ -57,27 +66,22 @@ def _get_processor_columns(hdu: "BinTableHDU") -> dict:
     # FLAG_ROW
     flag_row = False
 
-    columns = {
+    row = {
         "TYPE": processor_type,
-        "SUB_TYPE": processor_sub_type_list,
+        "SUB_TYPE": processor_sub_type,
         "TYPE_ID": processor_type_id,
         "MODE_ID": processor_mode_id,
         "FLAG_ROW": flag_row,
     }
 
-    return columns
+    yield row
 
 
-def _fill_processor_columns(msfile: str, columns: dict):
-    with open_table(msfile + "/PROCESSOR", read_only=False) as tb:
-        nrow = len(columns["SUB_TYPE"])
-        fix_nrow_to(nrow, tb)
-        type_column = np.array([columns["TYPE"]] * nrow)
-        tb.putcol("TYPE", type_column)
-        tb.putcol("SUB_TYPE", columns["SUB_TYPE"])
-        type_id_column = np.array([columns["TYPE_ID"]] * nrow)
-        tb.putcol("TYPE_ID", type_id_column)
-        mode_id_column = np.array([columns["MODE_ID"]] * nrow)
-        tb.putcol("MODE_ID", mode_id_column)
-        flag_row_column = np.array([columns["FLAG_ROW"]] * nrow)
-        tb.putcol("FLAG_ROW", flag_row_column)
+def fill_processor(msfile: str, hdu: BinTableHDU):
+    """Fill MS PROCESSOR table.
+
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
+    fill_ms_table(msfile, hdu, "PROCESSOR", _get_processor_row)
