@@ -174,6 +174,10 @@ def test_h40_ms2_structure(msfile):
         assert npol == num_pols
         assert len(corr_type) == num_pols
         assert corr_type[0] == 8  # RR
+        corr_product = tb.getcell("CORR_PRODUCT", 0)
+        assert corr_product.shape == (2, num_pols)
+        assert np.all(corr_product == 0)
+        assert tb.getcell("FLAG_ROW", 0) is False
 
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
