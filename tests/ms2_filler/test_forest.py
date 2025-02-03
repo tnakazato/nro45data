@@ -62,6 +62,13 @@ def test_forest_ms2_structure(msfile):
             assert position.shape == (3,)
             assert np.allclose(position, np.array([-3871023.46, 3428106.87, 3724039.47]))
 
+    with open_table(os.path.join(msfile, "DATA_DESCRIPTION")) as tb:
+        assert tb.nrows() == num_spws
+        for i in range(num_spws):
+            assert tb.getcell("SPECTRAL_WINDOW_ID", i) == i
+            assert tb.getcell("POLARIZATION_ID", i) == 0
+            assert tb.getcell("FLAG_ROW", i) == False
+
     with open_table(os.path.join(msfile, "STATE")) as tb:
         intents_map = dict((i, v) for i, v in enumerate(tb.getcol("OBS_MODE")))
 
