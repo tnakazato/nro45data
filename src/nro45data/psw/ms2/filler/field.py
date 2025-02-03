@@ -1,11 +1,13 @@
+from __future__ import annotations
+
 import logging
-from typing import TYPE_CHECKING
+from typing import Generator, TYPE_CHECKING
 
 import numpy as np
 
-from .._casa import open_table
+from .._casa import datestr2mjd
 from .._casa import convert_str_angle_to_rad
-from .utils import fix_nrow_to
+from .utils import fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -13,7 +15,18 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_field_columns(hdu: "BinTableHDU") -> dict:
+def _get_field_row(hdu: BinTableHDU) -> Generator[dict, None, dict]:
+    """Provide field row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing field row information.
+
+    Returns:
+        Dictionary containing data-dependent column keywords.
+    """
     # NAME
     field_name = hdu.header["OBJECT"].strip()
     LOG.debug("field_name: %s", field_name)
@@ -25,8 +38,11 @@ def _get_field_columns(hdu: "BinTableHDU") -> dict:
     # use start time of the observation
     history_cards = hdu.header["HISTORY"]
     start_time_card = [x for x in history_cards if x.startswith("NEWSTAR START-TIME")]
-    field_time = float(start_time_card[0].split("=")[-1].strip(" '"))
-    LOG.debug("field_time: %s", field_time)
+    sstr = start_time_card[0].split("=")[-1].strip(" '")
+    LOG.debug("sstr: %s", sstr)
+    datestr = sstr[0:4] + "/" + sstr[4:6] + "/" + sstr[6:8] + " " + sstr[8:10] + ":" + sstr[10:12] + ":" + sstr[12:14]
+    LOG.debug("formatted sstr: %s", datestr)
+    field_time = datestr2mjd(datestr) - 9 * 3600
 
     # NUM_POLY
     num_poly = 0
@@ -62,12 +78,11 @@ def _get_field_columns(hdu: "BinTableHDU") -> dict:
     # FLAG_ROW
     flag_row = False
 
-    columns = {
+    row = {
         "NAME": field_name,
         "CODE": field_code,
         "TIME": field_time,
         "NUM_POLY": num_poly,
-        "FIELD_EPOCH": field_epoch,
         "DELAY_DIR": delay_dir,
         "PHASE_DIR": phase_dir,
         "REFERENCE_DIR": reference_dir,
@@ -75,24 +90,22 @@ def _get_field_columns(hdu: "BinTableHDU") -> dict:
         "FLAG_ROW": flag_row,
     }
 
-    return columns
+    yield row
+
+    column_keywords = {
+        "DELAY_DIR": {"MEASINFO": {"Ref": field_epoch}},
+        "PHASE_DIR": {"MEASINFO": {"Ref": field_epoch}},
+        "REFERENCE_DIR": {"MEASINFO": {"Ref": field_epoch}}
+    }
+
+    return column_keywords  # noqa
 
 
-def _fill_field_columns(msfile: str, columns: dict):
-    with open_table(msfile + "/FIELD", read_only=False) as tb:
-        fix_nrow_to(1, tb)
+def fill_field(msfile: str, hdu: BinTableHDU):
+    """Fill MS FIELD table.
 
-        tb.putcell("NAME", 0, columns["NAME"])
-        tb.putcell("CODE", 0, columns["CODE"])
-        tb.putcell("TIME", 0, columns["TIME"])
-        tb.putcell("NUM_POLY", 0, columns["NUM_POLY"])
-        tb.putcell("DELAY_DIR", 0, columns["DELAY_DIR"])
-        colkeywords = tb.getcolkeywords("DELAY_DIR")
-        colkeywords["MEASINFO"]["Ref"] = columns["FIELD_EPOCH"]
-        tb.putcolkeywords("DELAY_DIR", colkeywords)
-        tb.putcell("PHASE_DIR", 0, columns["PHASE_DIR"])
-        tb.putcolkeywords("PHASE_DIR", colkeywords)
-        tb.putcell("REFERENCE_DIR", 0, columns["REFERENCE_DIR"])
-        tb.putcolkeywords("REFERENCE_DIR", colkeywords)
-        tb.putcell("SOURCE_ID", 0, columns["SOURCE_ID"])
-        tb.putcell("FLAG_ROW", 0, columns["FLAG_ROW"])
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
+    fill_ms_table(msfile, hdu, "FIELD", _get_field_row)
