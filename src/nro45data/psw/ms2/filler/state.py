@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING, Generator
 
-from .._casa import open_table
-from .utils import get_intent_map
+from .utils import get_intent_map, fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -10,7 +11,15 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_state_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
+def _get_state_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
+    """Provide state row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing state row information.
+    """
     iscn = hdu.data["ISCN"]
     scntp = hdu.data["SCNTP"]
     intent_map = get_intent_map(iscn, scntp)
@@ -56,13 +65,11 @@ def _get_state_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
         yield row
 
 
-def fill_state(msfile: str, hdu: "BinTableHDU"):
-    row_iterator = _get_state_row(hdu)
-    with open_table(msfile + "/STATE", read_only=False) as tb:
-        for row_id, row in enumerate(row_iterator):
-            if tb.nrows() <= row_id:
-                tb.addrows(tb.nrows() - row_id + 1)
+def fill_state(msfile: str, hdu: BinTableHDU):
+    """Fill MS STATE table.
 
-            for k, v in row.items():
-                tb.putcell(k, row_id, v)
-            LOG.debug("state table %d row %s", row_id, row)
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
+    fill_ms_table(msfile, hdu, "STATE", _get_state_row)
