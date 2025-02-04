@@ -16,16 +16,6 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def fix_nrow_to(nrow: int, tb: "_table") -> "_table":
-    nrow_current = tb.nrows()
-    if nrow_current < nrow:
-        tb.addrows(nrow - nrow_current)
-    elif nrow_current > nrow:
-        tb.removerows(np.arange(nrow, nrow_current))
-
-    return tb
-
-
 def get_array_configuration(hdu: "BinTableHDU"):
     # return value
     # {(spw_id, pol_id): [(array, pol, beam), ...], ...}

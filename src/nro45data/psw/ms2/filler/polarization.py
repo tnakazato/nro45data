@@ -117,12 +117,3 @@ def fill_polarization(msfile: str, hdu: BinTableHDU):
         hdu: NRO45m psw data in the form of BinTableHDU object.
     """
     fill_ms_table(msfile, hdu, "POLARIZATION", _get_polarization_row)
-    # with open_table(msfile + "/POLARIZATION", read_only=False) as tb:
-    #     num_pol = len(columns["NUM_CORR"])
-    #     fix_nrow_to(num_pol, tb)
-
-    #     tb.putcol("NUM_CORR", columns["NUM_CORR"])
-    #     tb.putcol("FLAG_ROW", columns["FLAG_ROW"])
-    #     for i in range(num_pol):
-    #         tb.putcell("CORR_TYPE", i, columns["CORR_TYPE"][i])
-    #         tb.putcell("CORR_PRODUCT", i, columns["CORR_PRODUCT"][i])
