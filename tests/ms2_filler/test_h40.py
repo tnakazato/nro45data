@@ -126,12 +126,61 @@ def test_h40_ms2_structure(msfile):
             assert meas_info["Ref"] == "J2000"
             direction = tb.getcell(col, 0)
             assert direction.shape == (1, 2)
-            assert abs(direction[0, 0] - ra_expected) / ra_expected < 1e-6
-            assert abs(direction[0, 1] - dec_expected) / dec_expected < 1e-6
+            assert abs((direction[0, 0] - ra_expected) / ra_expected) < 1e-6
+            assert abs((direction[0, 1] - dec_expected) / dec_expected) < 1e-6
         assert tb.getcell("SOURCE_ID", 0) == 0
         assert tb.getcell("FLAG_ROW", 0) is False
 
+    with open_table(os.path.join(msfile, "SOURCE")) as tb:
+        # start time: 2024/09/25 15:58:54
+        # end time: 2024/09/25 16:03:50
+        # ---> mid-time 2024/09/25 16:01:22
+        #      interval 4min 56sec = 296sec
+        time_expected = datetime.datetime(2024, 9, 25, 16, 1, 22, tzinfo=datetime.timezone.utc)
+        interval_expected = 296.0  # sec
+        assert tb.nrows() == 1
+        source_time = mjd2datetime(tb.getcell("TIME", 0))
+        assert abs((source_time - time_expected).total_seconds()) < 1e-3
+        assert tb.getcell("INTERVAL", 0) == interval_expected
+        assert tb.getcell("SPECTRAL_WINDOW_ID", 0) == -1
+        assert tb.getcell("NUM_LINES", 0) == 0
+        assert tb.getcell("NAME", 0) == "NML-Tau"
+        assert tb.getcell("CALIBRATION_GROUP", 0) == 0
+        assert tb.getcell("CODE", 0) == ""
+        direction = tb.getcell("DIRECTION", 0)
+        assert direction.shape == (2,)
+        assert abs((direction[0] - ra_expected) / ra_expected) < 1e-6
+        assert abs((direction[1] - dec_expected) / dec_expected) < 1e-6
+        meas_info = tb.getcolkeyword("DIRECTION", "MEASINFO")
+        assert "Ref" in meas_info
+        assert meas_info["Ref"] == "J2000"
+        position = tb.getcell("POSITION", 0)
+        assert position.shape == (3,)
+        assert np.all(position == 0)
+        sysvel = tb.getcell("SYSVEL", 0)
+        sysvel_expected = 3.4e4
+        assert abs((sysvel - sysvel_expected) / sysvel_expected) < 1e-6
+        meas_info = tb.getcolkeyword("SYSVEL", "MEASINFO")
+        assert "Ref" in meas_info
+        assert meas_info["Ref"] == "LSRK"
+
     with open_table(os.path.join(msfile, "STATE")) as tb:
+        assert tb.nrows() == 2
+        # first row is ZERO
+        assert tb.getcell("OBS_MODE", 0) == "ZERO"
+        assert tb.getcell("REF", 0) is True
+        assert tb.getcell("SIG", 0) is False
+        assert tb.getcell("SUB_SCAN", 0) == 0
+        # second row is ON_SOURCE
+        assert tb.getcell("OBS_MODE", 1) == "OBSERVE_TARGET#ON_SOURCE"
+        assert tb.getcell("REF", 1) is False
+        assert tb.getcell("SIG", 1) is True
+        assert tb.getcell("SUB_SCAN", 1) == 1
+        # cal and load values are 0
+        assert np.all(tb.getcol("CAL") == 0)
+        assert np.all(tb.getcol("LOAD") == 0)
+        # all rows are valid
+        assert np.all(np.logical_not(tb.getcol("FLAG_ROW")))
         intents_map = dict((i, v) for i, v in enumerate(tb.getcol("OBS_MODE")))
 
     with open_table(os.path.join(msfile, "OBSERVATION")) as tb:
