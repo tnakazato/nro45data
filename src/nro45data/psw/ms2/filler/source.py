@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING, Generator
 
 import numpy as np
 
-from .._casa import convert_str_angle_to_rad, open_table
+from .._casa import convert_str_angle_to_rad, datestr2mjd
+from .utils import fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -11,16 +14,37 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_source_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
+def _get_source_row(hdu: BinTableHDU) -> Generator[dict, None, dict]:
+    """Provide source row information.
+
+    Args:
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+
+    Yields:
+        Dictionary containing source row information.
+
+    Returns:
+        Dictionary containing data-dependent column keywords.
+    """
     # TIME and INTERVAL
     # use start and end time of the observation
     history_cards = hdu.header["HISTORY"]
     start_time_card = [x for x in history_cards if x.startswith("NEWSTAR START-TIME")]
-    source_start_time = float(start_time_card[0].split("=")[-1].strip(" '"))
+    sstr = start_time_card[0].split("=")[-1].strip(" '")
+    LOG.debug("sstr: %s", sstr)
+    datestr = sstr[0:4] + "/" + sstr[4:6] + "/" + sstr[6:8] + " " + \
+        sstr[8:10] + ":" + sstr[10:12] + ":" + sstr[12:14]
+    LOG.debug("formatted sstr: %s", datestr)
+    start_time = datestr2mjd(datestr) - 9 * 3600
     end_time_card = [x for x in history_cards if x.startswith("NEWSTAR END-TIME")]
-    source_end_time = float(end_time_card[0].split("=")[-1].strip(" '"))
-    source_time = (source_end_time + source_start_time) / 2
-    source_interval = source_end_time - source_start_time
+    estr = end_time_card[0].split("=")[-1].strip(" '")
+    LOG.debug("estr: %s", estr)
+    datestr = estr[0:4] + "/" + estr[4:6] + "/" + estr[6:8] + " " + \
+        estr[8:10] + ":" + estr[10:12] + ":" + estr[12:14]
+    LOG.debug("formatted estr: %s", datestr)
+    end_time = datestr2mjd(datestr) - 9 * 3600
+    source_time = (end_time + start_time) / 2
+    source_interval = end_time - start_time
     LOG.debug("source_time: %s", source_time)
     LOG.debug("source_interval: %s", source_interval)
 
@@ -86,35 +110,26 @@ def _get_source_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
         "CALIBRATION_GROUP": calibration_group,
         "CODE": code,
         "DIRECTION": source_direction,
-        "DIRECTION_REF": source_direction_ref,
         "POSITION": source_position,
         "PROPER_MOTION": source_proper_motion,
         "SYSVEL": sysvel,
-        "VELOCITY_REF": velocity_ref,
-        # 'VELOCITY_DEF': velocity_def
     }
 
     yield row
 
+    column_keywords = {
+        "DIRECTION": {"MEASINFO": {"Ref": source_direction_ref}},
+        "SYSVEL": {"MEASINFO": {"Ref": velocity_ref}},
+    }
 
-def fill_source(msfile: str, hdu: "BinTableHDU"):
-    row_iterator = _get_source_row(hdu)
-    with open_table(msfile + "/SOURCE", read_only=False) as tb:
-        for row_id, row in enumerate(row_iterator):
-            if tb.nrows() <= row_id:
-                tb.addrows(tb.nrows() - row_id + 1)
+    return column_keywords
 
-            for key, value in row.items():
-                if key == "DIRECTION_REF":
-                    colkeywords = tb.getcolkeywords("DIRECTION")
-                    if colkeywords["MEASINFO"]["Ref"] != value:
-                        colkeywords["MEASINFO"]["Ref"] = value
-                        tb.putcolkeywords("DIRECTION", colkeywords)
-                elif key == "VELOCITY_REF":
-                    colkeywords = tb.getcolkeywords("SYSVEL")
-                    if colkeywords["MEASINFO"]["Ref"] != value:
-                        colkeywords["MEASINFO"]["Ref"] = value
-                        tb.putcolkeywords("SYSVEL", colkeywords)
-                else:
-                    tb.putcell(key, row_id, value)
-            LOG.debug("source table %d row %s", row_id, row)
+
+def fill_source(msfile: str, hdu: BinTableHDU):
+    """Fill MS SOURCE table.
+
+    Args:
+        msfile: Name of MS file.
+        hdu: NRO45m psw data in the form of BinTableHDU object.
+    """
+    fill_ms_table(msfile, hdu, "SOURCE", _get_source_row)
