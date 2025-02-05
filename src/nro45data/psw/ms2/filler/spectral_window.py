@@ -18,6 +18,7 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
 
     data = hdu.data
     arry = data["ARRYT"]
+    f0cal = data["F0CAL"]
     nfcal = data["NFCAL"]
     fqcal = data["FQCAL"]
     chcal = data["CHCAL"]
@@ -46,13 +47,14 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
                 array_list.append(_array)
 
         spw_name = "_".join(array_list)
-        _fqcal = fqcal[i][: nfcal[i]]
-        _chcal = chcal[i][: nfcal[i]]
-        chan_edge_freq = np.interp(np.arange(-0.5, nchan), _chcal, _fqcal)
-        chan_freq = (chan_edge_freq[1:] + chan_edge_freq[:-1]) / 2
-        chan_width = np.diff(chan_edge_freq)
+        _fqcal = fqcal[i][:nfcal[i]]
+        _chcal = chcal[i][:nfcal[i]] - 1  # 1-based index -> 0-based index
+        _sort_index = np.argsort(_chcal)
+        chan_freq = np.interp(np.arange(nchan), _chcal[_sort_index], _fqcal[_sort_index])
+        chan_width = np.ones(nchan, dtype=float) * (chan_freq[1] - chan_freq[0])
+        LOG.info("channel width: %s", chan_width[0])
         net_sideband = 1 if chan_freq[0] < chan_freq[-1] else -1
-        ref_freq = chan_freq[0]  # frequency of the first channel
+        ref_freq = f0cal[i]  # F0CAL
         spectral_window_row = {
             "NUM_CHAN": nchan,
             "NAME": spw_name,
@@ -62,7 +64,7 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
             "MEAS_FREQ_REF": meas_freq_ref,
             "EFFECTIVE_BW": chan_width,
             "RESOLUTION": chan_width,
-            "TOTAL_BANDWIDTH": sum(chan_width),
+            "TOTAL_BANDWIDTH": sum(np.abs(chan_width)),
             "NET_SIDEBAND": net_sideband,
             "IF_CONV_CHAIN": 0,
             "FLAG_ROW": False,
