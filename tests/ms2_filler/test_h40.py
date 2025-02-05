@@ -213,6 +213,47 @@ def test_h40_ms2_structure(msfile):
 
     with open_table(os.path.join(msfile, "SPECTRAL_WINDOW")) as tb:
         assert tb.nrows() == num_spws
+        # channel frequency of the first and the last channels
+        fcal0 = (43137620000.0, 43106380000.0)  # Hz
+        fcal1 = (42836620000.0, 42805380000.0)  # Hz
+        cf0 = tb.getcell("CHAN_FREQ", 0)
+        assert np.allclose(cf0[0], fcal0[0])
+        assert np.allclose(cf0[-1], fcal0[1])
+        cf1 = tb.getcell("CHAN_FREQ", 1)
+        assert np.allclose(cf1[0], fcal0[0])
+        assert np.allclose(cf1[-1], fcal0[1])
+        cf2 = tb.getcell("CHAN_FREQ", 2)
+        assert np.allclose(cf2[0], fcal1[0])
+        assert np.allclose(cf2[-1], fcal1[1])
+        cf3 = tb.getcell("CHAN_FREQ", 3)
+        assert np.allclose(cf3[0], fcal1[0])
+        assert np.allclose(cf3[-1], fcal1[1])
+        # channel width, effective_bw, resolution are all the same
+        assert np.allclose(tb.getcol("CHAN_WIDTH"), -7628.815628815629)
+        assert np.allclose(tb.getcol("EFFECTIVE_BW"), -7628.815628815629)
+        assert np.allclose(tb.getcol("RESOLUTION"), -7628.815628815629)
+        # spw name should contain array name
+        assert tb.getcell("NAME", 0) == "A5"
+        assert tb.getcell("NAME", 1) == "A6"
+        assert tb.getcell("NAME", 2) == "A13"
+        assert tb.getcell("NAME", 3) == "A14"
+        # ref_frequency taken from F0CAL
+        ref_freq0 = 43122000000
+        ref_freq1 = 42821000000
+        assert tb.getcell("REF_FREQUENCY", 0) == ref_freq0
+        assert tb.getcell("REF_FREQUENCY", 1) == ref_freq0
+        assert tb.getcell("REF_FREQUENCY", 2) == ref_freq1
+        assert tb.getcell("REF_FREQUENCY", 3) == ref_freq1
+        # frequency frame is LSRK
+        assert np.all(tb.getcol("MEAS_FREQ_REF") == 1)
+        assert np.all(tb.getcol("NET_SIDEBAND") == -1)
+        assert np.all(tb.getcol("IF_CONV_CHAIN") == 0)
+        # all rows have the same number of channels
+        assert np.all(tb.getcol("NUM_CHAN") == 4096)
+        # total_bandwidth = chan_width * num_chan
+        assert np.allclose(tb.getcol("TOTAL_BANDWIDTH"), 7628.815628815629 * 4096)
+        # all rows are valid
+        assert np.all(np.logical_not(tb.getcol("FLAG_ROW")))
         nchan_map = dict((i, v) for i, v in enumerate(tb.getcol("NUM_CHAN")))
 
     # test polarization setup

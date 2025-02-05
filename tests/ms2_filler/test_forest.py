@@ -211,6 +211,35 @@ def test_forest_ms2_structure(msfile):
 
     with open_table(os.path.join(msfile, "SPECTRAL_WINDOW")) as tb:
         assert tb.nrows() == num_spws
+        # channel frequency of the first and the last channels
+        fcal0 = (86274682430.2, 86212197569.8)  # Hz
+        cf0 = tb.getcell("CHAN_FREQ", 0)
+        assert np.allclose(cf0[0], fcal0[0])
+        assert np.allclose(cf0[-1], fcal0[1])
+        cf1 = tb.getcell("CHAN_FREQ", 1)
+        assert np.allclose(cf1[0], fcal0[0])
+        assert np.allclose(cf1[-1], fcal0[1])
+        # channel width, effective_bw, resolution are all the same
+        assert np.allclose(tb.getcol("CHAN_WIDTH"), -15258.818168496678)
+        assert np.allclose(tb.getcol("EFFECTIVE_BW"), -15258.818168496678)
+        assert np.allclose(tb.getcol("RESOLUTION"), -15258.818168496678)
+        # spw name should contain array name
+        assert tb.getcell("NAME", 0) == "_".join([f"A{i}" for i in range(1, 9)])
+        assert tb.getcell("NAME", 1) == "_".join([f"A{i}" for i in range(9, 17)])
+        # ref_frequency taken from F0CAL
+        ref_freq0 = 86243440000
+        assert tb.getcell("REF_FREQUENCY", 0) == ref_freq0
+        assert tb.getcell("REF_FREQUENCY", 1) == ref_freq0
+        # frequency frame is LSRK
+        assert np.all(tb.getcol("MEAS_FREQ_REF") == 1)
+        assert np.all(tb.getcol("NET_SIDEBAND") == -1)
+        assert np.all(tb.getcol("IF_CONV_CHAIN") == 0)
+        # all rows have the same number of channels
+        assert np.all(tb.getcol("NUM_CHAN") == 4096)
+        # total_bandwidth = chan_width * num_chan
+        assert np.allclose(tb.getcol("TOTAL_BANDWIDTH"), 15258.818168496678 * 4096)
+        # all rows are valid
+        assert np.all(np.logical_not(tb.getcol("FLAG_ROW")))
         nchan_map = dict((i, v) for i, v in enumerate(tb.getcol("NUM_CHAN")))
 
     # test polarization setup
