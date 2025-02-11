@@ -28,6 +28,10 @@ def _get_weather_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
     if dwind_unit == "DEG":
         dwind = dwind * np.pi / 180
 
+    # Beam number is zero for single beam rx
+    # while the number is 1-based for forest.
+    # Convert the number to 0-based index.
+    multn = multn - multn.min()
     unique_beams = np.unique(multn)
 
     for beam in unique_beams:
