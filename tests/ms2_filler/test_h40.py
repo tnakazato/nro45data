@@ -277,6 +277,61 @@ def test_h40_ms2_structure(msfile):
         assert tb.getcell("MODE_ID", 0) == 0
         assert tb.getcell("FLAG_ROW", 0) is False
 
+    with open_table(os.path.join(msfile, "WEATHER")) as tb:
+        assert tb.nrows() == num_records // num_pols // num_spws
+        assert np.all(tb.getcol("ANTENNA_ID") == 0)
+        weather_time = tb.getcol("TIME")
+        weather_time_expected = [
+            datetime.datetime(2024, 9, 25, 15, 59, 19, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 15, 59, 52, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 2, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 36, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 54, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 1, 18, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 1, 28, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 1, 38, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 3, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 21, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 55, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 5, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 29, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 38, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 47, 500000, tzinfo=datetime.timezone.utc)
+        ]
+        assert tb.nrows() == len(weather_time_expected)
+        for wt, dt_ex in zip(weather_time, weather_time_expected):
+            dt = mjd2datetime(wt)
+            assert abs((dt - dt_ex).total_seconds()) < 1e-3
+        weather_interval = tb.getcol("INTERVAL")
+        assert np.allclose(weather_interval[:1], 1)
+        assert np.allclose(weather_interval[1:], 5)
+        temperature = tb.getcol("TEMPERATURE")
+        assert np.allclose(temperature[:7], 13 + 273.16)
+        assert np.allclose(temperature[7:], 12.9 + 273.16)
+        assert np.all(np.logical_not(tb.getcol("TEMPERATURE_FLAG")))
+        pressure = tb.getcol("PRESSURE")
+        assert np.allclose(pressure, 868)
+        assert np.all(np.logical_not(tb.getcol("PRESSURE_FLAG")))
+        assert np.all(tb.getcol("REL_HUMIDITY") == 0)
+        assert np.all(np.logical_not(tb.getcol("REL_HUMIDITY_FLAG")))
+        wind_speed = tb.getcol("WIND_SPEED")
+        assert np.allclose(wind_speed[:2], 1.3)
+        assert np.allclose(wind_speed[2:7], 1.6)
+        assert np.allclose(wind_speed[7:10], 0.4)
+        assert np.allclose(wind_speed[10:], 1.3)
+        assert np.all(np.logical_not(tb.getcol("WIND_SPEED_FLAG")))
+        wind_direction = tb.getcol("WIND_DIRECTION")
+        assert np.allclose(wind_direction[:2], 5.93411946)
+        assert np.allclose(wind_direction[2:7], 6.19591884)
+        assert np.allclose(wind_direction[7:10], 6.10865238)
+        assert np.allclose(wind_direction[10:15], 0.10471976)
+        assert np.allclose(wind_direction[15:], 0.05235988)
+        assert np.all(np.logical_not(tb.getcol("WIND_DIRECTION_FLAG")))
+
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
         # number of MS2 rows = 76

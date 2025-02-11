@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import os
 import shutil
 import time
@@ -264,6 +265,126 @@ def test_forest_ms2_structure(msfile):
         assert tb.getcell("TYPE_ID", 0) == 0
         assert tb.getcell("MODE_ID", 0) == 0
         assert tb.getcell("FLAG_ROW", 0) is False
+
+    with open_table(os.path.join(msfile, "WEATHER")) as tb:
+        assert tb.nrows() == num_records // num_pols // num_spws
+        antenna_id = tb.getcol("ANTENNA_ID")
+        nrow_per_beam = tb.nrows() // num_beams
+        assert np.all(antenna_id[0:nrow_per_beam] == 0)
+        assert np.all(antenna_id[nrow_per_beam:2 * nrow_per_beam] == 1)
+        assert np.all(antenna_id[2 * nrow_per_beam:3 * nrow_per_beam] == 2)
+        assert np.all(antenna_id[3 * nrow_per_beam:] == 3)
+        weather_time = tb.getcol("TIME")
+        weather_time_expected = [
+            datetime.datetime(2024, 9, 30, 17, 49, 53, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 50, 27, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 50, 36, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 50, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 20, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 30, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 57, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 6, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 15, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 41, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 51, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 1, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 27, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 36, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 11, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 21, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 29, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 54, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 3, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 38, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 48, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 58, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 56, 24, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 56, 33, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 56, 42, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 57, 9, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 57, 19, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 57, 29, 500000, tzinfo=datetime.timezone.utc)
+        ]
+        assert tb.nrows() == len(weather_time_expected) * num_beams
+        for wt, dt_ex in zip(weather_time, itertools.cycle(weather_time_expected)):
+            dt = mjd2datetime(wt)
+            assert abs((dt - dt_ex).total_seconds()) < 1e-3
+        weather_interval = tb.getcol("INTERVAL")
+        assert np.allclose(weather_interval[0::nrow_per_beam], 1)
+        assert np.allclose(weather_interval[1:nrow_per_beam], 5)
+        assert np.allclose(weather_interval[nrow_per_beam + 1:2 * nrow_per_beam], 5)
+        assert np.allclose(weather_interval[2 * nrow_per_beam + 1:3 * nrow_per_beam], 5)
+        assert np.allclose(weather_interval[3 * nrow_per_beam + 1:], 5)
+        temperature = tb.getcol("TEMPERATURE")
+        assert np.allclose(temperature[:16], 11 + 273.16)
+        assert np.allclose(temperature[16:31], 11.1 + 273.16)
+        assert np.allclose(temperature[31:47], 11 + 273.16)
+        assert np.allclose(temperature[47:62], 11.1 + 273.16)
+        assert np.allclose(temperature[62:78], 11 + 273.16)
+        assert np.allclose(temperature[78:93], 11.1 + 273.16)
+        assert np.allclose(temperature[93:109], 11 + 273.16)
+        assert np.allclose(temperature[109:], 11.1 + 273.16)
+        assert np.all(np.logical_not(tb.getcol("TEMPERATURE_FLAG")))
+        pressure = tb.getcol("PRESSURE")
+        assert np.allclose(pressure, 866)
+        assert np.all(np.logical_not(tb.getcol("PRESSURE_FLAG")))
+        assert np.all(tb.getcol("REL_HUMIDITY") == 0)
+        assert np.all(np.logical_not(tb.getcol("REL_HUMIDITY_FLAG")))
+        wind_speed = tb.getcol("WIND_SPEED")
+        assert np.allclose(wind_speed[:16], 0)
+        assert np.allclose(wind_speed[16:20], 0.5)
+        assert np.allclose(wind_speed[20:24], 0.8)
+        assert np.allclose(wind_speed[24:28], 1)
+        assert np.allclose(wind_speed[28:31], 0.9)
+        assert np.allclose(wind_speed[31:47], 0)
+        assert np.allclose(wind_speed[47:51], 0.5)
+        assert np.allclose(wind_speed[51:55], 0.8)
+        assert np.allclose(wind_speed[55:59], 1)
+        assert np.allclose(wind_speed[59:62], 0.9)
+        assert np.allclose(wind_speed[62:78], 0)
+        assert np.allclose(wind_speed[78:82], 0.5)
+        assert np.allclose(wind_speed[82:86], 0.8)
+        assert np.allclose(wind_speed[86:90], 1)
+        assert np.allclose(wind_speed[90:93], 0.9)
+        assert np.allclose(wind_speed[93:109], 0)
+        assert np.allclose(wind_speed[109:113], 0.5)
+        assert np.allclose(wind_speed[113:117], 0.8)
+        assert np.allclose(wind_speed[117:121], 1)
+        assert np.allclose(wind_speed[121:], 0.9)
+        assert np.all(np.logical_not(tb.getcol("WIND_SPEED_FLAG")))
+        wind_direction = tb.getcol("WIND_DIRECTION")
+        assert np.allclose(wind_direction[:1], 6.21337214)
+        assert np.allclose(wind_direction[1:4], 6.19591884)
+        assert np.allclose(wind_direction[4:16], 6.21337214)
+        assert np.allclose(wind_direction[16:20], 1.6231562)
+        assert np.allclose(wind_direction[20:24], 1.74532925)
+        assert np.allclose(wind_direction[24:28], 2.18166156)
+        assert np.allclose(wind_direction[28:31], 2.25147474)
+        assert np.allclose(wind_direction[31:32], 6.21337214)
+        assert np.allclose(wind_direction[32:35], 6.19591884)
+        assert np.allclose(wind_direction[35:47], 6.21337214)
+        assert np.allclose(wind_direction[47:51], 1.6231562)
+        assert np.allclose(wind_direction[51:55], 1.74532925)
+        assert np.allclose(wind_direction[55:59], 2.18166156)
+        assert np.allclose(wind_direction[59:62], 2.25147474)
+        assert np.allclose(wind_direction[62:63], 6.21337214)
+        assert np.allclose(wind_direction[63:66], 6.19591884)
+        assert np.allclose(wind_direction[66:78], 6.21337214)
+        assert np.allclose(wind_direction[78:82], 1.6231562)
+        assert np.allclose(wind_direction[82:86], 1.74532925)
+        assert np.allclose(wind_direction[86:90], 2.18166156)
+        assert np.allclose(wind_direction[90:93], 2.25147474)
+        assert np.allclose(wind_direction[93:94], 6.21337214)
+        assert np.allclose(wind_direction[94:97], 6.19591884)
+        assert np.allclose(wind_direction[97:109], 6.21337214)
+        assert np.allclose(wind_direction[109:113], 1.6231562)
+        assert np.allclose(wind_direction[113:117], 1.74532925)
+        assert np.allclose(wind_direction[117:121], 2.18166156)
+        assert np.allclose(wind_direction[121:], 2.25147474)
+        assert np.all(np.logical_not(tb.getcol("WIND_DIRECTION_FLAG")))
 
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
