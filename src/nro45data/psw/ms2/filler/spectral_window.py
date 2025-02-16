@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING, Generator
 
 import numpy as np
 
-from .._casa import open_table
-from .utils import get_array_configuration, get_data_description_map
+from .utils import fill_ms_table, get_array_configuration, get_data_description_map
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -13,7 +12,8 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[dict, None, None]:
+def _get_spectral_window_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
+    array_conf = get_array_configuration(hdu)
     ddd, adm, spw_map, _ = get_data_description_map(array_conf)
 
     data = hdu.data
@@ -74,12 +74,4 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
 
 
 def fill_spectral_window(msfile: str, hdu: "BinTableHDU"):
-    array_conf = get_array_configuration(hdu)
-    row_iterator = _get_spectral_window_row(hdu, array_conf)
-    with open_table(msfile + "/SPECTRAL_WINDOW", read_only=False) as tb:
-        for spw_id, row in enumerate(row_iterator):
-            if tb.nrows() <= spw_id:
-                tb.addrows()
-            for key, value in row.items():
-                tb.putcell(key, spw_id, value)
-            LOG.debug("spw %d row %s", spw_id, row)
+    fill_ms_table(msfile, hdu, "SPECTRAL_WINDOW", _get_spectral_window_row)
