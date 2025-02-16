@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Generator
 
 import numpy as np
 
-from .._casa import open_table
+from .utils import fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -72,12 +72,4 @@ def _get_weather_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
 
 
 def fill_weather(msfile: str, hdu: "BinTableHDU"):
-    row_iterator = _get_weather_row(hdu)
-    with open_table(msfile + "/WEATHER", read_only=False) as tb:
-        for row_id, row in enumerate(row_iterator):
-            if tb.nrows() <= row_id:
-                tb.addrows(tb.nrows() - row_id + 1)
-
-            for key, value in row.items():
-                tb.putcell(key, row_id, value)
-            LOG.debug("weather table %d row %s", row_id, row)
+    fill_ms_table(msfile, hdu, "WEATHER", _get_weather_row)
