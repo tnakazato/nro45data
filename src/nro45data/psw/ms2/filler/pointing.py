@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Generator
 
 import numpy as np
 
-from .._casa import open_table
+from .utils import fill_ms_table
 
 if TYPE_CHECKING:
     from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
@@ -15,6 +15,8 @@ def _get_pointing_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
     multn = hdu.data["MULTN"]
     arryt = hdu.data["ARRYT"]
 
+    # antenna id is 0-based
+    multn = multn - multn.min()
     beam_id_list, array_index = np.unique(multn, return_index=True)
     array_id_list = arryt[array_index]
 
@@ -64,7 +66,6 @@ def _get_pointing_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
                 "NAME": name,
                 "NUM_POLY": num_poly,
                 "TIME_ORIGIN": time_origin,
-                "DIRECTION_REF": direction_ref,
                 "DIRECTION": direction,
                 "TARGET": target,
                 "ENCODER": encoder,
@@ -74,22 +75,14 @@ def _get_pointing_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
 
             yield pointing_row
 
+    column_keywords = {
+        "DIRECTION": {"MEASINFO": {"Ref": direction_ref}},
+        "TARGET": {"MEASINFO": {"Ref": direction_ref}},
+        "SOURCE_OFFSET": {"MEASINFO": {"Ref": direction_ref}}
+    }
+
+    return column_keywords  # noqa
+
 
 def fill_pointing(msfile: str, hdu: "BinTableHDU"):
-    row_iterator = _get_pointing_row(hdu)
-    with open_table(msfile + "/POINTING", read_only=False) as tb:
-        for row_id, row in enumerate(row_iterator):
-            if tb.nrows() <= row_id:
-                tb.addrows(tb.nrows() - row_id + 1)
-
-            for key, value in row.items():
-                LOG.info("row %d, key %s", row_id, key)
-                if key == "DIRECTION_REF":
-                    for col in ("DIRECTION", "TARGET", "SOURCE_OFFSET"):
-                        colkeywords = tb.getcolkeywords(col)
-                        if colkeywords["MEASINFO"]["Ref"] != value:
-                            colkeywords["MEASINFO"]["Ref"] = value
-                            tb.putcolkeywords(col, colkeywords)
-                else:
-                    tb.putcell(key, row_id, value)
-            LOG.debug("spw %d row %s", row_id, row)
+    fill_ms_table(msfile, hdu, "POINTING", _get_pointing_row)
