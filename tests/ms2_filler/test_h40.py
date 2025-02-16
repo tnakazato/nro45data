@@ -332,6 +332,73 @@ def test_h40_ms2_structure(msfile):
         assert np.allclose(wind_direction[15:], 0.05235988)
         assert np.all(np.logical_not(tb.getcol("WIND_DIRECTION_FLAG")))
 
+    with open_table(os.path.join(msfile, "POINTING")) as tb:
+        assert tb.nrows() == num_records // num_pols // num_spws
+        assert np.all(tb.getcol("ANTENNA_ID") == 0)
+        assert np.all(tb.getcol("NUM_POLY") == 0)
+        assert np.all(np.array(tb.getcol("NAME")) == "")
+        assert np.all(np.array(tb.getcol("TRACKING")))
+        pointing_time = np.array(tb.getcol("TIME"))
+        pointing_time_origin = np.array(tb.getcol("TIME_ORIGIN"))
+        assert np.all(pointing_time_origin == pointing_time)
+        pointing_time_expected = [
+            datetime.datetime(2024, 9, 25, 15, 59, 19, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 15, 59, 52, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 2, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 36, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 0, 54, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 1, 18, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 1, 28, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 1, 38, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 3, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 21, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 2, 55, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 5, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 29, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 38, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 25, 16, 3, 47, 500000, tzinfo=datetime.timezone.utc)
+        ]
+        assert tb.nrows() == len(pointing_time_expected)
+        for wt, dt_ex in zip(pointing_time, pointing_time_expected):
+            dt = mjd2datetime(wt)
+            assert abs((dt - dt_ex).total_seconds()) < 1e-3
+        pointing_interval = tb.getcol("INTERVAL")
+        assert np.allclose(pointing_interval[:1], 1)
+        assert np.allclose(pointing_interval[1:], 5)
+        assert np.allclose(tb.getcol("SOURCE_OFFSET"), 0)
+        assert tb.getcolkeyword("DIRECTION", "MEASINFO")["Ref"] == "J2000"
+        assert tb.getcolkeyword("TARGET", "MEASINFO")["Ref"] == "J2000"
+        assert tb.getcolkeyword("SOURCE_OFFSET", "MEASINFO")["Ref"] == "J2000"
+        assert tb.getcolkeyword("ENCODER", "MEASINFO")["Ref"] == "AZELGEO"
+        ra_expected = 1.01875305
+        dec_expected = 0.19907613
+        az_expected = [
+            2.06807743, 2.06954179, 2.07015452, 2.0707679 , 2.07275534,
+            2.07344539, 2.07413612, 2.07613253, 2.0767516 , 2.07737131,
+            2.0794541 , 2.0801507 , 2.08084798, 2.08286274, 2.08348832,
+            2.08411455, 2.08613848, 2.08684166, 2.08754553
+        ]
+        el_expected = [
+            0.86827902, 0.87009498, 0.87061334, 0.87113149, 0.87247113,
+            0.87283984, 0.87320837, 0.8745458 , 0.87506229, 0.87557856,
+            0.87696523, 0.87733221, 0.87769901, 0.87903182, 0.87954637,
+            0.8800607 , 0.88139113, 0.88175637, 0.88212142
+        ]
+        for irow in range(tb.nrows()):
+            radec = tb.getcell("DIRECTION", irow).squeeze()
+            np.allclose(radec[0], ra_expected)
+            np.allclose(radec[1], dec_expected)
+            target = tb.getcell("TARGET", irow).squeeze()
+            np.allclose(target[0], ra_expected)
+            np.allclose(target[1], dec_expected)
+            azel = tb.getcell("ENCODER", irow).squeeze()
+            np.allclose(azel[0], az_expected[irow])
+            np.allclose(azel[1], el_expected[irow])
+
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
         # number of MS2 rows = 76

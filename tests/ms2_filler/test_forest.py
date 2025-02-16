@@ -386,6 +386,69 @@ def test_forest_ms2_structure(msfile):
         assert np.allclose(wind_direction[121:], 2.25147474)
         assert np.all(np.logical_not(tb.getcol("WIND_DIRECTION_FLAG")))
 
+    with open_table(os.path.join(msfile, "POINTING")) as tb:
+        assert tb.nrows() == num_records // num_pols // num_spws
+        antenna_id = tb.getcol("ANTENNA_ID")
+        nrow_per_beam = tb.nrows() // num_beams
+        assert np.all(antenna_id[0:nrow_per_beam] == 0)
+        assert np.all(antenna_id[nrow_per_beam:2 * nrow_per_beam] == 1)
+        assert np.all(antenna_id[2 * nrow_per_beam:3 * nrow_per_beam] == 2)
+        assert np.all(antenna_id[3 * nrow_per_beam:] == 3)
+        assert np.all(tb.getcol("NUM_POLY") == 0)
+        assert np.all(np.array(tb.getcol("NAME")) == "")
+        assert np.all(np.array(tb.getcol("TRACKING")))
+        pointing_time = np.array(tb.getcol("TIME"))
+        pointing_time_origin = np.array(tb.getcol("TIME_ORIGIN"))
+        assert np.all(pointing_time_origin == pointing_time)
+        pointing_time_expected = [
+            datetime.datetime(2024, 9, 30, 17, 49, 53, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 50, 27, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 50, 36, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 50, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 20, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 30, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 51, 57, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 6, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 15, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 41, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 52, 51, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 1, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 27, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 36, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 53, 45, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 11, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 21, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 29, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 54, 54, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 3, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 12, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 38, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 48, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 55, 58, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 56, 24, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 56, 33, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 56, 42, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 57, 9, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 57, 19, 500000, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2024, 9, 30, 17, 57, 29, 500000, tzinfo=datetime.timezone.utc)
+        ]
+        assert tb.nrows() == len(pointing_time_expected) * num_beams
+        for wt, dt_ex in zip(pointing_time, itertools.cycle(pointing_time_expected)):
+            dt = mjd2datetime(wt)
+            assert abs((dt - dt_ex).total_seconds()) < 1e-3
+        pointing_interval = tb.getcol("INTERVAL")
+        assert np.allclose(pointing_interval[0::nrow_per_beam], 1)
+        assert np.allclose(pointing_interval[1:nrow_per_beam], 5)
+        assert np.allclose(pointing_interval[nrow_per_beam + 1:2 * nrow_per_beam], 5)
+        assert np.allclose(pointing_interval[2 * nrow_per_beam + 1:3 * nrow_per_beam], 5)
+        assert np.allclose(pointing_interval[3 * nrow_per_beam + 1:], 5)
+        assert tb.getcolkeyword("DIRECTION", "MEASINFO")["Ref"] == "J2000"
+        assert tb.getcolkeyword("TARGET", "MEASINFO")["Ref"] == "J2000"
+        assert tb.getcolkeyword("SOURCE_OFFSET", "MEASINFO")["Ref"] == "J2000"
+        assert tb.getcolkeyword("ENCODER", "MEASINFO")["Ref"] == "AZELGEO"
+        # TODO: implement efficient test for DIRECTION, TARGET, SOURCE_OFFSET, ENCODER
+
     # test number of rows in MS MAIN
     with open_table(msfile) as tb:
         # number of MS2 rows = 298
