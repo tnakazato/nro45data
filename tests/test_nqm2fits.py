@@ -12,21 +12,22 @@ import astropy.io.fits as fits
 import pytest
 
 from nro45data.psw import nqm2fits
-
+from nro45data import nqm2fits as nqm2fits_pkg
 
 def test_nqm2fits(data_dir):
     """test nqm2fits"""
     nqmfile = "nmlh40.240926005833.01.nqm"
     nqmpath = os.path.join(data_dir, nqmfile)
     fitsfile = ".".join([nqmpath, time.strftime("%Y%M%dT%H%M%S"), 'fits'])
-    try:
-        status = nqm2fits(nqmpath, fitsfile, overwrite=True)
-        assert status is True
-        fitsdata = fits.open(fitsfile)
-        assert isinstance(fitsdata, fits.HDUList)
-        assert len(fitsdata) == 2
-    finally:
-        os.remove(fitsfile)
+    for test_func in [nqm2fits, nqm2fits_pkg]:
+        try:
+            status = test_func(nqmpath, fitsfile, overwrite=True)
+            assert status is True
+            fitsdata = fits.open(fitsfile)
+            assert isinstance(fitsdata, fits.HDUList)
+            assert len(fitsdata) == 2
+        finally:
+            os.remove(fitsfile)
 
 
 @pytest.mark.unit

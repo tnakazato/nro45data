@@ -15,13 +15,13 @@ pip install .[casa6]
 `nqm2fits` converts NRO 45m PSW data (.nqm) to FITS.
 
 ```python
-import nro45data.psw as psw
-psw.nqm2fits('mydata.nqm', 'mydata.fits')
+import nro45data
+nro45data.nqm2fits('mydata.nqm', 'mydata.fits')
 ```
 
 `nqm2ms2` converts NRO 45m PSW data (.nqm) to MS2.
 
 ```python
-import nro45data.psw as psw
-psw.nqm2ms2('mydata.nqm', 'mydata.ms')
+import nro45data
+nro45data.nqm2ms2('mydata.nqm', 'mydata.ms')
 ```
