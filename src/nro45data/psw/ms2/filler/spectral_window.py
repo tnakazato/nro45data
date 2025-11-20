@@ -48,9 +48,24 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
         spw_name = "_".join(array_list)
         _fqcal = fqcal[i][: nfcal[i]]
         _chcal = chcal[i][: nfcal[i]]
-        chan_edge_freq = np.interp(np.arange(-0.5, nchan), _chcal, _fqcal)
-        chan_freq = (chan_edge_freq[1:] + chan_edge_freq[:-1]) / 2
-        chan_width = np.diff(chan_edge_freq)
+        # it seems that CHCAL is 1-based index
+        # convert them to 0-based index here
+        _chcal = _chcal - 1
+
+        # should reverse the order if it's descending
+        # to be compliant with the requirements of np.interp
+        if _chcal[-1] < _chcal[0]:
+            _chcal = _chcal[::-1]
+            _fqcal = _fqcal[::-1]
+
+        chan_freq = np.interp(np.arange(nchan), _chcal, _fqcal)
+
+        # restore the original order
+        if _chcal[-1] < _chcal[0]:
+            chan_freq = chan_freq[::-1]
+
+        # ugly fix
+        chan_width = np.concatenate([[chan_freq[1] - chan_freq[0]], np.diff(chan_freq)])
         net_sideband = 1 if chan_freq[0] < chan_freq[-1] else -1
         ref_freq = chan_freq[0]  # frequency of the first channel
         spectral_window_row = {
