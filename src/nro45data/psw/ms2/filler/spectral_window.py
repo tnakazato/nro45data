@@ -48,6 +48,7 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
         spw_name = "_".join(array_list)
         _fqcal = fqcal[i][: nfcal[i]]
         _chcal = chcal[i][: nfcal[i]]
+
         # it seems that CHCAL is 1-based index
         # convert them to 0-based index here
         _chcal = _chcal - 1
@@ -59,10 +60,6 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
             _fqcal = _fqcal[::-1]
 
         chan_freq = np.interp(np.arange(nchan), _chcal, _fqcal)
-
-        # restore the original order
-        if _chcal[-1] < _chcal[0]:
-            chan_freq = chan_freq[::-1]
 
         # ugly fix
         chan_width = np.concatenate([[chan_freq[1] - chan_freq[0]], np.diff(chan_freq)])
