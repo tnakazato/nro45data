@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 import logging
 from typing import TYPE_CHECKING, Generator
@@ -8,19 +10,41 @@ from .._casa import open_table
 from .utils import get_array_configuration, get_data_description_map
 
 if TYPE_CHECKING:
-    from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
+    import astropy.io.fits as fits
+    BinTableHDU = fits.BinTableHDU
 
 LOG = logging.getLogger(__name__)
 
 
-def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[dict, None, None]:
+def _get_frequency_spec(hdu: BinTableHDU, row_id: int) -> tuple[np.ndarray, np.ndarray, int]:
+    data = hdu.data
+    center_freq = data["F0CAL"][row_id]
+    chwid = data["CHWID"][row_id]
+    nch = data["NCH"][row_id]
+    sidbd = data["SIDBD"][row_id]
+
+    if sidbd == "USB":
+        net_sideband = 1
+    elif sidbd == "LSB":
+        net_sideband = -1
+    else:  # DSB
+        net_sideband = 0
+
+    if net_sideband < 0:  # LSB
+        chan_freq = np.array([chwid * ((nch - 1) / 2 - i) + center_freq for i in range(nch)], dtype=float)
+        chan_width = np.ones(nch, dtype=float) * (-chwid)
+    else:  # USB or DSB
+        chan_freq = np.array([chwid * (i - (nch - 1) / 2) + center_freq for i in range(nch)], dtype=float)
+        chan_width = np.ones(nch, dtype=float) * chwid
+
+    return chan_freq, chan_width, net_sideband
+
+
+def _get_spectral_window_row(hdu: BinTableHDU, array_conf: dict) -> Generator[dict, None, None]:
     ddd, adm, spw_map, _ = get_data_description_map(array_conf)
 
     data = hdu.data
     arry = data["ARRYT"]
-    nfcal = data["NFCAL"]
-    fqcal = data["FQCAL"]
-    chcal = data["CHCAL"]
     nch = data["NCH"]
 
     num_spw = len(spw_map)
@@ -37,7 +61,6 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
         dd_id = spw_dd_map[spw_id][0]
         array = dd_array_map[dd_id][0]
         i = np.where(arry == array)[0][0]
-        nchan = nch[i]
         meas_freq_ref = 1  # LSRK
 
         array_list = []
@@ -46,24 +69,11 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
                 array_list.append(_array)
 
         spw_name = "_".join(array_list)
-        _fqcal = fqcal[i][: nfcal[i]]
-        _chcal = chcal[i][: nfcal[i]]
 
-        # it seems that CHCAL is 1-based index
-        # convert them to 0-based index here
-        _chcal = _chcal - 1
+        chan_freq, chan_width, net_sideband = _get_frequency_spec(hdu, i)
+        nchan = len(chan_freq)
+        assert nchan == nch[i]
 
-        # should reverse the order if it's descending
-        # to be compliant with the requirements of np.interp
-        if _chcal[-1] < _chcal[0]:
-            _chcal = _chcal[::-1]
-            _fqcal = _fqcal[::-1]
-
-        chan_freq = np.interp(np.arange(nchan), _chcal, _fqcal)
-
-        # ugly fix
-        chan_width = np.concatenate([[chan_freq[1] - chan_freq[0]], np.diff(chan_freq)])
-        net_sideband = 1 if chan_freq[0] < chan_freq[-1] else -1
         ref_freq = chan_freq[0]  # frequency of the first channel
         spectral_window_row = {
             "NUM_CHAN": nchan,
@@ -83,7 +93,7 @@ def _get_spectral_window_row(hdu: "BinTableHDU", array_conf: list) -> Generator[
         yield spectral_window_row
 
 
-def fill_spectral_window(msfile: str, hdu: "BinTableHDU"):
+def fill_spectral_window(msfile: str, hdu: BinTableHDU):
     array_conf = get_array_configuration(hdu)
     row_iterator = _get_spectral_window_row(hdu, array_conf)
     with open_table(msfile + "/SPECTRAL_WINDOW", read_only=False) as tb:
