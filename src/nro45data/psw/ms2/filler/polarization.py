@@ -8,7 +8,8 @@ import numpy as np
 from .utils import fill_ms_table, get_array_configuration, get_data_description_map
 
 if TYPE_CHECKING:
-    from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
+    import astropy.io.fits as fits
+    BinTableHDU = fits.BinTableHDU
 
 LOG = logging.getLogger(__name__)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING, Generator
 
@@ -6,12 +8,13 @@ import numpy as np
 from .._casa import open_table
 
 if TYPE_CHECKING:
-    from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
+    import astropy.io.fits as fits
+    BinTableHDU = fits.BinTableHDU
 
 LOG = logging.getLogger(__name__)
 
 
-def _get_pointing_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
+def _get_pointing_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
     multn = hdu.data["MULTN"]
     arryt = hdu.data["ARRYT"]
 
@@ -75,7 +78,7 @@ def _get_pointing_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
             yield pointing_row
 
 
-def fill_pointing(msfile: str, hdu: "BinTableHDU"):
+def fill_pointing(msfile: str, hdu: BinTableHDU):
     row_iterator = _get_pointing_row(hdu)
     with open_table(msfile + "/POINTING", read_only=False) as tb:
         for row_id, row in enumerate(row_iterator):

@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Generator
 
@@ -6,12 +7,13 @@ import numpy as np
 from .._casa import convert_str_angle_to_rad, open_table
 
 if TYPE_CHECKING:
-    from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
+    import astropy.io.fits as fits
+    BinTableHDU = fits.BinTableHDU
 
 LOG = logging.getLogger(__name__)
 
 
-def _get_source_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
+def _get_source_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
     # TIME and INTERVAL
     # use start and end time of the observation
     history_cards = hdu.header["HISTORY"]
@@ -97,7 +99,7 @@ def _get_source_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
     yield row
 
 
-def fill_source(msfile: str, hdu: "BinTableHDU"):
+def fill_source(msfile: str, hdu: BinTableHDU):
     row_iterator = _get_source_row(hdu)
     with open_table(msfile + "/SOURCE", read_only=False) as tb:
         for row_id, row in enumerate(row_iterator):

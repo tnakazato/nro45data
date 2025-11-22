@@ -9,7 +9,8 @@ import numpy as np
 from .._casa import open_table
 
 if TYPE_CHECKING:
-    import astropy.io.fits.hdu.BinTableHDU as BinTableHDU
+    import astropy.io.fits as fits
+    BinTableHDU = fits.BinTableHDU
 
     from .._casa import _table
 
@@ -26,7 +27,7 @@ def fix_nrow_to(nrow: int, tb: "_table") -> "_table":
     return tb
 
 
-def get_array_configuration(hdu: "BinTableHDU"):
+def get_array_configuration(hdu: BinTableHDU):
     # return value
     # {(spw_id, pol_id): [(array, pol, beam), ...], ...}
     num_array = hdu.header["ARYNM"]
