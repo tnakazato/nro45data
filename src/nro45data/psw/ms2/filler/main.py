@@ -33,10 +33,10 @@ def _get_main_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
 
     intent_map = get_intent_map(iscn, scntp)
 
-    arry1 = hdu.header["ARRY1"].strip()
-    arry2 = hdu.header["ARRY2"].strip()
-    arry3 = hdu.header["ARRY3"].strip()
-    arry4 = hdu.header["ARRY4"].strip()
+    arry1 = str(hdu.header["ARRY1"]).strip()
+    arry2 = str(hdu.header["ARRY2"]).strip()
+    arry3 = str(hdu.header["ARRY3"]).strip()
+    arry4 = str(hdu.header["ARRY4"]).strip()
     _, processor_id_map = get_processor_map(arry1, arry2, arry3, arry4)
 
     beam_list = sorted(set(multn))

@@ -27,7 +27,7 @@ def _get_antenna_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
     beam_list = np.unique(sorted([x[1] for x in array_conf.values()]))
     num_beam = len(beam_list)
 
-    antenna_name_base = hdu.header["TELESCOP"].strip()
+    antenna_name_base = str(hdu.header["TELESCOP"]).strip()
 
     for i in range(num_beam):
         # NAME

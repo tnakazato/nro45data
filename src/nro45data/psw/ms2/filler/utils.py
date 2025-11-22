@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def fix_nrow_to(nrow: int, tb: "_table") -> "_table":
+def fix_nrow_to(nrow: int, tb: _table) -> _table:
     nrow_current = tb.nrows()
     if nrow_current < nrow:
         tb.addrows(nrow - nrow_current)
@@ -172,7 +172,7 @@ def get_data_description_map(array_conf: dict):
     LOG.debug("pol_map: %s", pol_map)
 
     for _array_conf in array_conf_per_beam[1:]:
-        spw_flag = dict((i, False) for i in spw_map.keys())
+        spw_flag: dict[int, bool] = dict((i, False) for i in spw_map.keys())
         LOG.debug("spw_flag (initial) = %s", spw_flag)
 
         for conf in _array_conf.values():
