@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from . import psw
 
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __all__ = ["nqm2fits", "nqm2ms2"]
 
 
