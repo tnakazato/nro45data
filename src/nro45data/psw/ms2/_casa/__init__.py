@@ -1,3 +1,5 @@
+import logging
+
 from ._casa6 import _is_casa6_available
 from ._casacore import _is_casacore_available
 
@@ -18,7 +20,13 @@ elif _is_casacore_available:
     from ._casacore import datestr2mjd
     from ._casacore import mjd2datetime
 else:
-    raise ModuleNotFoundError("Neither casatools or python-casacore is available")
+    build_table = None
+    open_table = None
+    _table = None
+    convert_str_angle_to_rad = None
+    put_table_keyword = None
+    datestr2mjd = None
+    mjd2datetime = None
 
 __all__ = [
     "build_table",
@@ -29,3 +37,9 @@ __all__ = [
     "datestr2mjd",
     "mjd2datetime"
 ]
+
+
+LOG = logging.getLogger(__name__)
+
+if build_table is None:
+    LOG.warning("Neither casatools nor python-casacore is available. CASA-related functions are disabled.")

@@ -2,4 +2,3 @@ sphinx
 sphinx-copybutton
 sphinx-rtd-theme
 astropy
-casatools

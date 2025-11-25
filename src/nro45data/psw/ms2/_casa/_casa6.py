@@ -1,5 +1,6 @@
 import contextlib
 import datetime
+import logging
 from typing import Any
 
 try:
@@ -13,10 +14,12 @@ except ImportError:
     _table = None
     _quanta = None
 
+LOG = logging.getLogger(__name__)
+
 
 def _test_casatools():
     if not _is_casa6_available:
-        raise ModuleNotFoundError("casatools is not available")
+        LOG.warning("casatools is not available")
 
 
 def build_table(table_name: str, table_desc: dict):
