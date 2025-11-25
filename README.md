@@ -25,3 +25,10 @@ nro45data.nqm2fits('mydata.nqm', 'mydata.fits')
 import nro45data
 nro45data.nqm2ms2('mydata.nqm', 'mydata.ms')
 ```
+
+> [!TIP]
+> If you have never used CASA, you might get the error like below. If you see similar error, please do `mkdir -p ~/.casa/data` and try again.
+> ```
+> AutoUpdatesNotAllowed: data_update: path must exist as a directory and it must be owned by the user, path = /Users/username/.casa/data
+> ```
+> 
