@@ -8,7 +8,8 @@ import numpy as np
 from .utils import get_array_configuration, fill_ms_table
 
 if TYPE_CHECKING:
-    from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
+    import astropy.io.fits as fits
+    BinTableHDU = fits.BinTableHDU
 
 LOG = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ def _get_antenna_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
     beam_list = np.unique(sorted([x[1] for x in array_conf.values()]))
     num_beam = len(beam_list)
 
-    antenna_name_base = hdu.header["TELESCOP"].strip()
+    antenna_name_base = str(hdu.header["TELESCOP"]).strip()
 
     for i in range(num_beam):
         # NAME

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import TYPE_CHECKING, Generator
 
@@ -7,12 +9,13 @@ from .._casa import open_table
 from .utils import get_array_configuration, get_data_description_map, get_intent_map, get_processor_map
 
 if TYPE_CHECKING:
-    from astropy.io.fits.hdu.BinTableHDU import BinTableHDU
+    import astropy.io.fits as fits
+    BinTableHDU = fits.BinTableHDU
 
 LOG = logging.getLogger(__name__)
 
 
-def _get_main_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
+def _get_main_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
     array_conf = get_array_configuration(hdu)
     dd_dict, array_dd_map, spw_map, pol_map = get_data_description_map(array_conf)
 
@@ -30,10 +33,10 @@ def _get_main_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
 
     intent_map = get_intent_map(iscn, scntp)
 
-    arry1 = hdu.header["ARRY1"].strip()
-    arry2 = hdu.header["ARRY2"].strip()
-    arry3 = hdu.header["ARRY3"].strip()
-    arry4 = hdu.header["ARRY4"].strip()
+    arry1 = str(hdu.header["ARRY1"]).strip()
+    arry2 = str(hdu.header["ARRY2"]).strip()
+    arry3 = str(hdu.header["ARRY3"]).strip()
+    arry4 = str(hdu.header["ARRY4"]).strip()
     _, processor_id_map = get_processor_map(arry1, arry2, arry3, arry4)
 
     beam_list = sorted(set(multn))
@@ -185,7 +188,7 @@ def _get_main_row(hdu: "BinTableHDU") -> Generator[dict, None, None]:
             yield row
 
 
-def fill_main(msfile: str, hdu: "BinTableHDU"):
+def fill_main(msfile: str, hdu: BinTableHDU):
     row_iterator = _get_main_row(hdu)
     with open_table(msfile, read_only=False) as tb:
         for row_id, row in enumerate(row_iterator):
