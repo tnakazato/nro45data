@@ -15,7 +15,7 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_weather_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
-    # multn = hdu.data['MULTN']
+    multn = hdu.data['MULTN']
     mjdst = hdu.data["MJDST"]
     mjdet = hdu.data["MJDET"]
     temp = hdu.data["TEMP"]
@@ -27,10 +27,10 @@ def _get_weather_row(hdu: BinTableHDU) -> Generator[dict, None, None]:
     if temp_unit == "C":
         temp = temp.copy() + 273.16
 
-    unique_beams = np.unique(mjdst)
+    unique_beams = np.unique(multn)
 
     for beam in unique_beams:
-        beam_indices = np.where(mjdst == beam)[0]
+        beam_indices = np.where(multn == beam)[0]
         _, _indices = np.unique(mjdst[beam_indices], return_index=True)
         time_indices = beam_indices[_indices]
         for i in time_indices:
