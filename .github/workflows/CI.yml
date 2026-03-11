@@ -8,6 +8,10 @@ on:
     types: [created]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linting:
     runs-on: ubuntu-latest
