@@ -34,7 +34,7 @@ casacore = [
     "python-casacore"
 ]
 spark = [
-    "pyspark>=3.0.0"
+    "pyspark>=4.0.2"
 ]
 test = [
     "bandit[toml]==1.9.2",
