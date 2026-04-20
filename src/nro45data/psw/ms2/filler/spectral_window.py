@@ -22,6 +22,9 @@ def _get_frequency_spec(hdu: BinTableHDU, row_id: int) -> tuple[np.ndarray, np.n
     chwid = data["CHWID"][row_id]
     nch = data["NCH"][row_id]
     sidbd = data["SIDBD"][row_id]
+    nfcal = data["NFCAL"][row_id]
+    fqcal = data["FQCAL"][row_id]
+    chcal = data["CHCAL"][row_id]
 
     if sidbd == "USB":
         net_sideband = 1
@@ -30,12 +33,21 @@ def _get_frequency_spec(hdu: BinTableHDU, row_id: int) -> tuple[np.ndarray, np.n
     else:  # DSB
         net_sideband = 0
 
+    if nfcal == 2:
+        fmin = fqcal[:nfcal].min()
+        fmax = fqcal[:nfcal].max()
+        cmin = chcal[:nfcal].min()
+        cmax = chcal[:nfcal].max()
+        df = (fmax - fmin) / (cmax - cmin)
+    else:
+        df = chwid
+
     if net_sideband < 0:  # LSB
-        chan_freq = np.array([chwid * ((nch - 1) / 2 - i) + center_freq for i in range(nch)], dtype=float)
-        chan_width = np.ones(nch, dtype=float) * (-chwid)
+        chan_freq = np.array([df * ((nch - 1) / 2 - i) + center_freq for i in range(nch)], dtype=float)
+        chan_width = np.ones(nch, dtype=float) * (-df)
     else:  # USB or DSB
-        chan_freq = np.array([chwid * (i - (nch - 1) / 2) + center_freq for i in range(nch)], dtype=float)
-        chan_width = np.ones(nch, dtype=float) * chwid
+        chan_freq = np.array([df * (i - (nch - 1) / 2) + center_freq for i in range(nch)], dtype=float)
+        chan_width = np.ones(nch, dtype=float) * df
 
     return chan_freq, chan_width, net_sideband
 
