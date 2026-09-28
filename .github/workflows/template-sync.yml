@@ -1,12 +1,12 @@
 name: Template Sync
 on:
-  workflow_dispatch:
+    workflow_dispatch:
 jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7.0.0 # important!
-      - uses: euphoricsystems/action-sync-template-repository@v2.5.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          dry-run: true
+    sync:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7.0.1 # important!
+            - uses: euphoricsystems/action-sync-template-repository@v2.5.1
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  dry-run: true

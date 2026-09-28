@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit_core >=3.12.0,<4", "astropy"]
+requires = ["flit_core >=3.12.0,<5", "astropy"]
 build-backend = "flit_core.buildapi"
 
 [project]
@@ -37,21 +37,21 @@ spark = [
     "pyspark>=4.0.2"
 ]
 test = [
-    "bandit[toml]==1.9.2",
-    "black==25.12.0",
+    "bandit[toml]==1.9.4",
+    "black==26.5.1",
     "check-manifest==0.51",
-    "flake8-bugbear==25.11.29",
+    "flake8-bugbear==26.9.9",
     "flake8-docstrings",
     "flake8-formatter_junit_xml",
     "flake8",
     "flake8-pyproject",
-    "pre-commit==4.5.1",
-    "pylint==4.0.4",
+    "pre-commit==4.6.2",
+    "pylint==4.0.8",
     "pylint_junit",
     "pytest-cov==7.1.0",
     "pytest-mock<3.15.2",
     "pytest-runner",
-    "pytest==9.0.2",
+    "pytest==9.1.1",
     "pytest-github-actions-annotate-failures",
     "shellcheck-py==0.11.0.1"
 ]
