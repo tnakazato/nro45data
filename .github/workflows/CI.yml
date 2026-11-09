@@ -61,10 +61,10 @@ jobs:
       - name: Initialize CASA data directory
         run: mkdir -p ~/.casa/data
 
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v7.1.0
         with:
-          python-version: '3.10'
+          python-version: '3.12'
           architecture: 'x64'
 
       - name: install nro45data
