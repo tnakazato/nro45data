@@ -11,7 +11,7 @@ try:
     import casatools.quanta as _quanta_cls
 
     _quanta = _quanta_cls()
-except ImportError e:
+except ImportError as e:
     LOG.warning(f"ImportError: {e}") 
     _is_casa6_available = False
     _table = None
