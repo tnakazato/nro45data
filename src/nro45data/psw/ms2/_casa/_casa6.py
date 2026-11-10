@@ -3,18 +3,19 @@ import datetime
 import logging
 from typing import Any
 
+LOG = logging.getLogger(__name__)
+
 try:
     _is_casa6_available = True
     import casatools.table as _table
     import casatools.quanta as _quanta_cls
 
     _quanta = _quanta_cls()
-except ImportError:
+except ImportError e:
+    LOG.warning(f"ImportError: {e}") 
     _is_casa6_available = False
     _table = None
     _quanta = None
-
-LOG = logging.getLogger(__name__)
 
 
 def _test_casatools():
