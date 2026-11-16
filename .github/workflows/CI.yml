@@ -70,8 +70,9 @@ jobs:
       - name: install nro45data
         run: pip install -e .[casa6,test]
 
+      # LD_PRELOAD is the fix for an import error of casatools
       - name: Pytest
-        run: pytest -v
+        run: LD_PRELOAD=/lib/x86_64-linux-gnu/libcrypto.so.3:/lib/x86_64-linux-gnu/libssl.so.3:/lib/x86_64-linux-gnu/libldap.so.2 pytest -v
 
 #   validation:
 #     needs: init_casadata
