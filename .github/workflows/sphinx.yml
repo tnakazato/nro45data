@@ -1,46 +1,46 @@
 name: Deploy Sphinx documentation to Pages
 
 on:
-  push:
-    branches: [main]
+    push:
+        branches: [main]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+    contents: read
+    pages: write
+    id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+    group: pages
+    cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+                  cache: pip
 
-      - run: pip install -r docs/requirements.txt
-      - run: |
-          cd docs
-          sphinx-build -b html . _build/html
+            - run: pip install .[docs]
+            - run: |
+                  cd docs
+                  sphinx-build -b html . _build/html
 
-      - uses: actions/configure-pages@v5
+            - uses: actions/configure-pages@v5
 
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/_build/html
+            - uses: actions/upload-pages-artifact@v3
+              with:
+                  path: docs/_build/html
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - id: deployment
+              uses: actions/deploy-pages@v4

@@ -36,6 +36,11 @@ casacore = [
 spark = [
     "pyspark>=4.0.2"
 ]
+docs = [
+    "sphinx",
+    "sphinx-copybutton",
+    "sphinx-rtd-theme"
+]
 test = [
     "bandit[toml]==1.9.4",
     "black==26.10.1",
