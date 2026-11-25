@@ -25,13 +25,15 @@ jobs:
           cache: pip
 
       - run: pip install -r docs/requirements.txt
-      - run: sphinx-build -b html . _build/html
+      - run: |
+          cd docs
+          sphinx-build -b html . _build/html
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _build/html
+          path: docs/_build/html
 
   deploy:
     needs: build
