@@ -24,7 +24,7 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - run: pip install -r requirements.txt
+      - run: pip install -r docs/requirements.txt
       - run: sphinx-build -b html . _build/html
 
       - uses: actions/configure-pages@v5
