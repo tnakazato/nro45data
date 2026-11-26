@@ -62,7 +62,7 @@ jobs:
         run: mkdir -p ~/.casa/data
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v7.1.0
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
           architecture: 'x64'
